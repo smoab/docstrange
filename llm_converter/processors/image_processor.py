@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class ImageProcessor(BaseProcessor):
     """Processor for image files (JPG, PNG, etc.) with OCR capabilities."""
     
-    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = False, use_markdownify: bool = None):
+    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = None):
         super().__init__(preserve_layout, include_images, ocr_enabled, use_markdownify)
         self._ocr_service = None
     

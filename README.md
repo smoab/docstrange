@@ -8,6 +8,35 @@ Convert any document, text, or URL into LLM-ready data format.
 pip install llm-data-converter
 ```
 
+### System Dependencies for OCR
+
+For OCR functionality to work properly, you may need to install additional system dependencies:
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install -y libgl1-mesa-glx libglib2.0-0
+```
+
+**macOS:**
+```bash
+# Usually not needed, but if you encounter OpenGL issues:
+brew install mesa
+```
+
+**Windows:**
+```bash
+# Usually not needed, but if you encounter OpenGL issues:
+# Install the latest graphics drivers from your GPU manufacturer
+```
+
+### Optional Dependencies
+
+For better OCR error detection and debugging:
+```bash
+pip install llm-data-converter[opencv]
+```
+
 ## Quick Start
 
 ```python

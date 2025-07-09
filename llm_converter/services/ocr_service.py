@@ -12,6 +12,24 @@ logger = logging.getLogger(__name__)
 os.environ['PADDLEOCR_HOME'] = os.path.expanduser('~/.paddlex/official_models')
 
 
+def check_opengl_availability():
+    """Check if OpenGL is available and provide helpful error message if not."""
+    try:
+        import cv2
+        # Try to create a simple OpenGL context
+        import numpy as np
+        img = np.zeros((100, 100, 3), dtype=np.uint8)
+        cv2.imshow('test', img)
+        cv2.destroyAllWindows()
+        return True
+    except Exception as e:
+        logger.warning(f"OpenGL not available: {e}")
+        logger.warning("For better OCR performance, install system dependencies:")
+        logger.warning("Ubuntu/Debian: sudo apt install -y libgl1-mesa-glx libglib2.0-0")
+        logger.warning("macOS: brew install mesa")
+        return False
+
+
 class OCRService(ABC):
     """Abstract base class for OCR services."""
     
@@ -46,6 +64,8 @@ class PaddleOCRService(OCRService):
     def __init__(self):
         """Initialize the service."""
         logger.info("PaddleOCRService initialized")
+        # Check OpenGL availability and warn if not available
+        check_opengl_availability()
     
     def extract_text(self, image_path: str) -> str:
         """Extract text using line-based PaddleOCR."""
@@ -103,14 +123,16 @@ class PaddleOCRService(OCRService):
             # Try layout-aware OCR first
             try:
                 from paddleocr import PPStructureV3
+                logger.info("Initializing PPStructureV3 for layout-aware OCR...")
                 pipeline = PPStructureV3(
-                    use_doc_orientation_classify=True,
+                    use_doc_orientation_classify=False,
                     use_doc_unwarping=False
                 )
                 logger.info(f"Running PPStructureV3 on: {image_path}")
                 results = pipeline.predict(input=image_path)
-                logger.info(f"PPStructureV3 results: {results}")
+                logger.info(f"PPStructureV3 results type: {type(results)}, length: {len(results) if results else 0}")
                 if results and len(results) > 0:
+                    logger.info(f"PPStructureV3 returned {len(results)} results")
                     extracted_text = self._extract_text_with_layout(results)
                     logger.info(f"Layout-aware extracted text length: {len(extracted_text)}")
                     return extracted_text

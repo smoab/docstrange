@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class PDFProcessor(BaseProcessor):
     """Processor for PDF files using PDF-to-image conversion with OCR."""
     
-    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = False, use_markdownify: bool = None):
+    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = None):
         super().__init__(preserve_layout, include_images, ocr_enabled, use_markdownify)
         self._image_processor = ImageProcessor(
             preserve_layout=preserve_layout,

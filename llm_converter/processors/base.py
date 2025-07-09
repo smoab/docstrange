@@ -10,7 +10,7 @@ from llm_converter.config import InternalConfig
 class BaseProcessor(ABC):
     """Base class for all document processors."""
     
-    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = False, use_markdownify: bool = InternalConfig.use_markdownify):
+    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = InternalConfig.use_markdownify):
         """Initialize the processor.
         
         Args:

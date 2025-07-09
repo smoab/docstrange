@@ -38,6 +38,8 @@ dependencies = [
     "litellm>=1.0.0",
     "paddlepaddle>=2.5.0",
     "paddleocr>=2.7.0",
+    "pypandoc>=1.15.0",
+    "markdownify>=0.11.6",
 ]
 
 [project.optional-dependencies]
@@ -48,6 +50,9 @@ dev = [
     "isort>=5.0.0",
     "flake8>=5.0.0",
     "mypy>=1.0.0",
+]
+opencv = [
+    "opencv-python>=4.8.0",
 ]
 
 [project.scripts]
