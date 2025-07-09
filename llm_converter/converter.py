@@ -27,15 +27,15 @@ class FileConverter:
     def __init__(
         self,
         preserve_layout: bool = True,
-        include_images: bool = False,
-        ocr_enabled: bool = None
+        include_images: bool = True,
+        ocr_enabled: bool = True
     ):
         """Initialize the file converter.
         
         Args:
             preserve_layout: Whether to preserve document layout
             include_images: Whether to include images in output
-            ocr_enabled: Whether to enable OCR for image processing
+            ocr_enabled: Whether to enable OCR for image and PDF processing
         """
         self.preserve_layout = preserve_layout
         self.include_images = include_images
@@ -47,7 +47,7 @@ class FileConverter:
         
         # Initialize processors in order of preference
         self.processors = [
-            PDFProcessor(preserve_layout=preserve_layout, include_images=include_images),
+            PDFProcessor(preserve_layout=preserve_layout, include_images=include_images, ocr_enabled=self.ocr_enabled),
             DOCXProcessor(preserve_layout=preserve_layout, include_images=include_images),
             TXTProcessor(preserve_layout=preserve_layout, include_images=include_images),
             ExcelProcessor(preserve_layout=preserve_layout, include_images=include_images),

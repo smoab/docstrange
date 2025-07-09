@@ -4,22 +4,25 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
 from ..result import ConversionResult
+from llm_converter.config import InternalConfig
 
 
 class BaseProcessor(ABC):
     """Base class for all document processors."""
     
-    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = False):
+    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = False, use_markdownify: bool = InternalConfig.use_markdownify):
         """Initialize the processor.
         
         Args:
             preserve_layout: Whether to preserve document layout
             include_images: Whether to include images in output
             ocr_enabled: Whether to enable OCR for image processing
+            use_markdownify: Whether to use markdownify for HTML->Markdown conversion
         """
         self.preserve_layout = preserve_layout
         self.include_images = include_images
         self.ocr_enabled = ocr_enabled
+        self.use_markdownify = use_markdownify
     
     @abstractmethod
     def can_process(self, file_path: str) -> bool:

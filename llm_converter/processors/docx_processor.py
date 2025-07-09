@@ -9,7 +9,7 @@ from ..exceptions import ConversionError, FileNotFoundError
 
 
 class DOCXProcessor(BaseProcessor):
-    """Processor for Microsoft Word DOCX files."""
+    """Processor for Microsoft Word DOCX and DOC files."""
     
     def can_process(self, file_path: str) -> bool:
         """Check if this processor can handle the given file.
@@ -28,10 +28,10 @@ class DOCXProcessor(BaseProcessor):
         return ext in ['.docx', '.doc']
     
     def process(self, file_path: str) -> ConversionResult:
-        """Process the DOCX file and return a conversion result.
+        """Process the DOCX/DOC file and return a conversion result.
         
         Args:
-            file_path: Path to the DOCX file to process
+            file_path: Path to the DOCX/DOC file to process
             
         Returns:
             ConversionResult containing the processed content
@@ -44,18 +44,59 @@ class DOCXProcessor(BaseProcessor):
             raise FileNotFoundError(f"File not found: {file_path}")
         
         try:
-            from docx import Document
-            
             metadata = self.get_metadata(file_path)
-            content_parts = []
+            _, ext = os.path.splitext(file_path.lower())
             
-            doc = Document(file_path)
+            if ext == '.doc':
+                # Handle .doc files using pypandoc
+                return self._process_doc_file(file_path, metadata)
+            else:
+                # Handle .docx files using python-docx
+                return self._process_docx_file(file_path, metadata)
+            
+        except Exception as e:
+            if isinstance(e, (FileNotFoundError, ConversionError)):
+                raise
+            raise ConversionError(f"Failed to process Word file {file_path}: {str(e)}")
+    
+    def _process_doc_file(self, file_path: str, metadata: Dict[str, Any]) -> ConversionResult:
+        """Process .doc files using pypandoc."""
+        try:
+            import pypandoc
+            
+            # Convert .doc to markdown using pandoc
+            content = pypandoc.convert_file(file_path, 'markdown')
             
             metadata.update({
-                "paragraph_count": len(doc.paragraphs),
-                "section_count": len(doc.sections)
+                "file_type": "doc",
+                "converter": "pypandoc"
             })
             
+            # Clean up the content
+            content = self._clean_content(content)
+            
+            return ConversionResult(content, metadata)
+            
+        except ImportError:
+            raise ConversionError("pypandoc is required for .doc file processing. Install it with: pip install pypandoc")
+        except Exception as e:
+            raise ConversionError(f"Failed to process .doc file {file_path}: {str(e)}")
+    
+    def _process_docx_file(self, file_path: str, metadata: Dict[str, Any]) -> ConversionResult:
+        """Process .docx files using python-docx with improved table extraction."""
+        try:
+            from docx import Document
+
+            content_parts = []
+            doc = Document(file_path)
+
+            metadata.update({
+                "paragraph_count": len(doc.paragraphs),
+                "section_count": len(doc.sections),
+                "file_type": "docx",
+                "converter": "python-docx"
+            })
+
             # Extract text from paragraphs
             for paragraph in doc.paragraphs:
                 if paragraph.text.strip():
@@ -69,47 +110,71 @@ class DOCXProcessor(BaseProcessor):
                             content_parts.append(f"\n## {paragraph.text}\n")
                     else:
                         content_parts.append(paragraph.text)
-            
-            # Extract text from tables
-            for table in doc.tables:
+
+            # Extract text from tables (improved)
+            for table_idx, table in enumerate(doc.tables):
                 if self.preserve_layout:
-                    content_parts.append("\n### Table\n")
-                
-                table_content = []
-                for row in table.rows:
-                    row_content = []
+                    content_parts.append(f"\n### Table {table_idx+1}\n")
+
+                # Gather all rows
+                rows = table.rows
+                if not rows:
+                    continue
+
+                # Detect merged cells (optional warning)
+                merged_warning = False
+                for row in rows:
                     for cell in row.cells:
-                        row_content.append(cell.text.strip())
-                    table_content.append(' | '.join(row_content))
-                
-                if table_content:
-                    # Add header row separator
-                    if len(table_content) > 1:
-                        header_separator = ' | '.join(['---'] * len(table_content[0].split(' | ')))
-                        table_content.insert(1, header_separator)
-                    
-                    content_parts.append('\n'.join(table_content))
-                    content_parts.append('\n')
-            
+                        if len(cell._tc.xpath('.//w:vMerge')) > 0 or len(cell._tc.xpath('.//w:gridSpan')) > 0:
+                            merged_warning = True
+                            break
+                    if merged_warning:
+                        break
+                if merged_warning:
+                    content_parts.append("*Warning: Table contains merged cells which may not render correctly in markdown.*\n")
+
+                # Row limit for large tables
+                row_limit = 20
+                if len(rows) > row_limit:
+                    content_parts.append(f"*Table truncated to first {row_limit} rows out of {len(rows)} total.*\n")
+
+                # Build table data
+                table_data = []
+                for i, row in enumerate(rows):
+                    if i >= row_limit:
+                        break
+                    row_data = [cell.text.strip().replace('\n', ' ') for cell in row.cells]
+                    table_data.append(row_data)
+
+                # Ensure all rows have the same number of columns
+                max_cols = max(len(r) for r in table_data)
+                for r in table_data:
+                    while len(r) < max_cols:
+                        r.append("")
+
+                # Markdown table: first row as header
+                if table_data:
+                    header = table_data[0]
+                    separator = ["---"] * len(header)
+                    content_parts.append("| " + " | ".join(header) + " |")
+                    content_parts.append("| " + " | ".join(separator) + " |")
+                    for row in table_data[1:]:
+                        content_parts.append("| " + " | ".join(row) + " |")
+                    content_parts.append("")
+
             content = '\n'.join(content_parts)
-            
-            # Clean up the content
             content = self._clean_content(content)
-            
             return ConversionResult(content, metadata)
-            
         except ImportError:
-            raise ConversionError("python-docx is required for DOCX processing. Install it with: pip install python-docx")
+            raise ConversionError("python-docx is required for .docx file processing. Install it with: pip install python-docx")
         except Exception as e:
-            if isinstance(e, (FileNotFoundError, ConversionError)):
-                raise
-            raise ConversionError(f"Failed to process DOCX file {file_path}: {str(e)}")
+            raise ConversionError(f"Failed to process .docx file {file_path}: {str(e)}")
     
     def _clean_content(self, content: str) -> str:
-        """Clean up the extracted DOCX content.
+        """Clean up the extracted Word content.
         
         Args:
-            content: Raw DOCX text content
+            content: Raw Word text content
             
         Returns:
             Cleaned text content
