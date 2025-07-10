@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "0.1.0"
+version = "0.2.3"
 description = "Convert any document, text, or URL into LLM-ready data format"
 readme = "README.md"
 license = {text = "MIT"}
@@ -50,9 +50,6 @@ dev = [
     "isort>=5.0.0",
     "flake8>=5.0.0",
     "mypy>=1.0.0",
-]
-opencv = [
-    "opencv-python>=4.8.0",
 ]
 
 [project.scripts]

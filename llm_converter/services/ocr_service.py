@@ -22,8 +22,14 @@ def check_opengl_availability():
         cv2.imshow('test', img)
         cv2.destroyAllWindows()
         return True
+    except ImportError:
+        logger.warning("OpenCV not available for OpenGL detection. Install with: pip install opencv-python")
+        logger.warning("For better OCR performance, install system dependencies:")
+        logger.warning("Ubuntu/Debian: sudo apt install -y libgl1-mesa-glx libglib2.0-0")
+        logger.warning("macOS: brew install mesa")
+        return False
     except Exception as e:
-        logger.warning(f"OpenGL not available: {e}")
+        logger.warning(f"OpenGL detection failed: {e}")
         logger.warning("For better OCR performance, install system dependencies:")
         logger.warning("Ubuntu/Debian: sudo apt install -y libgl1-mesa-glx libglib2.0-0")
         logger.warning("macOS: brew install mesa")
@@ -64,8 +70,38 @@ class PaddleOCRService(OCRService):
     def __init__(self):
         """Initialize the service."""
         logger.info("PaddleOCRService initialized")
-        # Check OpenGL availability and warn if not available
-        check_opengl_availability()
+        # Cache for PaddleOCR instances
+        self._paddle_ocr = None
+        self._ppstructure = None
+    
+    def _get_paddle_ocr(self):
+        """Get cached PaddleOCR instance or create new one."""
+        if self._paddle_ocr is None:
+            try:
+                from paddleocr import PaddleOCR
+                logger.info("Initializing PaddleOCR for line-based OCR...")
+                self._paddle_ocr = PaddleOCR(use_angle_cls=True, lang='en')
+                logger.info("PaddleOCR ready")
+            except Exception as e:
+                logger.error(f"Failed to initialize PaddleOCR: {e}")
+                self._paddle_ocr = None
+        return self._paddle_ocr
+    
+    def _get_ppstructure(self):
+        """Get cached PPStructureV3 instance or create new one."""
+        if self._ppstructure is None:
+            try:
+                from paddleocr import PPStructureV3
+                logger.info("Initializing PPStructureV3 for layout-aware OCR...")
+                self._ppstructure = PPStructureV3(
+                    use_doc_orientation_classify=False,
+                    use_doc_unwarping=False
+                )
+                logger.info("PPStructureV3 ready")
+            except Exception as e:
+                logger.error(f"Failed to initialize PPStructureV3: {e}")
+                self._ppstructure = None
+        return self._ppstructure
     
     def extract_text(self, image_path: str) -> str:
         """Extract text using line-based PaddleOCR."""

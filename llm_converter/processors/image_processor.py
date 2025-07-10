@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 class ImageProcessor(BaseProcessor):
     """Processor for image files (JPG, PNG, etc.) with OCR capabilities."""
     
-    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = None):
+    def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = None, ocr_service=None):
         super().__init__(preserve_layout, include_images, ocr_enabled, use_markdownify)
-        self._ocr_service = None
+        self._ocr_service = ocr_service
     
     def can_process(self, file_path: str) -> bool:
         """Check if this processor can handle the given file.
@@ -38,8 +38,9 @@ class ImageProcessor(BaseProcessor):
     
     def _get_ocr_service(self):
         """Get OCR service instance."""
-        if self._ocr_service is None:
-            self._ocr_service = OCRServiceFactory.create_service()
+        if self._ocr_service is not None:
+            return self._ocr_service
+        self._ocr_service = OCRServiceFactory.create_service()
         return self._ocr_service
     
     def process(self, file_path: str) -> ConversionResult:

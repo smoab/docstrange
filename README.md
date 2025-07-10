@@ -30,12 +30,7 @@ brew install mesa
 # Install the latest graphics drivers from your GPU manufacturer
 ```
 
-### Optional Dependencies
-
-For better OCR error detection and debugging:
-```bash
-pip install llm-data-converter[opencv]
-```
+**Note:** The package will automatically detect if OpenGL is available and provide helpful warnings if system dependencies are missing.
 
 ## Quick Start
 
@@ -192,4 +187,16 @@ Result object with methods to export to different formats.
 
 ## License
 
-MIT License - see LICENSE file for details. 
+MIT License - see LICENSE file for details.
+
+## Third-Party Dependencies
+
+This project uses several third-party libraries:
+
+- **PaddleOCR** - Apache 2.0 License (https://github.com/PaddlePaddle/PaddleOCR)
+- **PyMuPDF** - GNU Affero General Public License v3.0
+- **python-docx** - MIT License
+- **pandas** - BSD 3-Clause License
+- **Pillow** - HPND License
+
+All dependencies are used in accordance with their respective licenses. 

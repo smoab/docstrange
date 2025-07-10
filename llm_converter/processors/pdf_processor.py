@@ -10,6 +10,7 @@ from .image_processor import ImageProcessor
 from ..result import ConversionResult
 from ..exceptions import ConversionError, FileNotFoundError
 from ..config import InternalConfig
+from ..services.ocr_service import OCRServiceFactory, PaddleOCRService
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -20,11 +21,14 @@ class PDFProcessor(BaseProcessor):
     
     def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = None):
         super().__init__(preserve_layout, include_images, ocr_enabled, use_markdownify)
+        # Create a shared OCR service instance for all pages
+        shared_ocr_service = PaddleOCRService()
         self._image_processor = ImageProcessor(
             preserve_layout=preserve_layout,
             include_images=include_images,
             ocr_enabled=ocr_enabled,
-            use_markdownify=use_markdownify
+            use_markdownify=use_markdownify,
+            ocr_service=shared_ocr_service
         )
     
     def can_process(self, file_path: str) -> bool:
