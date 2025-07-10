@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "0.2.3"
+version = "0.3.0"
 description = "Convert any document, text, or URL into LLM-ready data format"
 readme = "README.md"
 license = {text = "MIT"}
@@ -40,6 +40,8 @@ dependencies = [
     "paddleocr>=2.7.0",
     "pypandoc>=1.15.0",
     "markdownify>=0.11.6",
+    "pytesseract>=0.3.10",
+    "opencv-python>=4.8.0",
 ]
 
 [project.optional-dependencies]

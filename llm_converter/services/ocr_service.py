@@ -5,6 +5,8 @@ import logging
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 import threading
+import re
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +19,6 @@ def check_opengl_availability():
     try:
         import cv2
         # Try to create a simple OpenGL context
-        import numpy as np
         img = np.zeros((100, 100, 3), dtype=np.uint8)
         cv2.imshow('test', img)
         cv2.destroyAllWindows()
@@ -62,6 +63,265 @@ class OCRService(ABC):
             Layout-aware extracted text as markdown
         """
         pass
+
+
+class PytesseractOCRService(OCRService):
+    """Pytesseract implementation of OCR service with layout detection."""
+    
+    def __init__(self):
+        """Initialize the service."""
+        logger.info("PytesseractOCRService initialized")
+        self._tesseract_config = '--oem 3 --psm 6'  # Default config for better accuracy
+    
+    def extract_text(self, image_path: str) -> str:
+        """Extract text using pytesseract (simple text extraction)."""
+        try:
+            # Validate image file
+            if not os.path.exists(image_path):
+                logger.error(f"Image file does not exist: {image_path}")
+                return ""
+            
+            # Check if file is readable
+            try:
+                from PIL import Image
+                with Image.open(image_path) as img:
+                    logger.info(f"Image loaded successfully: {img.size} {img.mode}")
+            except Exception as e:
+                logger.error(f"Failed to load image: {e}")
+                return ""
+            
+            try:
+                import pytesseract
+                logger.info(f"Running pytesseract on: {image_path}")
+                text = pytesseract.image_to_string(image_path, config=self._tesseract_config)
+                logger.info(f"Extracted text length: {len(text)}")
+                return text.strip()
+            except Exception as e:
+                logger.error(f"Pytesseract extraction failed: {e}")
+                return ""
+                
+        except Exception as e:
+            logger.error(f"Pytesseract extraction failed: {e}")
+            return ""
+    
+    def extract_text_with_layout(self, image_path: str) -> str:
+        """Extract text with layout awareness using pytesseract TSV output and pandas."""
+        try:
+            import pytesseract
+            import pandas as pd
+            from PIL import Image
+            import numpy as np
+            import re
+
+            if not os.path.exists(image_path):
+                logger.error(f"Image file does not exist: {image_path}")
+                return ""
+
+            # Load image
+            try:
+                img = Image.open(image_path)
+            except Exception as e:
+                logger.error(f"Failed to load image: {e}")
+                return ""
+
+            # Get TSV output as DataFrame
+            try:
+                df = pytesseract.image_to_data(img, output_type=pytesseract.Output.DATAFRAME, config=self._tesseract_config)
+            except Exception as e:
+                logger.error(f"pytesseract TSV extraction failed: {e}")
+                return ""
+
+            # Remove rows with no text or low confidence
+            df = df[df.text.notnull() & (df.text.str.strip() != '') & (df.conf.astype(float) > 30)]
+            if df.empty:
+                logger.warning("No text found in image (after filtering)")
+                return ""
+
+            # Group by block, paragraph, line
+            markdown_lines = []
+            for (block_num, par_num), block_group in df.groupby(['block_num', 'par_num']):
+                # Heuristic: if block is at the top and has large font, treat as header
+                block_top = block_group['top'].min()
+                avg_height = block_group['height'].mean()
+                block_text = ' '.join(block_group['text'])
+                is_header = (block_top < 100 and avg_height > 25) or (avg_height > 35)
+                if is_header:
+                    markdown_lines.append(f"## {block_text}")
+                    markdown_lines.append("")
+                    continue
+
+                # Try to detect tables: if lines have similar y and regular x spacing
+                if self._is_table_block(block_group):
+                    table_md = self._block_to_markdown_table(block_group)
+                    markdown_lines.append(table_md)
+                    markdown_lines.append("")
+                    continue
+
+                # Otherwise, group by line
+                for line_num, line_group in block_group.groupby('line_num'):
+                    line_text = ' '.join(line_group['text'])
+                    # Detect lists
+                    if self._is_list_item(line_text):
+                        markdown_lines.append(f"- {line_text}")
+                    else:
+                        markdown_lines.append(line_text)
+                markdown_lines.append("")
+
+            return '\n'.join(markdown_lines).strip()
+        except Exception as e:
+            logger.error(f"Pytesseract layout-aware extraction failed: {e}")
+            return ""
+
+    def _is_table_block(self, block_group):
+        # Heuristic: if block has multiple lines and words are aligned in columns
+        if block_group.shape[0] < 6:
+            return False
+        # Check if there are at least 2 lines with similar number of words
+        lines = list(block_group.groupby('line_num'))
+        if len(lines) < 2:
+            return False
+        word_counts = [len(line[1]) for line in lines]
+        if min(word_counts) < 2:
+            return False
+        # Check if x positions are similar across lines (column alignment)
+        x_positions = [list(line[1]['left']) for line in lines]
+        if len(x_positions) < 2:
+            return False
+        # Compare columns by rounding x positions
+        columns = list(zip(*[np.round(x, -1) for x in x_positions]))
+        # If most columns have similar x, treat as table
+        col_var = np.std([np.mean(col) for col in columns]) if columns else 100
+        return col_var < 50
+
+    def _block_to_markdown_table(self, block_group):
+        # Group by line
+        lines = [list(line[1].sort_values('left')['text']) for line in block_group.groupby('line_num')]
+        if not lines or len(lines) < 2:
+            return '\n'.join([' '.join(line) for line in lines])
+        # Markdown table: header, separator, rows
+        header = '| ' + ' | '.join(lines[0]) + ' |'
+        separator = '|' + '|'.join(['---'] * len(lines[0])) + '|'
+        rows = ['| ' + ' | '.join(row) + ' |' for row in lines[1:]]
+        return '\n'.join([header, separator] + rows)
+
+    def _is_list_item(self, text: str) -> bool:
+        """Detect if text is a list item."""
+        # Common list indicators
+        list_patterns = [
+            r'^\d+\.',  # Numbered list
+            r'^[•·▪▫◦‣⁃]',  # Bullet points
+            r'^[-*+]',  # Markdown list markers
+            r'^[a-zA-Z]\.',  # Lettered list
+        ]
+        
+        for pattern in list_patterns:
+            if re.match(pattern, text.strip()):
+                return True
+        
+        return False
+
+    def _is_header(self, line: List[Dict]) -> bool:
+        """Detect if a line is a header based on font characteristics."""
+        if not line:
+            return False
+        
+        # Check if any block in the line has larger font size
+        avg_height = sum(block['height'] for block in line) / len(line)
+        
+        # Headers are typically larger than body text
+        return avg_height > 25  # Adjust threshold as needed
+    
+    def _group_into_lines(self, text_blocks: List[Dict], image_shape: tuple) -> List[List[Dict]]:
+        """Group text blocks into lines based on vertical position."""
+        if not text_blocks:
+            return []
+        
+        lines = []
+        current_line = []
+        line_height_threshold = 20  # pixels
+        
+        for block in text_blocks:
+            if not current_line:
+                current_line.append(block)
+            else:
+                # Check if this block is on the same line
+                avg_y = sum(b['y'] for b in current_line) / len(current_line)
+                if abs(block['y'] - avg_y) <= line_height_threshold:
+                    current_line.append(block)
+                else:
+                    # Start a new line
+                    lines.append(current_line)
+                    current_line = [block]
+        
+        # Add the last line
+        if current_line:
+            lines.append(current_line)
+        
+        # Sort blocks within each line by x position (left to right)
+        for line in lines:
+            line.sort(key=lambda x: x['x'])
+        
+        return lines
+    
+    def _convert_to_markdown(self, lines: List[List[Dict]]) -> str:
+        """Convert lines of text blocks to markdown."""
+        markdown_parts = []
+        
+        for line in lines:
+            if not line:
+                continue
+            
+            # Join text in the line
+            line_text = ' '.join(block['text'] for block in line)
+            
+            # Detect headers based on font size and position
+            if self._is_header(line):
+                markdown_parts.append(f"## {line_text}")
+            else:
+                # Detect lists
+                if self._is_list_item(line_text):
+                    markdown_parts.append(f"- {line_text}")
+                else:
+                    markdown_parts.append(line_text)
+            
+            markdown_parts.append("")  # Add empty line for spacing
+        
+        return '\n'.join(markdown_parts).strip()
+    
+    def _process_layout_data(self, data: Dict, image_shape: tuple) -> str:
+        """Process pytesseract layout data and convert to markdown."""
+        try:
+            # Extract text blocks with their positions
+            text_blocks = []
+            n_boxes = len(data['text'])
+            
+            for i in range(n_boxes):
+                # Filter out empty text and low confidence
+                if int(data['conf'][i]) > 30 and data['text'][i].strip():
+                    text_blocks.append({
+                        'text': data['text'][i].strip(),
+                        'x': data['left'][i],
+                        'y': data['top'][i],
+                        'width': data['width'][i],
+                        'height': data['height'][i],
+                        'level': data['level'][i],
+                        'conf': data['conf'][i]
+                    })
+            
+            # Sort blocks by vertical position (top to bottom)
+            text_blocks.sort(key=lambda x: (x['y'], x['x']))
+            
+            # Group blocks into lines and paragraphs
+            lines = self._group_into_lines(text_blocks, image_shape)
+            
+            # Convert to markdown
+            markdown_text = self._convert_to_markdown(lines)
+            
+            return markdown_text
+            
+        except Exception as e:
+            logger.error(f"Error processing layout data: {e}")
+            return ""
 
 
 class PaddleOCRService(OCRService):
@@ -434,6 +694,8 @@ class OCRServiceFactory:
         
         if provider.lower() == 'paddleocr':
             return PaddleOCRService()
+        elif provider.lower() == 'pytesseract':
+            return PytesseractOCRService()
         else:
             raise ValueError(f"Unsupported OCR provider: {provider}")
     
@@ -444,4 +706,4 @@ class OCRServiceFactory:
         Returns:
             List of available provider names
         """
-        return ['paddleocr']  # Add more providers here as they're implemented 
+        return ['paddleocr', 'pytesseract']  # Add more providers here as they're implemented 
