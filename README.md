@@ -8,6 +8,9 @@ Convert any document, text, or URL into LLM-ready data format.
 pip install llm-data-converter
 ```
 
+**Requirements:**
+- Python 3.8 or higher
+
 ### System Dependencies for OCR
 
 For OCR functionality to work properly, you may need to install additional system dependencies:
@@ -15,36 +18,13 @@ For OCR functionality to work properly, you may need to install additional syste
 **Ubuntu/Debian:**
 ```bash
 sudo apt update
-sudo apt install -y libgl1-mesa-glx libglib2.0-0 tesseract-ocr
+sudo apt install -y libgl1-mesa-glx libglib2.0-0
 ```
 
 **macOS:**
 ```bash
 # Usually not needed, but if you encounter OpenGL issues:
-brew install mesa tesseract
-```
-
-**Windows:**
-```bash
-# Usually not needed, but if you encounter OpenGL issues:
-# Install the latest graphics drivers from your GPU manufacturer
-# For Tesseract: Download and install from https://github.com/UB-Mannheim/tesseract/wiki
-```
-
-**OCR Providers:**
-
-The library supports two OCR providers:
-
-1. **PaddleOCR** (default) - More accurate for complex layouts and tables
-2. **pytesseract** - Faster and lighter, good for simple text extraction
-
-To switch OCR providers, modify the internal configuration:
-
-```python
-from llm_converter.config import InternalConfig
-
-# Use pytesseract instead of PaddleOCR
-InternalConfig.ocr_provider = 'pytesseract'
+brew install mesa
 ```
 
 **Note:** The package will automatically detect if OpenGL is available and provide helpful warnings if system dependencies are missing.
@@ -53,17 +33,11 @@ InternalConfig.ocr_provider = 'pytesseract'
 
 ```python
 from llm_converter import FileConverter
-from litellm import completion
 
 # Basic conversion
 converter = FileConverter()
 result = converter.convert("document.pdf").to_markdown()
-
-# Pass the result to LLM
-response = completion(
-    model="openai/gpt-4o",
-    messages=[{"content": f"Extract info from this document: \n{result}", "role": "user"}]
-)
+print(result)
 ```
 
 ## Features
@@ -211,8 +185,6 @@ MIT License - see LICENSE file for details.
 This project uses several third-party libraries:
 
 - **PaddleOCR** - Apache 2.0 License (https://github.com/PaddlePaddle/PaddleOCR)
-- **Tesseract OCR** - Apache 2.0 License (https://github.com/tesseract-ocr/tesseract)
-- **pytesseract** - MIT License (https://github.com/madmaze/pytesseract)
 - **PyMuPDF** - GNU Affero General Public License v3.0
 - **python-docx** - MIT License
 - **pandas** - BSD 3-Clause License
