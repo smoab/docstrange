@@ -122,13 +122,11 @@ print(response.choices[0].message.content)
 ```python
 from llm_converter import FileConverter
 
-converter = FileConverter(
-    preserve_layout=True,
-    include_images=True,
-    ocr_enabled=True
-)
+converter = FileConverter()
 
 result = converter.convert("document.pdf").to_markdown()
+
+print(result)
 ```
 
 ### Batch Processing
