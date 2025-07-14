@@ -18,8 +18,10 @@ For OCR functionality to work properly, you may need to install additional syste
 **Ubuntu/Debian:**
 ```bash
 sudo apt update
-sudo apt install -y libgl1-mesa-glx libglib2.0-0
+sudo apt install -y libgl1 libglib2.0-0 libgomp1
+pip install setuptools
 ```
+*If you already have these dependencies, you can skip these steps.*
 
 **macOS:**
 ```bash
@@ -66,7 +68,7 @@ print(result)
 from llm_converter import FileConverter
 
 converter = FileConverter()
-result = converter.convert("https://example.com").to_html()
+result = converter.convert_url("https://example.com").to_html()
 print(result)
 ```
 
@@ -122,7 +124,11 @@ print(response.choices[0].message.content)
 ```python
 from llm_converter import FileConverter
 
-converter = FileConverter()
+converter = FileConverter(
+    preserve_layout=True,
+    include_images=True,
+    ocr_enabled=True   
+)
 
 result = converter.convert("document.pdf").to_markdown()
 
@@ -152,7 +158,7 @@ Main class for converting documents to LLM-ready formats.
 #### Methods
 
 - `convert(file_path: str) -> ConversionResult`: Convert a file to internal format
-- `convert_url(url: str) -> ConversionResult`: Convert a URL to internal format
+- `convert_url(url: str) -> ConversionResult`: Convert a URL page contents to internal 
 - `convert_text(text: str) -> ConversionResult`: Convert plain text to internal format
 
 ### ConversionResult
@@ -182,7 +188,7 @@ MIT License - see LICENSE file for details.
 
 This project uses several third-party libraries:
 
-- **PaddleOCR** - Apache 2.0 License (https://github.com/PaddlePaddle/PaddleOCR)
+- **PaddleOCR** - Apache 2.0 License
 - **PyMuPDF** - GNU Affero General Public License v3.0
 - **python-docx** - MIT License
 - **pandas** - BSD 3-Clause License
