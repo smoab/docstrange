@@ -10,7 +10,7 @@ from .image_processor import ImageProcessor
 from ..result import ConversionResult
 from ..exceptions import ConversionError, FileNotFoundError
 from ..config import InternalConfig
-from ..services.ocr_service import OCRServiceFactory, PaddleOCRService
+from ..pipeline.ocr_service import OCRServiceFactory, NeuralOCRService
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class PDFProcessor(BaseProcessor):
     def __init__(self, preserve_layout: bool = True, include_images: bool = False, ocr_enabled: bool = True, use_markdownify: bool = None):
         super().__init__(preserve_layout, include_images, ocr_enabled, use_markdownify)
         # Create a shared OCR service instance for all pages
-        shared_ocr_service = PaddleOCRService()
+        shared_ocr_service = NeuralOCRService()
         self._image_processor = ImageProcessor(
             preserve_layout=preserve_layout,
             include_images=include_images,
@@ -49,101 +49,115 @@ class PDFProcessor(BaseProcessor):
         return ext == '.pdf'
     
     def process(self, file_path: str) -> ConversionResult:
-        """Process the PDF file and return a conversion result.
+        """Process PDF file with OCR capabilities.
         
         Args:
-            file_path: Path to the PDF file to process
+            file_path: Path to the PDF file
             
         Returns:
-            ConversionResult containing the processed content
-            
-        Raises:
-            FileNotFoundError: If the file doesn't exist
-            ConversionError: If processing fails
+            ConversionResult with extracted content
         """
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File not found: {file_path}")
-        
-        # Convert PDF pages to images and process each page
-        return self._process_pdf_to_images(file_path)
+        try:
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(f"PDF file not found: {file_path}")
+            
+            logger.info(f"Processing PDF file: {file_path}")
+            
+            # Try to extract text directly first
+            try:
+                import fitz  # PyMuPDF
+                
+                doc = fitz.open(file_path)
+                text_content = []
+                
+                for page_num in range(len(doc)):
+                    page = doc.load_page(page_num)
+                    text = page.get_text()
+                    if text.strip():
+                        text_content.append(text)
+                
+                doc.close()
+                
+                # If we got substantial text, use it
+                if text_content and any(len(text.strip()) > 50 for text in text_content):
+                    logger.info("PDF contains extractable text, using direct extraction")
+                    content = "\n\n".join(text_content)
+                    return ConversionResult(
+                        content=content,
+                        metadata={
+                            'file_path': file_path,
+                            'file_type': 'pdf',
+                            'pages': len(text_content),
+                            'extraction_method': 'direct'
+                        }
+                    )
+                
+            except Exception as e:
+                logger.warning(f"Direct text extraction failed: {e}")
+            
+            # Fallback to OCR-based processing
+            logger.info("Using OCR-based PDF processing")
+            return self._process_with_ocr(file_path)
+            
+        except Exception as e:
+            logger.error(f"Failed to process PDF file {file_path}: {e}")
+            raise ConversionError(f"PDF processing failed: {e}")
     
-    def _process_pdf_to_images(self, file_path: str) -> ConversionResult:
-        """Process PDF by converting pages to images and using ImageProcessor logic."""
+    def _process_with_ocr(self, file_path: str) -> ConversionResult:
+        """Process PDF using OCR after converting pages to images."""
         try:
             import fitz  # PyMuPDF
+            from PIL import Image
+            import io
             
-            logger.info(f"Opening PDF with PyMuPDF: {file_path}")
             doc = fitz.open(file_path)
-            logger.info(f"PDF opened successfully. Pages: {len(doc)}")
+            all_content = []
             
-            content_parts = []
-            page_count = len(doc)
-            total_text_length = 0
-            pages_with_text = 0
-            
-            # Get PDF metadata
-            metadata = self.get_metadata(file_path)
-            metadata.update({
-                "page_count": page_count,
-                "converter": "pdf_to_image_ocr"
-            })
-            
-            for page_num in range(page_count):
-                logger.info(f"Processing page {page_num + 1} of {page_count}")
+            for page_num in range(len(doc)):
+                page = doc.load_page(page_num)
                 
                 # Convert page to image
-                image_path = self._convert_page_to_image(doc, page_num)
+                mat = fitz.Matrix(2, 2)  # Scale factor for better OCR
+                pix = page.get_pixmap(matrix=mat)
                 
-                if image_path and os.path.exists(image_path):
-                    try:
-                        # Process the image using ImageProcessor logic
-                        page_result = self._image_processor.process(image_path)
-                        
-                        if page_result and page_result.content:
-                            # Extract the OCR text from the image result
-                            ocr_text = self._extract_ocr_text_from_result(page_result)
-                            
-                            if ocr_text:
-                                pages_with_text += 1
-                                total_text_length += len(ocr_text)
-                                
-                                # Format as page content
-                                page_content = self._format_page_content(ocr_text, page_num + 1)
-                                content_parts.append(page_content)
-                                
-                                logger.info(f"Page {page_num + 1} processed successfully, text length: {len(ocr_text)}")
-                            else:
-                                logger.warning(f"No OCR text extracted from page {page_num + 1}")
-                                content_parts.append(f"\n## Page {page_num + 1}\n\n*No text detected on this page.*\n")
-                        else:
-                            logger.warning(f"Image processing failed for page {page_num + 1}")
-                            content_parts.append(f"\n## Page {page_num + 1}\n\n*Image processing failed for this page.*\n")
+                # Convert to PIL Image
+                img_data = pix.tobytes("png")
+                img = Image.open(io.BytesIO(img_data))
+                
+                # Save to temporary file for OCR processing
+                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
+                    img.save(tmp.name)
+                    temp_image_path = tmp.name
+                
+                try:
+                    # Process the page image
+                    page_result = self._image_processor.process(temp_image_path)
+                    page_content = page_result.content
                     
-                    finally:
-                        # Clean up temporary image file
-                        if os.path.exists(image_path):
-                            os.unlink(image_path)
-                            logger.debug(f"Cleaned up temporary image: {image_path}")
-                else:
-                    logger.error(f"Failed to convert page {page_num + 1} to image")
-                    content_parts.append(f"\n## Page {page_num + 1}\n\n*Failed to convert page to image.*\n")
+                    if page_content.strip():
+                        all_content.append(f"## Page {page_num + 1}\n\n{page_content}")
+                    
+                finally:
+                    # Clean up temporary file
+                    os.unlink(temp_image_path)
             
-            logger.info(f"PDF processing complete. Pages with text: {pages_with_text}/{page_count}")
             doc.close()
             
-            content = "\n\n".join(content_parts)
-            metadata.update({
-                "pages_with_text": pages_with_text,
-                "total_text_length": total_text_length
-            })
+            content = "\n\n".join(all_content) if all_content else "No content extracted from PDF"
             
-            return ConversionResult(content, metadata)
+            return ConversionResult(
+                content=content,
+                metadata={
+                    'file_path': file_path,
+                    'file_type': 'pdf',
+                    'pages': len(doc),
+                    'extraction_method': 'ocr'
+                }
+            )
             
-        except ImportError:
-            raise ImportError("PyMuPDF is required for PDF processing. Install it with: pip install PyMuPDF")
         except Exception as e:
-            logger.error(f"PDF processing failed: {e}")
-            raise ConversionError(f"PDF processing failed: {str(e)}")
+            logger.error(f"OCR-based PDF processing failed: {e}")
+            raise ConversionError(f"OCR-based PDF processing failed: {e}")
     
     def _convert_page_to_image(self, doc, page_num: int) -> str:
         """Convert a PDF page to an image file.
@@ -222,7 +236,7 @@ class PDFProcessor(BaseProcessor):
             return ""
     
     def _format_page_content(self, text: str, page_num: int) -> str:
-        """Format page content as markdown.
+        """Format page content as markdown with enhanced structure.
         
         Args:
             text: Extracted text
@@ -234,7 +248,8 @@ class PDFProcessor(BaseProcessor):
         if not text.strip():
             return f"\n## Page {page_num}\n\n*This page appears to be empty or contains no extractable text.*\n"
         
-        # Build markdown content
+        # The text from nanonets-ocr already has proper markdown structure
+        # Just add page header
         content_parts = [f"## Page {page_num}"]
         content_parts.append("")
         content_parts.append(text)

@@ -1,6 +1,6 @@
-# LLM Data Converter
+# LLM Data Converter v2.0.0
 
-Convert any document, text, or URL into LLM-ready data format.
+Convert any document, text, or URL into LLM-ready data format with advanced neural OCR capabilities powered by state-of-the-art pre-trained models.
 
 ## Installation
 
@@ -11,9 +11,9 @@ pip install llm-data-converter
 **Requirements:**
 - Python 3.8 or higher
 
-### System Dependencies for OCR
+### System Dependencies for Neural OCR
 
-For OCR functionality to work properly, you may need to install additional system dependencies:
+For neural OCR functionality to work properly, you may need to install additional system dependencies:
 
 **Ubuntu/Debian:**
 ```bash
@@ -21,7 +21,6 @@ sudo apt update
 sudo apt install -y libgl1 libglib2.0-0 libgomp1
 pip install setuptools
 ```
-*If you already have these dependencies, you can skip these steps.*
 
 **macOS:**
 ```bash
@@ -29,14 +28,14 @@ pip install setuptools
 brew install mesa
 ```
 
-**Note:** The package will automatically detect if OpenGL is available and provide helpful warnings if system dependencies are missing.
+**Note:** The package will automatically download and cache neural models on first use.
 
 ## Quick Start
 
 ```python
 from llm_converter import FileConverter
 
-# Basic conversion
+# Basic conversion with neural OCR
 converter = FileConverter()
 result = converter.convert("document.pdf").to_markdown()
 print(result)
@@ -49,6 +48,23 @@ print(result)
 - **LLM Integration**: Seamless integration with LiteLLM and other LLM libraries
 - **Local Processing**: Process documents locally without external dependencies
 - **Layout Preservation**: Maintain document structure and formatting
+- **Neural OCR**: Advanced document understanding powered by state-of-the-art pre-trained models:
+  - **Layout Detection**: Neural models for document structure understanding
+  - **Text Recognition**: High-accuracy OCR with confidence scoring
+  - **Table Structure**: Intelligent table detection and parsing with proper markdown output
+  - **Automatic Model Download**: Models are automatically downloaded and cached
+
+## Neural Document Processing
+
+Version 2.0.0 introduces advanced neural document processing capabilities:
+
+### Neural OCR (Default)
+Uses state-of-the-art pre-trained models for superior accuracy:
+- **Layout Detection**: Advanced neural models for document structure understanding
+- **Text Recognition**: High-accuracy OCR with confidence scoring
+- **Table Structure**: Intelligent table detection and parsing with proper markdown output
+- **Automatic Model Download**: Models are automatically downloaded on first use
+- **Document Understanding**: Comprehensive document analysis beyond simple OCR
 
 ## Usage Examples
 
@@ -109,10 +125,10 @@ print(response.choices[0].message.content)
 - **Documents**: PDF, DOCX, TXT
 - **Web**: URLs, HTML files
 - **Data**: Excel (XLSX, XLS), CSV
-- **Images**: PNG, JPG, JPEG (with OCR capabilities)
+- **Images**: PNG, JPG, JPEG (with neural OCR capabilities)
 
 ### Output Formats
-- **Markdown**: Clean, structured markdown
+- **Markdown**: Clean, structured markdown with proper table formatting
 - **HTML**: Formatted HTML with styling
 - **JSON**: Structured JSON data
 - **Plain Text**: Simple text extraction
@@ -131,7 +147,6 @@ converter = FileConverter(
 )
 
 result = converter.convert("document.pdf").to_markdown()
-
 print(result)
 ```
 
@@ -149,6 +164,20 @@ for file in files:
     results.append(result)
 ```
 
+### Testing Neural OCR
+
+```python
+# Test the neural OCR capabilities
+from llm_converter.pipeline.neural_document_processor import NeuralDocumentProcessor
+
+# Initialize neural document processor
+processor = NeuralDocumentProcessor()
+
+# Extract text with layout awareness
+text = processor.extract_text_with_layout("sample.png")
+print(text)
+```
+
 ## API Reference
 
 ### FileConverter
@@ -158,7 +187,7 @@ Main class for converting documents to LLM-ready formats.
 #### Methods
 
 - `convert(file_path: str) -> ConversionResult`: Convert a file to internal format
-- `convert_url(url: str) -> ConversionResult`: Convert a URL page contents to internal 
+- `convert_url(url: str) -> ConversionResult`: Convert a URL page contents to internal format
 - `convert_text(text: str) -> ConversionResult`: Convert plain text to internal format
 
 ### ConversionResult
@@ -188,10 +217,14 @@ MIT License - see LICENSE file for details.
 
 This project uses several third-party libraries:
 
-- **PaddleOCR** - Apache 2.0 License
-- **PyMuPDF** - GNU Affero General Public License v3.0
-- **python-docx** - MIT License
-- **pandas** - BSD 3-Clause License
-- **Pillow** - HPND License
+- **EasyOCR** - Apache 2.0 License (https://github.com/JaidedAI/EasyOCR)
+- **PyTorch** - BSD 3-Clause License (https://pytorch.org/)
+- **Transformers** - Apache 2.0 License (https://github.com/huggingface/transformers)
+- **Pillow** - HPND License (https://python-pillow.org/)
+- **python-docx** - MIT License (https://github.com/python-openxml/python-docx)
+- **pandas** - BSD 3-Clause License (https://pandas.pydata.org/)
+- **numpy** - BSD 3-Clause License (https://numpy.org/)
+- **pdf2image** - MIT License (https://github.com/Belval/pdf2image)
+- **markdownify** - MIT License (https://github.com/matthewwithanm/markdownify)
 
 All dependencies are used in accordance with their respective licenses. 

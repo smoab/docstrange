@@ -3,7 +3,7 @@
 class InternalConfig:
     # Internal feature flags and defaults (not exposed to end users)
     use_markdownify = True
-    ocr_provider = 'paddleocr'  # OCR provider to use (paddleocr, pytesseract)
+    ocr_provider = 'neural'  # OCR provider to use (neural for docling models)
     
     # PDF processing configuration
     pdf_to_image_enabled = True  # Convert PDF pages to images for OCR
