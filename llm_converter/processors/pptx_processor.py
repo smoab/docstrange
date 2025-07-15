@@ -27,8 +27,9 @@ class PPTXProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             return False
         
-        # Check file extension
-        _, ext = os.path.splitext(file_path.lower())
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
         return ext in ['.ppt', '.pptx']
     
     def process(self, file_path: str) -> ConversionResult:

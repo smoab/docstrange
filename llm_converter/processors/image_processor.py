@@ -32,8 +32,9 @@ class ImageProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             return False
         
-        # Check file extension
-        _, ext = os.path.splitext(file_path.lower())
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
         return ext in ['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp', '.gif']
     
     def _get_ocr_service(self):

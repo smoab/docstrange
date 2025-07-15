@@ -27,9 +27,10 @@ class HTMLProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             return False
         
-        # Check file extension
-        _, ext = os.path.splitext(file_path.lower())
-        return ext in ['.html', '.htm', '.xhtml']
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
+        return ext in ['.html', '.htm']
     
     def process(self, file_path: str) -> ConversionResult:
         """Process the HTML file and return a conversion result.

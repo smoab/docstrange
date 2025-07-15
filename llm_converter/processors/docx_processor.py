@@ -23,15 +23,16 @@ class DOCXProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             return False
         
-        # Check file extension
-        _, ext = os.path.splitext(file_path.lower())
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
         return ext in ['.docx', '.doc']
     
     def process(self, file_path: str) -> ConversionResult:
-        """Process the DOCX/DOC file and return a conversion result.
+        """Process the DOCX file and return a conversion result.
         
         Args:
-            file_path: Path to the DOCX/DOC file to process
+            file_path: Path to the DOCX file to process
             
         Returns:
             ConversionResult containing the processed content
@@ -43,21 +44,14 @@ class DOCXProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
         
-        try:
-            metadata = self.get_metadata(file_path)
-            _, ext = os.path.splitext(file_path.lower())
-            
-            if ext == '.doc':
-                # Handle .doc files using pypandoc
-                return self._process_doc_file(file_path, metadata)
-            else:
-                # Handle .docx files using python-docx
-                return self._process_docx_file(file_path, metadata)
-            
-        except Exception as e:
-            if isinstance(e, (FileNotFoundError, ConversionError)):
-                raise
-            raise ConversionError(f"Failed to process Word file {file_path}: {str(e)}")
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
+        
+        if ext == '.doc':
+            return self._process_doc(file_path)
+        else:
+            return self._process_docx(file_path)
     
     def _process_doc_file(self, file_path: str, metadata: Dict[str, Any]) -> ConversionResult:
         """Process .doc files using pypandoc."""

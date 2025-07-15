@@ -27,8 +27,9 @@ class ExcelProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             return False
         
-        # Check file extension
-        _, ext = os.path.splitext(file_path.lower())
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
         return ext in ['.xlsx', '.xls', '.csv']
     
     def process(self, file_path: str) -> ConversionResult:
@@ -47,58 +48,93 @@ class ExcelProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
         
+        # Check file extension - ensure file_path is a string
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
+        
+        if ext == '.csv':
+            return self._process_csv(file_path)
+        else:
+            return self._process_excel(file_path)
+    
+    def _process_csv(self, file_path: str) -> ConversionResult:
+        """Process a CSV file and return a conversion result.
+        
+        Args:
+            file_path: Path to the CSV file to process
+            
+        Returns:
+            ConversionResult containing the processed content
+        """
         try:
             import pandas as pd
             
-            metadata = self.get_metadata(file_path)
+            df = pd.read_csv(file_path)
             content_parts = []
             
-            _, ext = os.path.splitext(file_path.lower())
+            content_parts.append(f"# CSV Data: {os.path.basename(file_path)}")
+            content_parts.append("")
             
-            if ext == '.csv':
-                # Handle CSV files
-                df = pd.read_csv(file_path)
-                content_parts.append(f"# CSV Data: {os.path.basename(file_path)}")
-                content_parts.append("")
-                
-                # Convert DataFrame to markdown table
-                table_md = self._dataframe_to_markdown(df, pd)
-                content_parts.append(table_md)
-                
-                metadata.update({
-                    "row_count": len(df),
-                    "column_count": len(df.columns),
-                    "columns": df.columns.tolist(),
-                    "converter": "pandas"
-                })
-            else:
-                # Handle Excel files
-                excel_file = pd.ExcelFile(file_path)
-                sheet_names = excel_file.sheet_names
-                
-                metadata.update({
-                    "sheet_count": len(sheet_names),
-                    "sheet_names": sheet_names,
-                    "converter": "pandas"
-                })
-                
-                for sheet_name in sheet_names:
-                    df = pd.read_excel(file_path, sheet_name=sheet_name)
-                    if not df.empty:
-                        content_parts.append(f"\n## Sheet: {sheet_name}")
-                        content_parts.append("")
-                        
-                        # Convert DataFrame to markdown table
-                        table_md = self._dataframe_to_markdown(df, pd)
-                        content_parts.append(table_md)
-                        content_parts.append("")
-                        
-                        # Add metadata for this sheet
-                        metadata.update({
-                            f"sheet_{sheet_name}_rows": len(df),
-                            f"sheet_{sheet_name}_columns": len(df.columns),
-                            f"sheet_{sheet_name}_columns_list": df.columns.tolist()
-                        })
+            # Convert DataFrame to markdown table
+            table_md = self._dataframe_to_markdown(df, pd)
+            content_parts.append(table_md)
+            
+            metadata = {
+                "row_count": len(df),
+                "column_count": len(df.columns),
+                "columns": df.columns.tolist(),
+                "converter": "pandas"
+            }
+            
+            content = '\n'.join(content_parts)
+            
+            return ConversionResult(content, metadata)
+            
+        except ImportError:
+            raise ConversionError("pandas is required for CSV processing. Install it with: pip install pandas")
+        except Exception as e:
+            raise ConversionError(f"Failed to process CSV file {file_path}: {str(e)}")
+    
+    def _process_excel(self, file_path: str) -> ConversionResult:
+        """Process an Excel file and return a conversion result.
+        
+        Args:
+            file_path: Path to the Excel file to process
+            
+        Returns:
+            ConversionResult containing the processed content
+        """
+        try:
+            import pandas as pd
+            
+            excel_file = pd.ExcelFile(file_path)
+            sheet_names = excel_file.sheet_names
+            
+            metadata = {
+                "sheet_count": len(sheet_names),
+                "sheet_names": sheet_names,
+                "converter": "pandas"
+            }
+            
+            content_parts = []
+            
+            for sheet_name in sheet_names:
+                df = pd.read_excel(file_path, sheet_name=sheet_name)
+                if not df.empty:
+                    content_parts.append(f"\n## Sheet: {sheet_name}")
+                    content_parts.append("")
+                    
+                    # Convert DataFrame to markdown table
+                    table_md = self._dataframe_to_markdown(df, pd)
+                    content_parts.append(table_md)
+                    content_parts.append("")
+                    
+                    # Add metadata for this sheet
+                    metadata.update({
+                        f"sheet_{sheet_name}_rows": len(df),
+                        f"sheet_{sheet_name}_columns": len(df.columns),
+                        f"sheet_{sheet_name}_columns_list": df.columns.tolist()
+                    })
             
             content = '\n'.join(content_parts)
             

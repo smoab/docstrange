@@ -5,6 +5,8 @@ from typing import Any, Dict, Optional
 
 from ..result import ConversionResult
 from llm_converter.config import InternalConfig
+import os
+import stat
 
 
 class BaseProcessor(ABC):
@@ -52,7 +54,7 @@ class BaseProcessor(ABC):
         pass
     
     def get_metadata(self, file_path: str) -> Dict[str, Any]:
-        """Get basic metadata about the file.
+        """Get metadata about the file.
         
         Args:
             file_path: Path to the file
@@ -60,29 +62,24 @@ class BaseProcessor(ABC):
         Returns:
             Dictionary containing file metadata
         """
-        import os
-        import stat
-        
-        metadata = {
-            "file_path": file_path,
-            "file_name": os.path.basename(file_path),
-            "file_size": os.path.getsize(file_path),
-            "file_extension": os.path.splitext(file_path)[1].lower(),
-            "processor": self.__class__.__name__,
-            "preserve_layout": self.preserve_layout,
-            "include_images": self.include_images,
-            "ocr_enabled": self.ocr_enabled
-        }
-        
-        # Get file stats
         try:
-            stat_info = os.stat(file_path)
-            metadata.update({
-                "created_time": stat_info.st_ctime,
-                "modified_time": stat_info.st_mtime,
-                "access_time": stat_info.st_atime
-            })
-        except OSError:
-            pass
-        
-        return metadata 
+            stat = os.stat(file_path)
+            # Ensure file_path is a string for splitext
+            file_path_str = str(file_path)
+            return {
+                "file_size": stat.st_size,
+                "file_extension": os.path.splitext(file_path_str)[1].lower(),
+                "file_name": os.path.basename(file_path_str),
+                "processor": self.__class__.__name__,
+                "preserve_layout": self.preserve_layout,
+                "include_images": self.include_images,
+                "ocr_enabled": self.ocr_enabled
+            }
+        except Exception as e:
+            logger.warning(f"Failed to get metadata for {file_path}: {e}")
+            return {
+                "processor": self.__class__.__name__,
+                "preserve_layout": self.preserve_layout,
+                "include_images": self.include_images,
+                "ocr_enabled": self.ocr_enabled
+            } 
