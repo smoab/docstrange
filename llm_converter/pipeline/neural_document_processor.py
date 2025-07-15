@@ -50,33 +50,90 @@ class NeuralDocumentProcessor:
         
         downloader = ModelDownloader()
         
-        # Get model paths
-        self.layout_model_path = downloader.get_model_path('layout')
-        self.table_model_path = downloader.get_model_path('table')
-        self.ocr_model_path = downloader.get_model_path('ocr')
+        # Check if models exist, if not download them
+        layout_path = downloader.get_model_path('layout')
+        table_path = downloader.get_model_path('table')
+        ocr_path = downloader.get_model_path('ocr')
+        
+        # If any model is missing, download all models
+        if not layout_path or not table_path or not ocr_path:
+            logger.info("Some models are missing. Downloading all required models...")
+            logger.info(f"Models will be cached at: {downloader.cache_dir}")
+            try:
+                downloader.download_models(force=False, progress=True)
+                # Get paths again after download
+                layout_path = downloader.get_model_path('layout')
+                table_path = downloader.get_model_path('table')
+                ocr_path = downloader.get_model_path('ocr')
+                logger.info("Model download completed successfully!")
+            except Exception as e:
+                logger.error(f"Failed to download models: {e}")
+                raise ValueError(f"Failed to download required models: {e}")
+        else:
+            logger.info("All required models found in cache.")
+        
+        # Set model paths
+        self.layout_model_path = layout_path
+        self.table_model_path = table_path
+        self.ocr_model_path = ocr_path
         
         if not self.layout_model_path or not self.table_model_path or not self.ocr_model_path:
             raise ValueError("One or more required models not found")
         
         # The models are downloaded with the full repository structure
+        # The entire repo is downloaded to each cache folder, so we need to navigate to the specific model paths
         # Layout model is in layout/model_artifacts/layout/
         # Table model is in tableformer/model_artifacts/tableformer/accurate/
         # OCR model is in easyocr/model_artifacts/easyocr/
         
-        self.layout_model_path = self.layout_model_path / "model_artifacts" / "layout"
-        self.table_model_path = self.table_model_path / "model_artifacts" / "tableformer" / "accurate"
-        self.ocr_model_path = self.ocr_model_path / "model_artifacts" / "easyocr"
+        # Check if the expected structure exists, if not use the cache folder directly
+        layout_artifacts = self.layout_model_path / "model_artifacts" / "layout"
+        table_artifacts = self.table_model_path / "model_artifacts" / "tableformer" / "accurate"
+        ocr_artifacts = self.ocr_model_path / "model_artifacts" / "easyocr"
+        
+        if layout_artifacts.exists():
+            self.layout_model_path = layout_artifacts
+        else:
+            # Fallback: use the cache folder directly
+            logger.warning(f"Expected layout model structure not found, using cache folder directly")
+        
+        if table_artifacts.exists():
+            self.table_model_path = table_artifacts
+        else:
+            # Fallback: use the cache folder directly
+            logger.warning(f"Expected table model structure not found, using cache folder directly")
+        
+        if ocr_artifacts.exists():
+            self.ocr_model_path = ocr_artifacts
+        else:
+            # Fallback: use the cache folder directly
+            logger.warning(f"Expected OCR model structure not found, using cache folder directly")
         
         logger.info(f"Layout model path: {self.layout_model_path}")
         logger.info(f"Table model path: {self.table_model_path}")
         logger.info(f"OCR model path: {self.ocr_model_path}")
         
-        # Verify model files exist
-        if not (self.layout_model_path / "model.safetensors").exists():
-            raise FileNotFoundError(f"Missing safe tensors file: {self.layout_model_path / 'model.safetensors'}")
+        # Verify model files exist (with more flexible checking)
+        layout_model_file = self.layout_model_path / "model.safetensors"
+        table_config_file = self.table_model_path / "tm_config.json"
         
-        if not (self.table_model_path / "tm_config.json").exists():
-            raise FileNotFoundError(f"Missing table config file: {self.table_model_path / 'tm_config.json'}")
+        if not layout_model_file.exists():
+            # Try alternative locations
+            alt_layout_file = self.layout_model_path / "layout" / "model.safetensors"
+            if alt_layout_file.exists():
+                self.layout_model_path = self.layout_model_path / "layout"
+                layout_model_file = alt_layout_file
+            else:
+                raise FileNotFoundError(f"Missing layout model file. Checked: {layout_model_file}, {alt_layout_file}")
+        
+        if not table_config_file.exists():
+            # Try alternative locations
+            alt_table_file = self.table_model_path / "tableformer" / "accurate" / "tm_config.json"
+            if alt_table_file.exists():
+                self.table_model_path = self.table_model_path / "tableformer" / "accurate"
+                table_config_file = alt_table_file
+            else:
+                raise FileNotFoundError(f"Missing table config file. Checked: {table_config_file}, {alt_table_file}")
     
     def _initialize_docling_models(self):
         """Initialize docling's pre-trained models."""

@@ -160,3 +160,35 @@ class ModelDownloader:
             return None
         
         return model_path 
+
+    def are_models_cached(self) -> bool:
+        """Check if all required models are cached.
+        
+        Returns:
+            True if all models are cached, False otherwise
+        """
+        layout_path = self.get_model_path('layout')
+        table_path = self.get_model_path('table')
+        ocr_path = self.get_model_path('ocr')
+        
+        return layout_path is not None and table_path is not None and ocr_path is not None
+    
+    def get_cache_info(self) -> dict:
+        """Get information about cached models.
+        
+        Returns:
+            Dictionary with cache information
+        """
+        info = {
+            'cache_dir': str(self.cache_dir),
+            'models': {}
+        }
+        
+        for model_type in ['layout', 'table', 'ocr']:
+            path = self.get_model_path(model_type)
+            info['models'][model_type] = {
+                'cached': path is not None,
+                'path': str(path) if path else None
+            }
+        
+        return info 
