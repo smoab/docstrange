@@ -48,21 +48,64 @@ class PPTXProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
         
+        # Initialize metadata
+        metadata = {
+            "file_path": file_path,
+            "file_size": os.path.getsize(file_path),
+            "processor": "PPTXProcessor"
+        }
+        
+        # Check file extension to determine processing method
+        file_path_str = str(file_path)
+        _, ext = os.path.splitext(file_path_str.lower())
+        
+        if ext == '.ppt':
+            return self._process_ppt_file(file_path, metadata)
+        else:
+            return self._process_pptx_file(file_path, metadata)
+    
+    def _process_ppt_file(self, file_path: str, metadata: Dict[str, Any]) -> ConversionResult:
+        """Process .ppt files using pypandoc."""
+        try:
+            import pypandoc
+            
+            # Convert .ppt to markdown using pandoc
+            content = pypandoc.convert_file(file_path, 'markdown')
+            
+            metadata.update({
+                "file_type": "ppt",
+                "converter": "pypandoc"
+            })
+            
+            # Clean up the content
+            content = self._clean_content(content)
+            
+            return ConversionResult(content, metadata)
+            
+        except ImportError:
+            raise ConversionError("pypandoc is required for .ppt file processing. Install it with: pip install pypandoc")
+        except Exception as e:
+            raise ConversionError(f"Failed to process .ppt file {file_path}: {str(e)}")
+    
+    def _process_pptx_file(self, file_path: str, metadata: Dict[str, Any]) -> ConversionResult:
+        """Process .pptx files using python-pptx."""
         try:
             from pptx import Presentation
             
-            metadata = self.get_metadata(file_path)
             content_parts = []
-            
             prs = Presentation(file_path)
             
             metadata.update({
                 "slide_count": len(prs.slides),
+                "file_type": "pptx",
                 "converter": "python-pptx"
             })
             
+            # Check if preserve_layout is available (from base class or config)
+            preserve_layout = getattr(self, 'preserve_layout', False)
+            
             for slide_num, slide in enumerate(prs.slides, 1):
-                if self.preserve_layout:
+                if preserve_layout:
                     content_parts.append(f"\n## Slide {slide_num}\n")
                 
                 slide_content = []
@@ -83,11 +126,11 @@ class PPTXProcessor(BaseProcessor):
             return ConversionResult(content, metadata)
             
         except ImportError:
-            raise ConversionError("python-pptx is required for PowerPoint processing. Install it with: pip install python-pptx")
+            raise ConversionError("python-pptx is required for .pptx file processing. Install it with: pip install python-pptx")
         except Exception as e:
             if isinstance(e, (FileNotFoundError, ConversionError)):
                 raise
-            raise ConversionError(f"Failed to process PowerPoint file {file_path}: {str(e)}")
+            raise ConversionError(f"Failed to process .pptx file {file_path}: {str(e)}")
     
     def _clean_content(self, content: str) -> str:
         """Clean up the extracted PowerPoint content.
