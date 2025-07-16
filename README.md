@@ -1,5 +1,9 @@
 # LLM Data Converter
 
+[![PyPI version](https://badge.fury.io/py/llm-data-converter.svg)](https://badge.fury.io/py/llm-data-converter)
+[![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
+[![Python versions](https://img.shields.io/pypi/pyversions/llm-data-converter)](https://pypi.org/project/llm-data-converter/)
+
 Convert any document format into LLM-ready data format (markdown) with advanced intelligent document processing capabilities powered by pre-trained models.
 
 ## Installation
