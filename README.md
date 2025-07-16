@@ -1,6 +1,6 @@
-# LLM Data Converter v2.0.0
+# LLM Data Converter
 
-Convert any document, text, or URL into LLM-ready data format with advanced intelligent document processing capabilities powered by pre-trained models.
+Convert any document format into LLM-ready data format (markdown) with advanced intelligent document processing capabilities powered by pre-trained models.
 
 ## Installation
 
@@ -13,7 +13,7 @@ pip install llm-data-converter
 
 ### System Dependencies for Intelligent Document Processing
 
-For intelligent document processing functionality to work properly, you may need to install additional system dependencies:
+For this library to work properly, you may need to install additional system dependencies:
 
 **Ubuntu/Debian:**
 ```bash
@@ -35,7 +35,7 @@ brew install mesa
 ```python
 from llm_converter import FileConverter
 
-# Basic conversion with intelligent document processing
+# Basic conversion 
 converter = FileConverter()
 result = converter.convert("document.pdf").to_markdown()
 print(result)
@@ -54,17 +54,6 @@ print(result)
   - **Table Structure**: Intelligent table detection and conversion to markdown format
   - **Automatic Model Download**: Models are automatically downloaded and cached
 
-## Intelligent Document Processing
-
-Version 2.0.0 introduces advanced intelligent document processing capabilities:
-
-### Intelligent Document Processing (Default)
-Uses pre-trained models for superior document conversion accuracy:
-- **Layout Detection**: Advanced intelligent models for document structure understanding
-- **Text Recognition**: High-accuracy text extraction with confidence scoring
-- **Table Structure**: Intelligent table detection and conversion to markdown format
-- **Automatic Model Download**: Models are automatically downloaded on first use
-- **Document Understanding**: Comprehensive document analysis and conversion beyond simple text extraction
 
 ## Usage Examples
 
@@ -116,7 +105,7 @@ print(response.choices[0].message.content)
 - **Documents**: PDF, DOCX, TXT
 - **Web**: URLs, HTML files
 - **Data**: Excel (XLSX, XLS), CSV
-- **Images**: PNG, JPG, JPEG (with intelligent document processing capabilities)
+- **Images**: PNG, JPG, JPEG 
 
 ### Output Formats
 - **Markdown**: Clean, structured markdown with proper table formatting
@@ -166,7 +155,7 @@ llm-converter --list-formats
 ### Examples
 
 ```bash
-# Convert PDF with intelligent document processing
+# Convert PDF to markdown
 llm-converter scanned_document.pdf --output markdown
 
 # Convert image to HTML with layout preservation

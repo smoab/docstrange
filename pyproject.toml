@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "2.1.0"
+version = "2.1.1"
 description = "Convert any document, text, or URL into LLM-ready data format with advanced intelligent document processing capabilities powered by pre-trained models"
 readme = "README.md"
 license = {text = "MIT"}
