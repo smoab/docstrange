@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "2.0.2"
+version = "2.0.7"
 description = "Convert any document, text, or URL into LLM-ready data format with advanced neural OCR capabilities powered by state-of-the-art pre-trained models"
 readme = "README.md"
 license = {text = "MIT"}
@@ -38,7 +38,8 @@ dependencies = [
     "python-docx>=0.8.11",
     "openpyxl>=3.0.0",
     "pandas>=1.3.0",
-    "numpy>=1.21.0",
+    "numpy>=1.21.0,<2.0.0",
+    "PyMuPDF>=1.23.0",
     "docling-ibm-models>=0.1.0",
     "easyocr>=1.7.0",
     "huggingface_hub>=0.23.0",

@@ -58,45 +58,62 @@ class PDFProcessor(BaseProcessor):
             ConversionResult with extracted content
         """
         try:
+            from ..config import InternalConfig
+            pdf_to_image_enabled = InternalConfig.pdf_to_image_enabled
+        except (ImportError, AttributeError):
+            # Fallback if config is not available
+            pdf_to_image_enabled = True
+            logger.warning("InternalConfig not available, defaulting to pdf_to_image_enabled = True")
+        
+        try:
             if not os.path.exists(file_path):
                 raise FileNotFoundError(f"PDF file not found: {file_path}")
             
             logger.info(f"Processing PDF file: {file_path}")
+            logger.info(f"pdf_to_image_enabled = {pdf_to_image_enabled}")
             
-            # Try to extract text directly first
+            # If pdf_to_image_enabled is True, always use OCR
+            if pdf_to_image_enabled:
+                logger.info("pdf_to_image_enabled is True: using OCR for all pages")
+                return self._process_with_ocr(file_path)
+            
+            logger.info("pdf_to_image_enabled is False: trying direct text extraction first")
+            # Otherwise, try to extract text directly first (smart logic)
             try:
                 import fitz  # PyMuPDF
                 
                 doc = fitz.open(file_path)
                 text_content = []
+                page_count = len(doc)  # Store page count
                 
-                for page_num in range(len(doc)):
-                    page = doc.load_page(page_num)
-                    text = page.get_text()
-                    if text.strip():
-                        text_content.append(text)
-                
-                doc.close()
-                
-                # If we got substantial text, use it
-                if text_content and any(len(text.strip()) > 50 for text in text_content):
-                    logger.info("PDF contains extractable text, using direct extraction")
-                    content = "\n\n".join(text_content)
-                    return ConversionResult(
-                        content=content,
-                        metadata={
-                            'file_path': file_path,
-                            'file_type': 'pdf',
-                            'pages': len(text_content),
-                            'extraction_method': 'direct'
-                        }
-                    )
+                try:
+                    for page_num in range(page_count):
+                        page = doc.load_page(page_num)
+                        text = page.get_text()
+                        if text.strip():
+                            text_content.append(text)
+                    
+                    # If we got substantial text, use it
+                    if text_content and any(len(text.strip()) > 50 for text in text_content):
+                        logger.info("PDF contains extractable text, using direct extraction")
+                        content = "\n\n".join(text_content)
+                        return ConversionResult(
+                            content=content,
+                            metadata={
+                                'file_path': file_path,
+                                'file_type': 'pdf',
+                                'pages': len(text_content),
+                                'extraction_method': 'direct'
+                            }
+                        )
+                finally:
+                    doc.close()
                 
             except Exception as e:
                 logger.warning(f"Direct text extraction failed: {e}")
             
-            # Fallback to OCR-based processing
-            logger.info("Using OCR-based PDF processing")
+            # Fallback to OCR-based processing (for scanned PDFs or insufficient text)
+            logger.info("Using OCR-based PDF processing (scanned PDF or insufficient text)")
             return self._process_with_ocr(file_path)
             
         except Exception as e:
@@ -105,6 +122,7 @@ class PDFProcessor(BaseProcessor):
     
     def _process_with_ocr(self, file_path: str) -> ConversionResult:
         """Process PDF using OCR after converting pages to images."""
+        doc = None
         try:
             import fitz  # PyMuPDF
             from PIL import Image
@@ -112,8 +130,9 @@ class PDFProcessor(BaseProcessor):
             
             doc = fitz.open(file_path)
             all_content = []
+            page_count = len(doc)  # Store page count before processing
             
-            for page_num in range(len(doc)):
+            for page_num in range(page_count):
                 page = doc.load_page(page_num)
                 
                 # Convert page to image
@@ -141,8 +160,6 @@ class PDFProcessor(BaseProcessor):
                     # Clean up temporary file
                     os.unlink(temp_image_path)
             
-            doc.close()
-            
             content = "\n\n".join(all_content) if all_content else "No content extracted from PDF"
             
             return ConversionResult(
@@ -150,7 +167,7 @@ class PDFProcessor(BaseProcessor):
                 metadata={
                     'file_path': file_path,
                     'file_type': 'pdf',
-                    'pages': len(doc),
+                    'pages': page_count,  # Use stored page count
                     'extraction_method': 'ocr'
                 }
             )
@@ -158,6 +175,12 @@ class PDFProcessor(BaseProcessor):
         except Exception as e:
             logger.error(f"OCR-based PDF processing failed: {e}")
             raise ConversionError(f"OCR-based PDF processing failed: {e}")
+        finally:
+            if doc is not None:
+                try:
+                    doc.close()
+                except Exception as e:
+                    logger.warning(f"Failed to close PDF document: {e}")
     
     def _convert_page_to_image(self, doc, page_num: int) -> str:
         """Convert a PDF page to an image file.

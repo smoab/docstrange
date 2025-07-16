@@ -2,10 +2,55 @@
 
 import logging
 import os
+import platform
+import sys
 from typing import Optional, List, Dict, Any, Tuple
 from pathlib import Path
 from PIL import Image
 import numpy as np
+
+# macOS-specific NumPy compatibility fix
+if platform.system() == "Darwin":
+    try:
+        import numpy as np
+        # Check if we're on NumPy 2.x
+        if hasattr(np, '__version__') and np.__version__.startswith('2'):
+            # Set environment variable to use NumPy 1.x compatibility mode
+            os.environ['NUMPY_EXPERIMENTAL_ARRAY_FUNCTION'] = '0'
+            # Also set this for PyTorch compatibility
+            os.environ['PYTORCH_NUMPY_COMPATIBILITY'] = '1'
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "NumPy 2.x detected on macOS. This may cause compatibility issues. "
+                "Consider downgrading to NumPy 1.x: pip install 'numpy<2.0.0'"
+            )
+    except ImportError:
+        pass
+
+# Runtime NumPy version check
+def _check_numpy_version():
+    """Check NumPy version and warn about compatibility issues."""
+    try:
+        import numpy as np
+        version = np.__version__
+        if version.startswith('2'):
+            logger = logging.getLogger(__name__)
+            logger.error(
+                f"NumPy {version} detected. This library requires NumPy 1.x for compatibility "
+                "with docling models. Please downgrade NumPy:\n"
+                "pip install 'numpy<2.0.0'\n"
+                "or\n"
+                "pip install --upgrade llm-data-converter"
+            )
+            if platform.system() == "Darwin":
+                logger.error(
+                    "On macOS, NumPy 2.x is known to cause crashes with PyTorch. "
+                    "Downgrading to NumPy 1.x is strongly recommended."
+                )
+            return False
+        return True
+    except ImportError:
+        return True
 
 from .model_downloader import ModelDownloader
 from .layout_detector import LayoutDetector
@@ -19,6 +64,13 @@ class NeuralDocumentProcessor:
     def __init__(self, cache_dir: Optional[Path] = None):
         """Initialize the Neural Document Processor."""
         logger.info("Initializing Neural Document Processor...")
+        
+        # Check NumPy version compatibility
+        if not _check_numpy_version():
+            raise RuntimeError(
+                "Incompatible NumPy version detected. Please downgrade to NumPy 1.x: "
+                "pip install 'numpy<2.0.0'"
+            )
         
         # Initialize model downloader
         self.model_downloader = ModelDownloader(cache_dir)
@@ -166,7 +218,20 @@ class NeuralDocumentProcessor:
             logger.error(f"Docling models not available: {e}")
             raise
         except Exception as e:
-            logger.error(f"Failed to initialize docling models: {e}")
+            error_msg = str(e)
+            if "NumPy" in error_msg or "numpy" in error_msg.lower():
+                logger.error(
+                    f"NumPy compatibility error: {error_msg}\n"
+                    "This is likely due to NumPy 2.x incompatibility. Please downgrade:\n"
+                    "pip install 'numpy<2.0.0'"
+                )
+                if platform.system() == "Darwin":
+                    logger.error(
+                        "On macOS, NumPy 2.x is known to cause crashes with PyTorch. "
+                        "Downgrading to NumPy 1.x is required."
+                    )
+            else:
+                logger.error(f"Failed to initialize docling models: {e}")
             raise
     
     def extract_text(self, image_path: str) -> str:

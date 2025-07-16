@@ -2,7 +2,7 @@
 from llm_converter import FileConverter
 
 
-file_path = "sample_documents/sample.png"
+file_path = "sample_documents/sample.pdf"
 
 converter = FileConverter()
 
