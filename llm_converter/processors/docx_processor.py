@@ -44,14 +44,21 @@ class DOCXProcessor(BaseProcessor):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
         
+        # Initialize metadata
+        metadata = {
+            "file_path": file_path,
+            "file_size": os.path.getsize(file_path),
+            "processor": "DOCXProcessor"
+        }
+        
         # Check file extension - ensure file_path is a string
         file_path_str = str(file_path)
         _, ext = os.path.splitext(file_path_str.lower())
         
         if ext == '.doc':
-            return self._process_doc(file_path)
+            return self._process_doc_file(file_path, metadata)
         else:
-            return self._process_docx(file_path)
+            return self._process_docx_file(file_path, metadata)
     
     def _process_doc_file(self, file_path: str, metadata: Dict[str, Any]) -> ConversionResult:
         """Process .doc files using pypandoc."""
@@ -107,7 +114,9 @@ class DOCXProcessor(BaseProcessor):
 
             # Extract text from tables (improved)
             for table_idx, table in enumerate(doc.tables):
-                if self.preserve_layout:
+                # Check if preserve_layout is available (from base class or config)
+                preserve_layout = getattr(self, 'preserve_layout', False)
+                if preserve_layout:
                     content_parts.append(f"\n### Table {table_idx+1}\n")
 
                 # Gather all rows
