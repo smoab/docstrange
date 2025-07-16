@@ -7,5 +7,5 @@ from .result import ConversionResult
 from .exceptions import ConversionError, UnsupportedFormatError
 from .config import InternalConfig
 
-__version__ = "0.4.1"
+__version__ = "2.0.7"
 __all__ = ["FileConverter", "ConversionResult", "ConversionError", "UnsupportedFormatError", "InternalConfig"] 

@@ -1,6 +1,6 @@
 # LLM Data Converter v2.0.0
 
-Convert any document, text, or URL into LLM-ready data format with advanced neural OCR capabilities powered by state-of-the-art pre-trained models.
+Convert any document, text, or URL into LLM-ready data format with advanced intelligent document processing capabilities powered by pre-trained models.
 
 ## Installation
 
@@ -11,9 +11,9 @@ pip install llm-data-converter
 **Requirements:**
 - Python 3.8 or higher
 
-### System Dependencies for Neural OCR
+### System Dependencies for Intelligent Document Processing
 
-For neural OCR functionality to work properly, you may need to install additional system dependencies:
+For intelligent document processing functionality to work properly, you may need to install additional system dependencies:
 
 **Ubuntu/Debian:**
 ```bash
@@ -28,14 +28,14 @@ pip install setuptools
 brew install mesa
 ```
 
-**Note:** The package will automatically download and cache neural models on first use.
+**Note:** The package will automatically download and cache intelligent models on first use.
 
 ## Quick Start
 
 ```python
 from llm_converter import FileConverter
 
-# Basic conversion with neural OCR
+# Basic conversion with intelligent document processing
 converter = FileConverter()
 result = converter.convert("document.pdf").to_markdown()
 print(result)
@@ -48,23 +48,23 @@ print(result)
 - **LLM Integration**: Seamless integration with LiteLLM and other LLM libraries
 - **Local Processing**: Process documents locally without external dependencies
 - **Layout Preservation**: Maintain document structure and formatting
-- **Neural OCR**: Advanced document understanding powered by state-of-the-art pre-trained models:
-  - **Layout Detection**: Neural models for document structure understanding
-  - **Text Recognition**: High-accuracy OCR with confidence scoring
-  - **Table Structure**: Intelligent table detection and parsing with proper markdown output
+- **Intelligent Document Processing**: Advanced document understanding and conversion powered by pre-trained models:
+  - **Layout Detection**: Intelligent models for document structure understanding
+  - **Text Recognition**: High-accuracy text extraction with confidence scoring
+  - **Table Structure**: Intelligent table detection and conversion to markdown format
   - **Automatic Model Download**: Models are automatically downloaded and cached
 
-## Neural Document Processing
+## Intelligent Document Processing
 
-Version 2.0.0 introduces advanced neural document processing capabilities:
+Version 2.0.0 introduces advanced intelligent document processing capabilities:
 
-### Neural OCR (Default)
-Uses state-of-the-art pre-trained models for superior accuracy:
-- **Layout Detection**: Advanced neural models for document structure understanding
-- **Text Recognition**: High-accuracy OCR with confidence scoring
-- **Table Structure**: Intelligent table detection and parsing with proper markdown output
+### Intelligent Document Processing (Default)
+Uses pre-trained models for superior document conversion accuracy:
+- **Layout Detection**: Advanced intelligent models for document structure understanding
+- **Text Recognition**: High-accuracy text extraction with confidence scoring
+- **Table Structure**: Intelligent table detection and conversion to markdown format
 - **Automatic Model Download**: Models are automatically downloaded on first use
-- **Document Understanding**: Comprehensive document analysis beyond simple OCR
+- **Document Understanding**: Comprehensive document analysis and conversion beyond simple text extraction
 
 ## Usage Examples
 
@@ -78,23 +78,14 @@ result = converter.convert("document.pdf").to_markdown()
 print(result)
 ```
 
-### Convert URL to HTML
+
+### Convert Image to HTML
 
 ```python
 from llm_converter import FileConverter
 
 converter = FileConverter()
-result = converter.convert_url("https://example.com").to_html()
-print(result)
-```
-
-### Convert Excel to JSON
-
-```python
-from llm_converter import FileConverter
-
-converter = FileConverter()
-result = converter.convert("data.xlsx").to_json()
+result = converter.convert("sample.png").to_html()
 print(result)
 ```
 
@@ -125,7 +116,7 @@ print(response.choices[0].message.content)
 - **Documents**: PDF, DOCX, TXT
 - **Web**: URLs, HTML files
 - **Data**: Excel (XLSX, XLS), CSV
-- **Images**: PNG, JPG, JPEG (with neural OCR capabilities)
+- **Images**: PNG, JPG, JPEG (with intelligent document processing capabilities)
 
 ### Output Formats
 - **Markdown**: Clean, structured markdown with proper table formatting
@@ -133,52 +124,70 @@ print(response.choices[0].message.content)
 - **JSON**: Structured JSON data
 - **Plain Text**: Simple text extraction
 
-## Advanced Usage
 
-### Custom Configuration
+## CLI usage
 
-```python
-from llm_converter import FileConverter
+The `llm-converter` command-line tool provides easy access to all conversion features:
 
-converter = FileConverter(
-    preserve_layout=True,
-    include_images=True,
-    ocr_enabled=True   
-)
+### Basic Usage
 
-result = converter.convert("document.pdf").to_markdown()
-print(result)
+```bash
+# Convert a PDF to markdown (default)
+llm-converter document.pdf
+
+# Convert to different output formats
+llm-converter document.pdf --output html
+llm-converter document.pdf --output json
+llm-converter document.pdf --output text
+
+
 ```
 
-### Batch Processing
+### Advanced Options
 
-```python
-from llm_converter import FileConverter
+```bash
+# Save output to file
+llm-converter document.pdf --output-file output.md
 
-converter = FileConverter()
-files = ["doc1.pdf", "doc2.docx", "doc3.xlsx"]
+# For image input
+llm-converter image.png 
 
-results = []
-for file in files:
-    result = converter.convert(file).to_markdown()
-    results.append(result)
+# Convert multiple files at once
+llm-converter file1.pdf file2.docx file3.xlsx --output markdown
 ```
 
-### Testing Neural OCR
+### List Supported Formats
 
-```python
-# Test the neural OCR capabilities
-from llm_converter.pipeline.neural_document_processor import NeuralDocumentProcessor
-
-# Initialize neural document processor
-processor = NeuralDocumentProcessor()
-
-# Extract text with layout awareness
-text = processor.extract_text_with_layout("sample.png")
-print(text)
+```bash
+# See all supported input formats
+llm-converter --list-formats
 ```
 
-## API Reference
+### Examples
+
+```bash
+# Convert PDF with intelligent document processing
+llm-converter scanned_document.pdf --output markdown
+
+# Convert image to HTML with layout preservation
+llm-converter screenshot.png --output html
+
+# Convert multiple documents to JSON
+llm-converter report.pdf presentation.pptx data.xlsx --output json --output-file combined.json
+
+# Convert URL content to markdown
+llm-converter https://blog.example.com --output markdown --output-file blog_content.md
+```
+
+### Output Formats
+
+- **markdown** (default): Clean, structured markdown
+- **html**: Formatted HTML with styling
+- **json**: Structured JSON data
+- **text**: Plain text extraction
+
+
+## API Reference for library
 
 ### FileConverter
 
@@ -201,30 +210,7 @@ Result object with methods to export to different formats.
 - `to_json() -> dict`: Export as JSON
 - `to_text() -> str`: Export as plain text
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
 
 ## License
 
-MIT License - see LICENSE file for details.
-
-## Third-Party Dependencies
-
-This project uses several third-party libraries:
-
-- **EasyOCR** - Apache 2.0 License (https://github.com/JaidedAI/EasyOCR)
-- **PyTorch** - BSD 3-Clause License (https://pytorch.org/)
-- **Transformers** - Apache 2.0 License (https://github.com/huggingface/transformers)
-- **Pillow** - HPND License (https://python-pillow.org/)
-- **python-docx** - MIT License (https://github.com/python-openxml/python-docx)
-- **pandas** - BSD 3-Clause License (https://pandas.pydata.org/)
-- **numpy** - BSD 3-Clause License (https://numpy.org/)
-- **pdf2image** - MIT License (https://github.com/Belval/pdf2image)
-- **markdownify** - MIT License (https://github.com/matthewwithanm/markdownify)
-
-All dependencies are used in accordance with their respective licenses. 
+MIT License - see LICENSE file for details. 

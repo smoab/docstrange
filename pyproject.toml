@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "2.0.7"
-description = "Convert any document, text, or URL into LLM-ready data format with advanced neural OCR capabilities powered by state-of-the-art pre-trained models"
+version = "2.1.0"
+description = "Convert any document, text, or URL into LLM-ready data format with advanced intelligent document processing capabilities powered by pre-trained models"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
@@ -26,7 +26,7 @@ classifiers = [
     "Topic :: Text Processing :: Markup",
     "Topic :: Multimedia :: Graphics :: Graphics Conversion",
 ]
-keywords = ["llm", "ocr", "document-processing", "markdown", "pdf", "image-processing", "neural-ocr", "document-understanding"]
+keywords = ["llm", "document-processing", "document-conversion", "markdown", "pdf", "image-processing", "intelligent-document-processing", "document-understanding"]
 requires-python = ">=3.8"
 dependencies = [
     "Pillow>=9.0.0",
