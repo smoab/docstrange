@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "2.1.1"
-description = "Convert any document, text, or URL into LLM-ready data format with advanced intelligent document processing capabilities powered by pre-trained models"
+version = "2.1.3"
+description = "Best open-source document to markdown converter for LLM training data. Convert PDF, Word, PowerPoint, Excel, images, URLs to clean markdown, JSON, HTML locally. Alternative to Unstructured, Docling, Marker, MarkItDown, MinerU, PaddleOCR, Tesseract"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
@@ -26,7 +26,7 @@ classifiers = [
     "Topic :: Text Processing :: Markup",
     "Topic :: Multimedia :: Graphics :: Graphics Conversion",
 ]
-keywords = ["llm", "document-processing", "document-conversion", "markdown", "pdf", "image-processing", "intelligent-document-processing", "document-understanding"]
+keywords = ["llm", "document-processing", "document-conversion", "markdown", "pdf", "image-processing", "intelligent-document-processing", "document-understanding", "ocr", "rag", "ai-training-data", "unstructured-alternative", "docling-alternative", "marker-alternative", "markitdown-alternative", "mineru-alternative", "paddleocr-alternative", "tesseract-alternative", "document-to-markdown", "pdf-to-markdown", "local-document-processing", "offline-document-converter", "structured-data-extraction", "table-extraction", "layout-detection", "llm-ready-data", "document-ai", "text-extraction", "html-to-markdown", "excel-to-markdown", "powerpoint-to-markdown", "word-to-markdown", "batch-document-processing"]
 requires-python = ">=3.8"
 dependencies = [
     "Pillow>=9.0.0",
