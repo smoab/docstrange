@@ -243,6 +243,42 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 pip install llm-data-converter
 ```
 
+#### Numpy/Homebrew Conflict (macOS)
+
+If you see this error on macOS:
+```
+error: uninstall-no-record-file
+× Cannot uninstall numpy 2.1.2
+╰─> The package's contents are unknown: no RECORD file was found for numpy.
+hint: The package was installed by brew. You should check if it can uninstall the package.
+```
+
+This happens when numpy is installed via Homebrew and conflicts with pip. Here are solutions:
+
+**Solution 1: Use virtual environment (recommended)**
+```bash
+# Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate
+pip install llm-data-converter
+```
+
+**Solution 2: Install with --ignore-installed flag**
+```bash
+pip install llm-data-converter --ignore-installed numpy
+```
+
+**Solution 3: Use conda instead of pip**
+```bash
+conda install -c conda-forge llm-data-converter
+```
+
+**Solution 4: Uninstall brew numpy (if you don't need it)**
+```bash
+brew uninstall numpy
+pip install llm-data-converter
+```
+
 #### Hugging Face Authentication Issues
 
 If you see authentication errors when downloading models:
