@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "llm-data-converter"
-version = "2.1.5"
+version = "2.1.6"
 description = "Best open-source document to markdown converter for LLM training data. Convert PDF, Word, PowerPoint, Excel, images, URLs to clean markdown, JSON, HTML locally. Alternative to Unstructured, Docling, Marker, MarkItDown, MinerU, PaddleOCR, Tesseract"
 readme = "README.md"
 license = {text = "MIT"}
@@ -46,6 +46,14 @@ dependencies = [
     "easyocr>=1.7.0",
     "huggingface_hub>=0.23.0",
     "tqdm>=4.64.0",
+    # Conservative versions for Python 3.8 to avoid build issues
+    "transformers>=4.20.0,<4.50.0; python_version<='3.8'",
+    "tokenizers>=0.13.0,<0.20.0; python_version<='3.8'",
+    "setuptools>=65.0.0; python_version<='3.8'",
+    "wheel>=0.37.0; python_version<='3.8'",
+    # Latest compatible versions for Python 3.9+
+    "transformers>=4.20.0; python_version>='3.9'",
+    "tokenizers>=0.13.0; python_version>='3.9'",
 ]
 
 [project.optional-dependencies]

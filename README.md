@@ -204,6 +204,97 @@ Result object with methods to export to different formats.
 - `to_text() -> str`: Export as plain text
 
 
+## Troubleshooting
+
+### Installation Issues
+
+#### Tokenizers Build Error
+
+If you encounter an error like this during installation:
+```
+ERROR: Could not find a version that satisfies the requirement puccinialin
+ERROR: No matching distribution found for puccinialin
+```
+
+This is typically caused by the `tokenizers` package failing to build from source. Here are several solutions:
+
+**Solution 1: Update pip and install pre-compiled wheels**
+```bash
+pip install --upgrade pip
+pip install llm-data-converter --no-cache-dir
+```
+
+**Solution 2: Install with specific tokenizers version**
+```bash
+pip install tokenizers==0.21.0
+pip install llm-data-converter
+```
+
+**Solution 3: Use conda (recommended for complex dependencies)**
+```bash
+conda install -c conda-forge llm-data-converter
+```
+
+**Solution 4: Install Rust (if you want to build from source)**
+```bash
+# On macOS/Linux
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Then restart your terminal and try installing again
+pip install llm-data-converter
+```
+
+#### Hugging Face Authentication Issues
+
+If you see authentication errors when downloading models:
+```
+huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized
+```
+
+The library now uses Nanonets S3 hosting by default, so this should not occur. If it does:
+
+1. **Set up Hugging Face token** (optional):
+   ```bash
+   pip install huggingface_hub
+   huggingface-cli login
+   ```
+
+2. **Force S3 usage** (recommended):
+   ```bash
+   # The library uses S3 by default, but you can ensure it:
+   export LLM_CONVERTER_PREFER_HF=false
+   ```
+
+#### Model Download Issues
+
+If models fail to download:
+1. Check your internet connection
+2. Try again - the library has automatic retry logic
+3. Models are cached locally after first download
+
+### Runtime Issues
+
+#### Memory Issues with Large Documents
+
+For very large documents, you may need to increase memory limits:
+```bash
+# Increase Python memory limit
+export PYTHONMALLOC=malloc
+python -X maxsize=4GB your_script.py
+```
+
+#### GPU/CPU Issues
+
+The library works on CPU by default. For better performance:
+- Install PyTorch with CUDA support if you have a GPU
+- Models will automatically use available hardware
+
+### Getting Help
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/nanonets/llm-data-converter/issues)
+- **Documentation**: Check this README and the [scripts documentation](scripts/README.md)
+- **Community**: Join discussions on GitHub
+
+
 ## License
 
 MIT License - see LICENSE file for details. 
