@@ -105,10 +105,9 @@ class NeuralDocumentProcessor:
         # Check if models exist, if not download them
         layout_path = downloader.get_model_path('layout')
         table_path = downloader.get_model_path('table')
-        ocr_path = downloader.get_model_path('ocr')
         
         # If any model is missing, download all models
-        if not layout_path or not table_path or not ocr_path:
+        if not layout_path or not table_path:
             logger.info("Some models are missing. Downloading all required models...")
             logger.info(f"Models will be cached at: {downloader.cache_dir}")
             try:
@@ -116,32 +115,57 @@ class NeuralDocumentProcessor:
                 # Get paths again after download
                 layout_path = downloader.get_model_path('layout')
                 table_path = downloader.get_model_path('table')
-                ocr_path = downloader.get_model_path('ocr')
-                logger.info("Model download completed successfully!")
+                
+                # Check if download was successful
+                if layout_path and table_path:
+                    logger.info("Model download completed successfully!")
+                else:
+                    logger.warning("Some models may not have downloaded successfully due to authentication issues.")
+                    logger.info("Falling back to basic document processing without advanced neural models.")
+                    # Set flags to indicate fallback mode
+                    self._use_fallback_mode = True
+                    return
+                    
             except Exception as e:
-                logger.error(f"Failed to download models: {e}")
-                raise ValueError(f"Failed to download required models: {e}")
+                logger.warning(f"Failed to download models: {e}")
+                if "401" in str(e) or "Unauthorized" in str(e) or "Authentication" in str(e):
+                    logger.info(
+                        "Model download failed due to authentication. Using basic document processing.\n"
+                        "For enhanced features, please set up Hugging Face authentication:\n"
+                        "1. Create account at https://huggingface.co/\n"
+                        "2. Generate token at https://huggingface.co/settings/tokens\n"
+                        "3. Run: huggingface-cli login"
+                    )
+                    self._use_fallback_mode = True
+                    return
+                else:
+                    raise ValueError(f"Failed to download required models: {e}")
         else:
             logger.info("All required models found in cache.")
+            
+        # Set fallback mode flag
+        self._use_fallback_mode = False
         
         # Set model paths
         self.layout_model_path = layout_path
         self.table_model_path = table_path
-        self.ocr_model_path = ocr_path
         
-        if not self.layout_model_path or not self.table_model_path or not self.ocr_model_path:
-            raise ValueError("One or more required models not found")
+        if not self.layout_model_path or not self.table_model_path:
+            if hasattr(self, '_use_fallback_mode') and self._use_fallback_mode:
+                logger.info("Running in fallback mode without advanced neural models")
+                return
+            else:
+                raise ValueError("One or more required models not found")
         
         # The models are downloaded with the full repository structure
         # The entire repo is downloaded to each cache folder, so we need to navigate to the specific model paths
         # Layout model is in layout/model_artifacts/layout/
         # Table model is in tableformer/model_artifacts/tableformer/accurate/
-        # OCR model is in easyocr/model_artifacts/easyocr/
+        # Note: EasyOCR downloads its own models automatically
         
         # Check if the expected structure exists, if not use the cache folder directly
         layout_artifacts = self.layout_model_path / "model_artifacts" / "layout"
         table_artifacts = self.table_model_path / "model_artifacts" / "tableformer" / "accurate"
-        ocr_artifacts = self.ocr_model_path / "model_artifacts" / "easyocr"
         
         if layout_artifacts.exists():
             self.layout_model_path = layout_artifacts
@@ -155,15 +179,9 @@ class NeuralDocumentProcessor:
             # Fallback: use the cache folder directly
             logger.warning(f"Expected table model structure not found, using cache folder directly")
         
-        if ocr_artifacts.exists():
-            self.ocr_model_path = ocr_artifacts
-        else:
-            # Fallback: use the cache folder directly
-            logger.warning(f"Expected OCR model structure not found, using cache folder directly")
-        
         logger.info(f"Layout model path: {self.layout_model_path}")
         logger.info(f"Table model path: {self.table_model_path}")
-        logger.info(f"OCR model path: {self.ocr_model_path}")
+        logger.info("EasyOCR will download its own models automatically")
         
         # Verify model files exist (with more flexible checking)
         layout_model_file = self.layout_model_path / "model.safetensors"
@@ -189,6 +207,15 @@ class NeuralDocumentProcessor:
     
     def _initialize_docling_models(self):
         """Initialize docling's pre-trained models."""
+        # Check if we're in fallback mode
+        if hasattr(self, '_use_fallback_mode') and self._use_fallback_mode:
+            logger.info("Skipping docling models initialization - running in fallback mode")
+            self.use_advanced_models = False
+            self.layout_predictor = None
+            self.table_predictor = None
+            self.ocr_reader = None
+            return
+            
         try:
             # Import docling models
             from docling_ibm_models.layoutmodel.layout_predictor import LayoutPredictor
