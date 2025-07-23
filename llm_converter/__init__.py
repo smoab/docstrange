@@ -8,4 +8,10 @@ from .exceptions import ConversionError, UnsupportedFormatError
 from .config import InternalConfig
 
 __version__ = "2.0.7"
-__all__ = ["FileConverter", "ConversionResult", "ConversionError", "UnsupportedFormatError", "InternalConfig"] 
+__all__ = [
+    "FileConverter", 
+    "ConversionResult", 
+    "ConversionError", 
+    "UnsupportedFormatError", 
+    "InternalConfig"
+] 

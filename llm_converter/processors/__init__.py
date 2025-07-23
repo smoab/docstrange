@@ -9,6 +9,7 @@ from .url_processor import URLProcessor
 from .html_processor import HTMLProcessor
 from .pptx_processor import PPTXProcessor
 from .image_processor import ImageProcessor
+from .cloud_processor import CloudProcessor
 
 __all__ = [
     "BaseProcessor",
@@ -19,5 +20,6 @@ __all__ = [
     "URLProcessor",
     "HTMLProcessor",
     "PPTXProcessor",
-    "ImageProcessor"
+    "ImageProcessor",
+    "CloudProcessor"
 ] 

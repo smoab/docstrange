@@ -6,6 +6,8 @@
 
 Convert any document format into LLM-ready data format (markdown) with advanced intelligent document processing capabilities powered by pre-trained models.
 
+**🆕 NEW: Cloud Mode Available!** - Process documents using the powerful Nanonets cloud API with a free API key for faster, more accurate results.
+
 ## Installation
 
 ```bash
@@ -32,18 +34,36 @@ pip install setuptools
 brew install mesa
 ```
 
-**Note:** The package will automatically download and cache intelligent models on first use.
+**Note:** The package will automatically download and cache intelligent models on first use. For cloud mode, no system dependencies or model downloads are required.
 
 ## Quick Start
 
 ```python
 from llm_converter import FileConverter
 
-# Basic conversion 
+# Local mode (default) - works offline
 converter = FileConverter()
 result = converter.convert("document.pdf").to_markdown()
 print(result)
 ```
+
+**Cloud Mode (New!)** - For faster, more accurate results:
+```python
+from llm_converter import FileConverter
+
+# Only api_key is required for cloud mode
+# Get API key from https://app.nanonets.com/#/keys
+converter = FileConverter(cloud_mode=True, api_key="your_api_key")
+result = converter.convert("document.pdf").to_markdown()  # Same interface!
+print(result)
+
+# Optional: Choose specific model for cloud processing
+converter = FileConverter(cloud_mode=True, api_key="your_api_key", model="gemini")  # model is optional
+result = converter.convert("document.pdf").to_markdown()
+print(result)
+```
+
+**🆓 Try Cloud Mode for Free:** Test the cloud extraction capabilities at [https://extraction-api.nanonets.com/](https://extraction-api.nanonets.com/) -  API key required for the web interface!
 
 ## Features
 
@@ -51,13 +71,13 @@ print(result)
 - **Multiple Output Formats**: Markdown, HTML, JSON, Plain Text
 - **LLM Integration**: Seamless integration with LiteLLM and other LLM libraries
 - **Local Processing**: Process documents locally without external dependencies
+- **Cloud Processing**: Fast, accurate processing with Nanonets cloud API
 - **Layout Preservation**: Maintain document structure and formatting
 - **Intelligent Document Processing**: Advanced document understanding and conversion powered by pre-trained models:
   - **Layout Detection**: Intelligent models for document structure understanding
   - **Text Recognition**: High-accuracy text extraction with confidence scoring
   - **Table Structure**: Intelligent table detection and conversion to markdown format
   - **Automatic Model Download**: Models are automatically downloaded and cached
-
 
 ## Usage Examples
 
@@ -66,11 +86,16 @@ print(result)
 ```python
 from llm_converter import FileConverter
 
+# Local mode (default)
 converter = FileConverter()
 result = converter.convert("document.pdf").to_markdown()
 print(result)
-```
 
+# Cloud mode (just add cloud_mode=True and api_key)
+converter = FileConverter(cloud_mode=True, api_key="your_api_key")
+result = converter.convert("document.pdf").to_markdown()  # Same interface!
+print(result)
+```
 
 ### Convert Image to HTML
 
@@ -117,7 +142,6 @@ print(response.choices[0].message.content)
 - **JSON**: Structured JSON data
 - **Plain Text**: Simple text extraction
 
-
 ## CLI usage
 
 The `llm-converter` command-line tool provides easy access to all conversion features:
@@ -132,8 +156,21 @@ llm-converter document.pdf
 llm-converter document.pdf --output html
 llm-converter document.pdf --output json
 llm-converter document.pdf --output text
+```
 
+### Cloud Mode
 
+```bash
+# Convert using cloud API - only api_key required
+llm-converter document.pdf --cloud-mode --api-key YOUR_API_KEY
+
+# Use environment variable for API key
+export NANONETS_API_KEY=your_api_key
+llm-converter document.pdf --cloud-mode --output json
+
+# Optional: Use specific model for cloud processing
+llm-converter document.pdf --cloud-mode --api-key YOUR_KEY --model gemini
+llm-converter document.pdf --cloud-mode --model openapi --output json
 ```
 
 ### Advanced Options
@@ -170,15 +207,11 @@ llm-converter report.pdf presentation.pptx data.xlsx --output json --output-file
 
 # Convert URL content to markdown
 llm-converter https://blog.example.com --output markdown --output-file blog_content.md
+
+# Cloud mode examples
+llm-converter document.pdf --cloud-mode --api-key YOUR_KEY
+llm-converter document.pdf --cloud-mode --output json  # env var NANONETS_API_KEY
 ```
-
-### Output Formats
-
-- **markdown** (default): Clean, structured markdown
-- **html**: Formatted HTML with styling
-- **json**: Structured JSON data
-- **text**: Plain text extraction
-
 
 ## API Reference for library
 
@@ -192,6 +225,15 @@ Main class for converting documents to LLM-ready formats.
 - `convert_url(url: str) -> ConversionResult`: Convert a URL page contents to internal format
 - `convert_text(text: str) -> ConversionResult`: Convert plain text to internal format
 
+### CloudFileConverter
+
+Extended FileConverter with cloud processing capabilities.
+
+#### Methods
+
+- `convert(file_path: str) -> ConversionResult`: Convert using cloud API (same interface!)
+- `is_cloud_enabled() -> bool`: Check if cloud processing is available
+
 ### ConversionResult
 
 Result object with methods to export to different formats.
@@ -199,12 +241,17 @@ Result object with methods to export to different formats.
 #### Methods
 
 - `to_markdown() -> str`: Export as markdown
-- `to_html() -> str`: Export as HTML
+- `to_html() -> str`: Export as HTML  
 - `to_json() -> dict`: Export as JSON
 - `to_text() -> str`: Export as plain text
 
-
 ## Troubleshooting
+
+### Cloud Mode Setup
+
+1. Get your free API key from [https://app.nanonets.com/#/keys](https://app.nanonets.com/#/keys)
+2. Set environment variable: `export NANONETS_API_KEY=your_key`
+3. Or provide directly: `CloudFileConverter(api_key="your_key")`
 
 ### Installation Issues
 
@@ -235,27 +282,15 @@ pip install llm-data-converter
 conda install -c conda-forge llm-data-converter
 ```
 
-**Solution 4: Install Rust (if you want to build from source)**
-```bash
-# On macOS/Linux
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-# Then restart your terminal and try installing again
-pip install llm-data-converter
-```
-
 #### Numpy/Homebrew Conflict (macOS)
 
 If you see this error on macOS:
 ```
 error: uninstall-no-record-file
 × Cannot uninstall numpy 2.1.2
-╰─> The package's contents are unknown: no RECORD file was found for numpy.
-hint: The package was installed by brew. You should check if it can uninstall the package.
 ```
 
-This happens when numpy is installed via Homebrew and conflicts with pip. Here are solutions:
-
-**Solution 1: Use virtual environment (recommended)**
+**Solution: Use virtual environment (recommended)**
 ```bash
 # Create and activate a virtual environment
 python3 -m venv venv
@@ -263,73 +298,11 @@ source venv/bin/activate
 pip install llm-data-converter
 ```
 
-**Solution 2: Install with --ignore-installed flag**
-```bash
-pip install llm-data-converter --ignore-installed numpy
-```
-
-**Solution 3: Use conda instead of pip**
-```bash
-conda install -c conda-forge llm-data-converter
-```
-
-**Solution 4: Uninstall brew numpy (if you don't need it)**
-```bash
-brew uninstall numpy
-pip install llm-data-converter
-```
-
-#### Hugging Face Authentication Issues
-
-If you see authentication errors when downloading models:
-```
-huggingface_hub.errors.HfHubHTTPError: 401 Client Error: Unauthorized
-```
-
-The library now uses Nanonets S3 hosting by default, so this should not occur. If it does:
-
-1. **Set up Hugging Face token** (optional):
-   ```bash
-   pip install huggingface_hub
-   huggingface-cli login
-   ```
-
-2. **Force S3 usage** (recommended):
-   ```bash
-   # The library uses S3 by default, but you can ensure it:
-   export LLM_CONVERTER_PREFER_HF=false
-   ```
-
-#### Model Download Issues
-
-If models fail to download:
-1. Check your internet connection
-2. Try again - the library has automatic retry logic
-3. Models are cached locally after first download
-
-### Runtime Issues
-
-#### Memory Issues with Large Documents
-
-For very large documents, you may need to increase memory limits:
-```bash
-# Increase Python memory limit
-export PYTHONMALLOC=malloc
-python -X maxsize=4GB your_script.py
-```
-
-#### GPU/CPU Issues
-
-The library works on CPU by default. For better performance:
-- Install PyTorch with CUDA support if you have a GPU
-- Models will automatically use available hardware
-
 ### Getting Help
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/nanonets/llm-data-converter/issues)
 - **Documentation**: Check this README and the [scripts documentation](scripts/README.md)
 - **Community**: Join discussions on GitHub
-
 
 ## License
 

@@ -44,7 +44,7 @@ def print_supported_formats(converter: FileConverter):
             print()
 
 
-def process_single_input(converter: FileConverter, input_item: str, verbose: bool = False) -> dict:
+def process_single_input(converter: FileConverter, input_item: str, output_format: str, verbose: bool = False) -> dict:
     """Process a single input item and return result with metadata."""
     if verbose:
         print(f"Processing: {input_item}", file=sys.stderr)
@@ -52,6 +52,8 @@ def process_single_input(converter: FileConverter, input_item: str, verbose: boo
     try:
         # Check if it's a URL
         if input_item.startswith(('http://', 'https://')):
+            if converter.cloud_mode:
+                raise ConversionError("URL processing is not supported in cloud mode. Use local mode for URLs.")
             result = converter.convert_url(input_item)
             input_type = "URL"
         # Check if it's a file
@@ -60,6 +62,8 @@ def process_single_input(converter: FileConverter, input_item: str, verbose: boo
             input_type = "File"
         # Treat as text
         else:
+            if converter.cloud_mode:
+                raise ConversionError("Text processing is not supported in cloud mode. Use local mode for text.")
             result = converter.convert_text(input_item)
             input_type = "Text"
         
@@ -103,28 +107,35 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Convert a PDF to markdown (default)
+  # Convert a PDF to markdown (default, local mode)
   llm-converter document.pdf
+
+  # Convert using cloud mode (requires API key)
+  llm-converter document.pdf --cloud-mode --api-key YOUR_API_KEY
 
   # Convert to different output formats
   llm-converter document.pdf --output html
-  llm-converter document.pdf --output json
-  llm-converter document.pdf --output text
+  llm-converter document.pdf --output json --cloud-mode
 
-  # Convert a URL
+  # Use specific model for cloud processing
+  llm-converter document.pdf --cloud-mode --api-key YOUR_KEY --model gemini
+  llm-converter document.pdf --cloud-mode --model openapi --output json
+
+  # Convert a URL (local mode only)
   llm-converter https://example.com --output html
 
-  # Convert plain text
+  # Convert plain text (local mode only)
   llm-converter "Hello world" --output json
 
   # Convert multiple files
-  llm-converter file1.pdf file2.docx --output markdown
+  llm-converter file1.pdf file2.docx file3.xlsx --output markdown
 
   # Save output to file
   llm-converter document.pdf --output-file output.md
 
-  # Enable intelligent document processing
-  llm-converter image.png --ocr-enabled
+  # Use environment variable for API key
+  export NANONETS_API_KEY=your_api_key
+  llm-converter document.pdf --cloud-mode
 
   # List supported formats
   llm-converter --list-formats
@@ -145,6 +156,24 @@ Examples:
         choices=["markdown", "html", "json", "text"],
         default="markdown",
         help="Output format (default: markdown)"
+    )
+    
+    # Processing mode arguments
+    parser.add_argument(
+        "--cloud-mode",
+        action="store_true",
+        help="Use Nanonets cloud API for processing (requires API key)"
+    )
+    
+    parser.add_argument(
+        "--api-key",
+        help="API key for cloud mode (get from https://app.nanonets.com/#/keys)"
+    )
+    
+    parser.add_argument(
+        "--model",
+        choices=["gemini", "openapi"],
+        help="Model to use for cloud processing (gemini, openapi) - only for cloud mode"
     )
     
     parser.add_argument(
@@ -198,7 +227,12 @@ Examples:
     
     # Handle list formats flag
     if args.list_formats:
-        converter = FileConverter()
+        # Create a converter to get supported formats
+        converter = FileConverter(
+            cloud_mode=args.cloud_mode,
+            api_key=args.api_key,
+            model=args.model
+        )
         print_supported_formats(converter)
         return 0
     
@@ -206,19 +240,35 @@ Examples:
     if not args.input:
         parser.error("No input specified. Please provide file(s), URL(s), or text to convert.")
     
+    # Validate cloud mode arguments
+    if args.cloud_mode and not args.api_key and not os.environ.get('NANONETS_API_KEY'):
+        print("Error: Cloud mode requires an API key.", file=sys.stderr)
+        print("Get your free API key from https://app.nanonets.com/#/keys", file=sys.stderr)
+        print("Provide it using --api-key or set NANONETS_API_KEY environment variable.", file=sys.stderr)
+        return 1
+    
     # Initialize converter
     converter = FileConverter(
+        cloud_mode=args.cloud_mode,
+        api_key=args.api_key,
+        model=args.model,
         preserve_layout=True,
         include_images=True,
         ocr_enabled=True
     )
     
     if args.verbose:
-        print(f"Initialized converter with:")
+        mode = "cloud" if args.cloud_mode else "local"
+        print(f"Initialized converter in {mode} mode:")
         print(f"  - Preserve layout: True")
         print(f"  - Include images: True")
         print(f"  - Intelligent processing: True")
         print(f"  - Output format: {args.output}")
+        if args.cloud_mode:
+            cloud_enabled = converter.is_cloud_enabled()
+            print(f"  - Cloud API: {'enabled' if cloud_enabled else 'disabled'}")
+            if args.model:
+                print(f"  - Model: {args.model}")
         print()
     
     # Process inputs
@@ -229,7 +279,7 @@ Examples:
         if args.verbose and len(args.input) > 1:
             print(f"[{i}/{len(args.input)}] Processing: {input_item}", file=sys.stderr)
         
-        result = process_single_input(converter, input_item, args.verbose)
+        result = process_single_input(converter, input_item, args.output, args.verbose)
         
         if result["success"]:
             results.append(result["result"])
