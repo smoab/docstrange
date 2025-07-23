@@ -4,6 +4,8 @@
 [![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
 [![Python versions](https://img.shields.io/pypi/pyversions/llm-data-converter)](https://pypi.org/project/llm-data-converter/)
 
+> **🆓 Try Cloud Mode for Free:** Test the cloud extraction capabilities at [https://extraction-api.nanonets.com/](https://extraction-api.nanonets.com/) - API key required for the web interface!
+
 Convert any document format into LLM-ready data format (markdown) with advanced intelligent document processing capabilities powered by pre-trained models.
 
 **🆕 NEW: Cloud Mode Available!** - Process documents using the powerful Nanonets cloud API with a free API key for faster, more accurate results.
@@ -63,7 +65,7 @@ result = converter.convert("document.pdf").to_markdown()
 print(result)
 ```
 
-**🆓 Try Cloud Mode for Free:** Test the cloud extraction capabilities at [https://extraction-api.nanonets.com/](https://extraction-api.nanonets.com/) -  API key required for the web interface!
+
 
 ## Features
 
