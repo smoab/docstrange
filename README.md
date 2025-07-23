@@ -4,6 +4,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/NanoNets/llm-data-converter?style=social)](https://github.com/NanoNets/llm-data-converter)
 [![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
 [![Python versions](https://img.shields.io/pypi/pyversions/llm-data-converter)](https://pypi.org/project/llm-data-converter/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **🆓 Try Cloud Mode for Free:** Test the cloud extraction capabilities at [https://extraction-api.nanonets.com/](https://extraction-api.nanonets.com/) - API key required for the web interface!
 
