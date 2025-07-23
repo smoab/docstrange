@@ -1,6 +1,7 @@
 # LLM Data Converter
 
-[![PyPI version](https://badge.fury.io/py/llm-data-converter.svg)](https://badge.fury.io/py/llm-data-converter)
+[![PyPI version](https://badge.fury.io/py/llm-data-converter.svg?v=2)](https://badge.fury.io/py/llm-data-converter)
+[![GitHub stars](https://img.shields.io/github/stars/NanoNets/llm-data-converter?style=social)](https://github.com/NanoNets/llm-data-converter)
 [![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
 [![Python versions](https://img.shields.io/pypi/pyversions/llm-data-converter)](https://pypi.org/project/llm-data-converter/)
 
