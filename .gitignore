@@ -199,3 +199,4 @@ ENV/
 # VSCode
 .vscode/ 
 
+examples/

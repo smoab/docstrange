@@ -64,6 +64,9 @@ dev = [
     "flake8>=3.8.0",
     "mypy>=0.800",
 ]
+local-llm = [
+    "ollama>=0.5.0",
+]
 
 [project.scripts]
 llm-converter = "llm_converter.cli:main"

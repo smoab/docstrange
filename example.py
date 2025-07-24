@@ -9,21 +9,21 @@ converter = FileConverter(
     # api_key="<api-key>"
 )
 
-# Standard conversions
-result = converter.convert(file_path).to_csv()
-print("📝=============================== CSV Output:===============================")
-print(result)
+# # # Standard conversions
+# # result = converter.convert(file_path).to_csv()
+# # print("📝=============================== CSV Output:===============================")
+# # print(result)
 
-result = converter.convert(file_path).to_html()
-print("📝=============================== HTML Output:===============================")
-print(result)
+# # result = converter.convert(file_path).to_html()
+# # print("📝=============================== HTML Output:===============================")
+# # print(result)
 
-result = converter.convert(file_path).to_json()
 print("📝=============================== JSON Output:===============================")
+result = converter.convert(file_path).to_json()
 print(result)
 
-# Field extraction examples (cloud mode only)
-print("\n📝=============================== Field Extraction Examples:===============================")
+# Intelligent field extraction examples (works with both cloud and local modes)
+print("\n📝=============================== Intelligent Field Extraction:===============================")
 
 # Example 1: Extract specific fields
 result = converter.convert(file_path)

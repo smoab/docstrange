@@ -131,6 +131,12 @@ Examples:
   # Convert multiple files
   llm-converter file1.pdf file2.docx file3.xlsx --output markdown
 
+  # Extract specific fields using local Ollama
+  llm-converter invoice.pdf --output json --extract-fields invoice_number total_amount vendor_name
+
+  # Extract using JSON schema with local Ollama
+  llm-converter document.pdf --output json --json-schema schema.json
+
   # Save output to file
   llm-converter document.pdf --output-file output.md
 
@@ -175,6 +181,29 @@ Examples:
         "--model",
         choices=["gemini", "openapi"],
         help="Model to use for cloud processing (gemini, openapi) - only for cloud mode"
+    )
+    
+    parser.add_argument(
+        "--ollama-url",
+        default="http://localhost:11434",
+        help="Ollama server URL for local field extraction (default: http://localhost:11434)"
+    )
+    
+    parser.add_argument(
+        "--ollama-model",
+        default="llama3.2",
+        help="Ollama model for local field extraction (default: llama3.2)"
+    )
+    
+    parser.add_argument(
+        "--extract-fields",
+        nargs="+",
+        help="Extract specific fields using local Ollama (e.g., --extract-fields invoice_number total_amount)"
+    )
+    
+    parser.add_argument(
+        "--json-schema",
+        help="JSON schema file for structured extraction using local Ollama"
     )
     
     parser.add_argument(
@@ -308,7 +337,27 @@ Examples:
         elif args.output == "html":
             output_content = result.to_html()
         elif args.output == "json":
-            output_content = json.dumps(result.to_json(), indent=2)
+            # Handle field extraction if specified
+            json_schema = None
+            if args.json_schema:
+                try:
+                    with open(args.json_schema, 'r') as f:
+                        json_schema = json.load(f)
+                except Exception as e:
+                    print(f"Error loading JSON schema: {e}", file=sys.stderr)
+                    sys.exit(1)
+            
+            try:
+                result_json = result.to_json(
+                    specified_fields=args.extract_fields,
+                    json_schema=json_schema,
+                    ollama_url=args.ollama_url,
+                    ollama_model=args.ollama_model
+                )
+                output_content = json.dumps(result_json, indent=2)
+            except Exception as e:
+                print(f"Error during JSON extraction: {e}", file=sys.stderr)
+                sys.exit(1)
         elif args.output == "csv":
             try:
                 output_content = result.to_csv(include_all_tables=True)
@@ -324,12 +373,36 @@ Examples:
         elif args.output == "html":
             output_content = "\n\n<hr>\n\n".join(r.to_html() for r in results)
         elif args.output == "json":
-            combined_json = {
-                "results": [r.to_json() for r in results],
-                "count": len(results),
-                "errors": [{"input": e["input_item"], "error": e["error"]} for e in errors] if errors else []
-            }
-            output_content = json.dumps(combined_json, indent=2)
+            # Handle field extraction for multiple results
+            json_schema = None
+            if args.json_schema:
+                try:
+                    with open(args.json_schema, 'r') as f:
+                        json_schema = json.load(f)
+                except Exception as e:
+                    print(f"Error loading JSON schema: {e}", file=sys.stderr)
+                    sys.exit(1)
+            
+            try:
+                extracted_results = []
+                for r in results:
+                    result_json = r.to_json(
+                        specified_fields=args.extract_fields,
+                        json_schema=json_schema,
+                        ollama_url=args.ollama_url,
+                        ollama_model=args.ollama_model
+                    )
+                    extracted_results.append(result_json)
+                
+                combined_json = {
+                    "results": extracted_results,
+                    "count": len(results),
+                    "errors": [{"input": e["input_item"], "error": e["error"]} for e in errors] if errors else []
+                }
+                output_content = json.dumps(combined_json, indent=2)
+            except Exception as e:
+                print(f"Error during JSON extraction: {e}", file=sys.stderr)
+                sys.exit(1)
         elif args.output == "csv":
             csv_outputs = []
             for i, r in enumerate(results):

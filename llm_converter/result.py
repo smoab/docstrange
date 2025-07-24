@@ -934,24 +934,85 @@ class ConversionResult:
 </body>
 </html>"""
     
-    def to_json(self) -> Dict[str, Any]:
-        """Export as structured JSON.
+    def to_json(self, specified_fields: Optional[list] = None, json_schema: Optional[dict] = None, 
+                ollama_url: str = "http://localhost:11434", ollama_model: str = "llama3.2") -> Dict[str, Any]:
+        """Convert content to JSON format.
         
+        Args:
+            specified_fields: List of specific fields to extract (uses Ollama)
+            json_schema: JSON schema to conform to (uses Ollama)
+            ollama_url: Ollama server URL for local processing
+            ollama_model: Model name for local processing
+            
         Returns:
-            Dictionary containing parsed content with hierarchical structure
-            based on markdown headings and content types
+            Dictionary containing the JSON representation
         """
-        # Parse the markdown content into structured JSON
-        parsed_content = self._json_parser.parse(self.content)
-        
-        # Merge with original metadata
-        result = {
-            "document": parsed_content["document"],
-            "conversion_metadata": self.metadata,
-            "format": "structured_json"
-        }
-        
-        return result
+        try:
+            # If specific fields or schema are requested, use Ollama extraction
+            if specified_fields or json_schema:
+                try:
+                    from llm_converter.services import OllamaFieldExtractor
+                    extractor = OllamaFieldExtractor(base_url=ollama_url, model=ollama_model)
+                    
+                    if extractor.is_available():
+                        if specified_fields:
+                            extracted_data = extractor.extract_fields(self.content, specified_fields)
+                            return {
+                                "extracted_fields": extracted_data,
+                                "requested_fields": specified_fields,
+                                **self.metadata,
+                                "format": "local_specified_fields",
+                                "extractor": "ollama"
+                            }
+                        elif json_schema:
+                            extracted_data = extractor.extract_with_schema(self.content, json_schema)
+                            return {
+                                "extracted_data": extracted_data,
+                                "schema": json_schema,
+                                **self.metadata,
+                                "format": "local_json_schema", 
+                                "extractor": "ollama"
+                            }
+                    else:
+                        logger.warning("Ollama not available for field extraction, falling back to standard parsing")
+                except Exception as e:
+                    logger.warning(f"Ollama extraction failed: {e}, falling back to standard parsing")
+            
+            # For general JSON conversion, try Ollama first for better document understanding
+            try:
+                from llm_converter.services import OllamaFieldExtractor
+                extractor = OllamaFieldExtractor(base_url=ollama_url, model=ollama_model)
+                
+                if extractor.is_available():
+                    # Ask Ollama to convert the entire document to structured JSON
+                    document_json = extractor.extract_document_json(self.content)
+                    return {
+                        **document_json,
+                        **self.metadata,
+                        "format": "ollama_structured_json",
+                        "extractor": "ollama"
+                    }
+                else:
+                    logger.info("Ollama not available, using fallback JSON parser")
+            except Exception as e:
+                logger.warning(f"Ollama document conversion failed: {e}, using fallback parser")
+            
+            # Fallback to original parsing logic
+            parsed_content = self._json_parser.parse(self.content)
+            return {
+                **parsed_content,
+                **self.metadata,
+                "format": "structured_json"
+            }
+            
+        except Exception as e:
+            logger.error(f"JSON conversion failed: {e}")
+            return {
+                "error": f"Failed to convert to JSON: {str(e)}",
+                "raw_content": self.content,
+                **self.metadata,
+                "format": "error"
+            }
     
     def to_text(self) -> str:
         """Export as plain text.
