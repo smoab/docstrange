@@ -116,6 +116,7 @@ Examples:
   # Convert to different output formats
   llm-converter document.pdf --output html
   llm-converter document.pdf --output json --cloud-mode
+  llm-converter document.pdf --output csv  # Extract tables as CSV
 
   # Use specific model for cloud processing
   llm-converter document.pdf --cloud-mode --api-key YOUR_KEY --model gemini
@@ -153,7 +154,7 @@ Examples:
     
     parser.add_argument(
         "--output", "-o",
-        choices=["markdown", "html", "json", "text"],
+        choices=["markdown", "html", "json", "text", "csv"],
         default="markdown",
         help="Output format (default: markdown)"
     )
@@ -308,6 +309,12 @@ Examples:
             output_content = result.to_html()
         elif args.output == "json":
             output_content = json.dumps(result.to_json(), indent=2)
+        elif args.output == "csv":
+            try:
+                output_content = result.to_csv(include_all_tables=True)
+            except ValueError as e:
+                print(f"Error: {e}", file=sys.stderr)
+                sys.exit(1)
         else:  # text
             output_content = result.to_text()
     else:
@@ -323,6 +330,20 @@ Examples:
                 "errors": [{"input": e["input_item"], "error": e["error"]} for e in errors] if errors else []
             }
             output_content = json.dumps(combined_json, indent=2)
+        elif args.output == "csv":
+            csv_outputs = []
+            for i, r in enumerate(results):
+                try:
+                    csv_content = r.to_csv(include_all_tables=True)
+                    if csv_content.strip():
+                        csv_outputs.append(f"=== File {i + 1} ===\n{csv_content}")
+                except ValueError:
+                    # Skip files without tables
+                    continue
+            if not csv_outputs:
+                print("Error: No tables found in any of the input files", file=sys.stderr)
+                sys.exit(1)
+            output_content = "\n\n".join(csv_outputs)
         else:  # text
             output_content = "\n\n---\n\n".join(r.to_text() for r in results)
     

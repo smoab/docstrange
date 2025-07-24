@@ -111,6 +111,27 @@ result = converter.convert("sample.png").to_html()
 print(result)
 ```
 
+### Extract Tables to CSV
+
+```python
+from llm_converter import FileConverter
+
+converter = FileConverter()
+
+# Extract first table as CSV
+result = converter.convert("report.pdf")
+csv_data = result.to_csv()  # First table only
+print(csv_data)
+
+# Extract all tables as CSV
+csv_all = result.to_csv(include_all_tables=True)
+print(csv_all)
+
+# Save to file
+with open("tables.csv", "w") as f:
+    f.write(csv_all)
+```
+
 ### Chain with LLM
 
 ```python
@@ -144,6 +165,7 @@ print(response.choices[0].message.content)
 - **Markdown**: Clean, structured markdown with proper table formatting
 - **HTML**: Formatted HTML with styling
 - **JSON**: Structured JSON data
+- **CSV**: Extract tables as CSV format for spreadsheet analysis
 - **Plain Text**: Simple text extraction
 
 ## CLI usage
@@ -159,6 +181,7 @@ llm-converter document.pdf
 # Convert to different output formats
 llm-converter document.pdf --output html
 llm-converter document.pdf --output json
+llm-converter document.pdf --output csv  # Extract tables to CSV
 llm-converter document.pdf --output text
 ```
 
@@ -209,6 +232,9 @@ llm-converter screenshot.png --output html
 # Convert multiple documents to JSON
 llm-converter report.pdf presentation.pptx data.xlsx --output json --output-file combined.json
 
+# Extract tables from documents to CSV
+llm-converter financial_report.pdf --output csv --output-file data.csv
+
 # Convert URL content to markdown
 llm-converter https://blog.example.com --output markdown --output-file blog_content.md
 
@@ -229,15 +255,6 @@ Main class for converting documents to LLM-ready formats.
 - `convert_url(url: str) -> ConversionResult`: Convert a URL page contents to internal format
 - `convert_text(text: str) -> ConversionResult`: Convert plain text to internal format
 
-### CloudFileConverter
-
-Extended FileConverter with cloud processing capabilities.
-
-#### Methods
-
-- `convert(file_path: str) -> ConversionResult`: Convert using cloud API (same interface!)
-- `is_cloud_enabled() -> bool`: Check if cloud processing is available
-
 ### ConversionResult
 
 Result object with methods to export to different formats.
@@ -247,6 +264,7 @@ Result object with methods to export to different formats.
 - `to_markdown() -> str`: Export as markdown
 - `to_html() -> str`: Export as HTML  
 - `to_json() -> dict`: Export as JSON
+- `to_csv() -> str`: Export tables as CSV (raises ValueError if no tables found)
 - `to_text() -> str`: Export as plain text
 
 ## Troubleshooting
@@ -255,7 +273,7 @@ Result object with methods to export to different formats.
 
 1. Get your free API key from [https://app.nanonets.com/#/keys](https://app.nanonets.com/#/keys)
 2. Set environment variable: `export NANONETS_API_KEY=your_key`
-3. Or provide directly: `CloudFileConverter(api_key="your_key")`
+3. Or provide directly: `FileConverter(cloud_mode=True, api_key="your_key")`
 
 ### Installation Issues
 

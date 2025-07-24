@@ -1,5 +1,7 @@
 """Conversion result class for handling different output formats."""
 
+import csv
+import io
 import json
 import re
 from typing import Any, Dict, List, Optional, Union
@@ -958,6 +960,115 @@ class ConversionResult:
             The content as plain text
         """
         return self.content
+    
+    def to_csv(self, table_index: int = 0, include_all_tables: bool = False) -> str:
+        """Export tables as CSV format.
+        
+        Args:
+            table_index: Which table to export (0-based index). Default is 0 (first table).
+            include_all_tables: If True, export all tables with separators. Default is False.
+        
+        Returns:
+            CSV formatted string of the table(s)
+        
+        Raises:
+            ValueError: If no tables are found or table_index is out of range
+        """
+        # Parse the content to extract tables
+        json_data = self.to_json()
+        
+        # Extract all tables from all sections
+        tables = []
+        
+        def extract_tables_from_sections(sections):
+            for section in sections:
+                content = section.get('content', {})
+                if 'tables' in content:
+                    tables.extend(content['tables'])
+                # Recursively check subsections
+                if 'subsections' in section:
+                    extract_tables_from_sections(section['subsections'])
+        
+        if 'document' in json_data and 'sections' in json_data['document']:
+            extract_tables_from_sections(json_data['document']['sections'])
+        
+        if not tables:
+            # If no structured tables found, try to parse markdown tables directly
+            tables = self._extract_markdown_tables_directly(self.content)
+        
+        if not tables:
+            raise ValueError("No tables found in the document content")
+        
+        if include_all_tables:
+            # Export all tables with separators
+            csv_output = io.StringIO()
+            writer = csv.writer(csv_output)
+            
+            for i, table in enumerate(tables):
+                if i > 0:
+                    # Add separator between tables
+                    writer.writerow([])
+                    writer.writerow([f"=== Table {i + 1} ==="])
+                    writer.writerow([])
+                
+                # Write table headers if available
+                if 'headers' in table and table['headers']:
+                    writer.writerow(table['headers'])
+                
+                # Write table rows
+                if 'rows' in table:
+                    for row in table['rows']:
+                        writer.writerow(row)
+            
+            return csv_output.getvalue()
+        else:
+            # Export specific table
+            if table_index >= len(tables):
+                raise ValueError(f"Table index {table_index} out of range. Found {len(tables)} table(s)")
+            
+            table = tables[table_index]
+            csv_output = io.StringIO()
+            writer = csv.writer(csv_output)
+            
+            # Write table headers if available
+            if 'headers' in table and table['headers']:
+                writer.writerow(table['headers'])
+            
+            # Write table rows
+            if 'rows' in table:
+                for row in table['rows']:
+                    writer.writerow(row)
+            
+            return csv_output.getvalue()
+    
+    def _extract_markdown_tables_directly(self, content: str) -> List[Dict[str, Any]]:
+        """Extract tables directly from markdown content as fallback."""
+        tables = []
+        table_pattern = re.compile(r'\|(.+)\|\s*\n\|[-\s|:]+\|\s*\n((?:\|.+\|\s*\n?)*)', re.MULTILINE)
+        
+        for match in table_pattern.finditer(content):
+            header_row = match.group(1).strip()
+            body_rows = match.group(2).strip()
+            
+            # Parse header
+            headers = [cell.strip() for cell in header_row.split('|') if cell.strip()]
+            
+            # Parse body rows
+            rows = []
+            for row_line in body_rows.split('\n'):
+                if row_line.strip() and '|' in row_line:
+                    cells = [cell.strip() for cell in row_line.split('|') if cell.strip()]
+                    if cells:
+                        rows.append(cells)
+            
+            if headers and rows:
+                tables.append({
+                    'headers': headers,
+                    'rows': rows,
+                    'columns': len(headers)
+                })
+        
+        return tables
     
     def __str__(self) -> str:
         """String representation of the result."""
