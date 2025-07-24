@@ -1,65 +1,65 @@
 #!/usr/bin/env python3
-"""Example usage of the LLM Data Converter."""
-
 from llm_converter import FileConverter
 
-def main():
-    # Example with local mode (default)
-    print("=== Local Mode Example ===")
-    converter = FileConverter()
-    
-    # You can test with any document, image, or URL
-    # result = converter.convert("path/to/your/document.pdf")
-    # print(result.to_markdown())
-    
-    # Test with simple text content
-    test_content = """
-    # Test Document
-    
-    This is a sample document with a table:
-    
-    | Name | Age | City |
-    |------|-----|------|
-    | John | 25  | NYC  |
-    | Jane | 30  | LA   |
-    | Bob  | 35  | SF   |
-    
-    And some regular text content.
-    """
-    
-    result = converter.convert_text(test_content)
-    
-    print("Markdown output:")
-    print(result.to_markdown())
-    print("\n" + "="*50 + "\n")
-    
-    print("CSV output (tables only):")
-    try:
-        csv_output = result.to_csv()
-        print(csv_output)
-    except ValueError as e:
-        print(f"CSV Error: {e}")
-    
-    print("\n" + "="*50 + "\n")
-    
-    # Example with cloud mode (requires API key)
-    print("=== Cloud Mode Example ===")
-    try:
-        # Cloud mode example - replace with your API key
-        cloud_converter = FileConverter(
-            cloud_mode=True, 
-            api_key="<api-key>"  # Replace with actual key from https://app.nanonets.com/#/keys
-        )
-        
-        # Uncomment to test with cloud mode:
-        # result = cloud_converter.convert("path/to/your/document.pdf")
-        # print(result.to_markdown())
-        
-        print("Cloud converter initialized successfully!")
-        print("Replace '<api-key>' with your actual API key to test cloud mode.")
-        
-    except Exception as e:
-        print(f"Cloud mode example (demo only): {e}")
 
-if __name__ == "__main__":
-    main()
+file_path = "sample_documents/invoice.pdf"
+
+converter = FileConverter(
+    # cloud_mode=True,
+    # api_key="<api-key>"
+)
+
+# Standard conversions
+result = converter.convert(file_path).to_csv()
+print("📝=============================== CSV Output:===============================")
+print(result)
+
+result = converter.convert(file_path).to_html()
+print("📝=============================== HTML Output:===============================")
+print(result)
+
+result = converter.convert(file_path).to_json()
+print("📝=============================== JSON Output:===============================")
+print(result)
+
+# Field extraction examples (cloud mode only)
+print("\n📝=============================== Field Extraction Examples:===============================")
+
+# Example 1: Extract specific fields
+result = converter.convert(file_path)
+try:
+    specific_fields = result.to_json(specified_fields=[
+        "total_amount", 
+        "date", 
+        "vendor_name",
+        "invoice_number"
+    ])
+    print("Specific fields extraction:")
+    print(specific_fields)
+except Exception as e:
+    print(f"Field extraction failed: {e}")
+
+print("\n" + "="*80 + "\n")
+
+# Example 2: Extract using JSON schema
+try:
+    schema = {
+        "invoice_number": "string",
+        "total_amount": "number",
+        "vendor_name": "string", 
+        "items": [{
+            "description": "string",
+            "amount": "number"
+        }]
+    }
+    
+    structured_data = result.to_json(json_schema=schema)
+    print("JSON schema extraction:")
+    print(structured_data)
+except Exception as e:
+    print(f"Schema extraction failed: {e}")
+
+result = converter.convert(file_path).to_text()
+
+print("📝=============================== Markdown Output:===============================")
+print(result)

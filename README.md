@@ -132,6 +132,43 @@ with open("tables.csv", "w") as f:
     f.write(csv_all)
 ```
 
+### Extract Specific Fields (Cloud Mode)
+
+```python
+from llm_converter import FileConverter
+
+# Cloud mode converter
+converter = FileConverter(cloud_mode=True, api_key="your_api_key")
+
+# Extract specific fields from invoice
+result = converter.convert("invoice.pdf")
+
+# Extract specific fields
+invoice_data = result.to_json(specified_fields=[
+    "invoice_number", 
+    "total_amount", 
+    "vendor_name", 
+    "due_date"
+])
+print(invoice_data)
+
+# Extract using JSON schema for structured data
+schema = {
+    "invoice_number": "string",
+    "total_amount": "number", 
+    "vendor_name": "string",
+    "due_date": "string",
+    "items": [{
+        "description": "string",
+        "quantity": "number", 
+        "unit_price": "number"
+    }]
+}
+
+structured_data = result.to_json(json_schema=schema)
+print(structured_data)
+```
+
 ### Chain with LLM
 
 ```python
@@ -264,7 +301,9 @@ Result object with methods to export to different formats.
 - `to_markdown() -> str`: Export as markdown
 - `to_html() -> str`: Export as HTML  
 - `to_json() -> dict`: Export as JSON
-- `to_csv() -> str`: Export tables as CSV (raises ValueError if no tables found)
+- `to_json(specified_fields=["field1", "field2"]) -> dict`: Extract specific fields (cloud mode only)
+- `to_json(json_schema={"field": "type"}) -> dict`: Extract using JSON schema (cloud mode only)
+- `to_csv() -> str`: Export tables as CSV 
 - `to_text() -> str`: Export as plain text
 
 ## Troubleshooting

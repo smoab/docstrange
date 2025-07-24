@@ -73,7 +73,6 @@ class FileConverter:
         if self.cloud_mode and self.api_key:
             cloud_processor = CloudProcessor(
                 api_key=self.api_key,
-                output_type="markdown",  # Default output type
                 model_type=self.model,   # Pass model as model_type to cloud processor
                 preserve_layout=preserve_layout,
                 include_images=include_images
