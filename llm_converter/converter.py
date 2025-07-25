@@ -292,7 +292,8 @@ class FileConverter:
         # Check if GPU processor should be used for this file type
         gpu_available = should_use_gpu_processor()
         
-        if not self.cpu_preference and (self.gpu_preference or (gpu_available and ext in gpu_supported_formats)):
+        # Try GPU processor only if format is supported AND (gpu_preference OR auto-gpu)
+        if not self.cpu_preference and ext in gpu_supported_formats and (self.gpu_preference or (gpu_available and not self.gpu_preference)):
             for processor in self.processors:
                 if isinstance(processor, GPUProcessor):
                     if self.gpu_preference:
@@ -301,9 +302,13 @@ class FileConverter:
                         logger.info(f"Using GPU processor with Nanonets OCR for {file_path} (GPU available and format supported)")
                     return processor
         
-        # Fallback to normal processor selection
+        # Fallback to normal processor selection (CPU processors)
         for processor in self.processors:
             if processor.can_process(file_path):
+                # Skip GPU processor in fallback mode to avoid infinite loops
+                if isinstance(processor, GPUProcessor):
+                    continue
+                logger.info(f"Using {processor.__class__.__name__} for {file_path}")
                 return processor
         return None
     
