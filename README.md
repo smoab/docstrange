@@ -1,4 +1,4 @@
-# ⚡ LLM Data Converter
+# LLM Data Converter
 
 [![PyPI version](https://badge.fury.io/py/llm-data-converter.svg?v=2)](https://badge.fury.io/py/llm-data-converter)
 [![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
@@ -6,32 +6,32 @@
 [![GitHub stars](https://img.shields.io/github/stars/NanoNets/llm-data-converter?style=social)](https://github.com/NanoNets/llm-data-converter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **✨ Try Cloud Mode for Free! ✨**  
+> **Try Cloud Mode for Free!**  
 > Convert documents instantly with our cloud API - no setup required.  
 > For unlimited processing, [get your free API key](https://app.nanonets.com/#/keys).
 
 Transform any document, image, or URL into LLM-ready formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
 
-## 🚀 **Key Features**
+## Key Features
 
-- **🌟 Cloud Processing (Default)**: Instant conversion with Nanonets API - no local setup needed
-- **⚡ Local Processing**: CPU/GPU options for complete privacy and control
-- **📄 Universal Input**: PDFs, Word docs, Excel, PowerPoint, images, URLs, and raw text
-- **🎯 Smart Output**: Markdown, JSON, CSV, HTML, and plain text formats
-- **🤖 LLM-Optimized**: Clean, structured output perfect for AI processing
-- **🧠 Intelligent Extraction**: Extract specific fields or structured data using AI
-- **🔧 Advanced OCR**: Multiple OCR engines with automatic fallback
-- **📊 Table Processing**: Accurate table extraction and formatting
-- **🖼️ Image Handling**: Extract text from images and visual content
-- **🌐 URL Processing**: Direct conversion from web pages
+- **Cloud Processing (Default)**: Instant conversion with Nanonets API - no local setup needed
+- **Local Processing**: CPU/GPU options for complete privacy and control
+- **Universal Input**: PDFs, Word docs, Excel, PowerPoint, images, URLs, and raw text
+- **Smart Output**: Markdown, JSON, CSV, HTML, and plain text formats
+- **LLM-Optimized**: Clean, structured output perfect for AI processing
+- **Intelligent Extraction**: Extract specific fields or structured data using AI
+- **Advanced OCR**: Multiple OCR engines with automatic fallback
+- **Table Processing**: Accurate table extraction and formatting
+- **Image Handling**: Extract text from images and visual content
+- **URL Processing**: Direct conversion from web pages
 
-## 📦 **Installation**
+## Installation
 
 ```bash
 pip install llm-data-converter
 ```
 
-## 🎯 **Quick Start**
+## Quick Start
 
 ### Basic Usage (Cloud Mode - Default)
 
@@ -88,7 +88,7 @@ converter = FileConverter(cpu_preference=True)
 converter = FileConverter(gpu_preference=True)
 ```
 
-## 🔄 **Output Formats**
+## Output Formats
 
 - **Markdown**: Clean, LLM-friendly format with preserved structure
 - **JSON**: Structured data with metadata and intelligent parsing
@@ -96,7 +96,7 @@ converter = FileConverter(gpu_preference=True)
 - **CSV**: Extract tables and data in spreadsheet format
 - **Text**: Plain text with smart formatting
 
-## 💡 **Examples**
+## Examples
 
 ### Convert Multiple File Types
 
@@ -161,7 +161,7 @@ print(json_data["format"])  # "ollama_structured_json" or "structured_json"
 # - Proper data type handling
 ```
 
-**Requirements for enhanced JSON (if using cpu mode):**
+**Requirements for enhanced JSON (if using cpu_preference=True):**
 - Install: `pip install 'llm-data-converter[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
@@ -295,7 +295,7 @@ response = your_llm_client.chat(
 )
 ```
 
-## 🖥️ **Command Line Interface**
+## Command Line Interface
 
 ```bash
 # Basic conversion (cloud mode default)
@@ -363,7 +363,7 @@ llm-converter document.pdf --cpu-mode --output json --extract-fields key_points 
 }
 ```
 
-## 🔧 **API Reference for library**
+## API Reference for library
 
 ### FileConverter
 
@@ -392,7 +392,7 @@ result.to_csv() -> str                       # CSV format for tables
 result.to_text() -> str                      # Plain text
 ```
 
-## 🏗️ **Advanced Configuration**
+## Advanced Configuration
 
 ### Custom OCR Settings
 
@@ -412,20 +412,20 @@ export NANONETS_API_KEY="your_api_key"
 # Now all conversions use your API key automatically
 ```
 
-## 🤝 **Contributing**
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-## 📄 **License**
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 **Support**
+## Support
 
-- 📧 **Email**: support@nanonets.com  
-- 🐛 **Issues**: [GitHub Issues](https://github.com/NanoNets/llm-data-converter/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/NanoNets/llm-data-converter/discussions)
+- **Email**: support@nanonets.com  
+- **Issues**: [GitHub Issues](https://github.com/NanoNets/llm-data-converter/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/llm-data-converter/discussions)
 
 ---
 
-⭐ **Star this repo** if you find it helpful! Your support helps us improve the library. 
+**Star this repo** if you find it helpful! Your support helps us improve the library. 
