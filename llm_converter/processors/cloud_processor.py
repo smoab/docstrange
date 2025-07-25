@@ -25,6 +25,12 @@ class CloudConversionResult(ConversionResult):
     
     def _get_cloud_output(self, output_type: str, specified_fields: Optional[list] = None, json_schema: Optional[dict] = None) -> str:
         """Get output from cloud API for specific type, with caching."""
+        # Validate output type
+        valid_output_types = ["markdown", "flat-json", "html", "csv", "specified-fields", "specified-json"]
+        if output_type not in valid_output_types:
+            logger.warning(f"Invalid output type '{output_type}' for cloud API. Using 'markdown'.")
+            output_type = "markdown"
+        
         # Create cache key based on output type and parameters
         cache_key = output_type
         if specified_fields:
@@ -212,11 +218,11 @@ class CloudProcessor(BaseProcessor):
     
     def __init__(self, api_key: Optional[str] = None, output_type: str = None, model_type: Optional[str] = None, 
                  specified_fields: Optional[list] = None, json_schema: Optional[dict] = None, **kwargs):
-        """Initialize cloud processor.
+        """Initialize the cloud processor.
         
         Args:
-            api_key: Nanonets API key (optional - without it, requests are rate-limited)
-            output_type: API output type (markdown, flat-json, html, csv, specified-fields, specified-json)
+            api_key: API key for cloud processing (optional - uses rate-limited free tier without key)
+            output_type: Output type for cloud processing (markdown, flat-json, html, csv, specified-fields, specified-json)
             model_type: Model type for cloud processing (gemini, openapi)
             specified_fields: List of fields to extract (for specified-fields output type)
             json_schema: JSON schema defining fields and types to extract (for specified-json output type)
@@ -229,11 +235,8 @@ class CloudProcessor(BaseProcessor):
         self.json_schema = json_schema
         self.api_url = "https://extraction-api.nanonets.com/extract"
         
-        # Validate output type
-        valid_output_types = ["markdown", "flat-json", "html", "csv", "specified-fields", "specified-json"]
-        if output_type not in valid_output_types:
-            logger.warning(f"Invalid output type '{output_type}' for cloud API. Using 'markdown'.")
-            self.output_type = "markdown"
+        # Don't validate output_type during initialization - it will be validated during processing
+        # This prevents warnings during FileConverter initialization
     
     def can_process(self, file_path: str) -> bool:
         """Check if the processor can handle the file."""
