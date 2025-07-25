@@ -1,410 +1,431 @@
-# LLM Data Converter
+# ⚡ LLM Data Converter
 
 [![PyPI version](https://badge.fury.io/py/llm-data-converter.svg?v=2)](https://badge.fury.io/py/llm-data-converter)
-[![GitHub stars](https://img.shields.io/github/stars/NanoNets/llm-data-converter?style=social)](https://github.com/NanoNets/llm-data-converter)
 [![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
-[![Python versions](https://img.shields.io/pypi/pyversions/llm-data-converter)](https://pypi.org/project/llm-data-converter/)
+[![Python](https://img.shields.io/pypi/pyversions/llm-data-converter.svg)](https://pypi.org/project/llm-data-converter/)
+[![GitHub stars](https://img.shields.io/github/stars/NanoNets/llm-data-converter?style=social)](https://github.com/NanoNets/llm-data-converter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **🆓 Try Cloud Mode for Free:** Test the cloud extraction capabilities at [https://extraction-api.nanonets.com/](https://extraction-api.nanonets.com/) - API key required for the web interface!
+> **✨ Try Cloud Mode for Free! ✨**  
+> Convert documents instantly with our cloud API - no setup required.  
+> For unlimited processing, [get your free API key](https://app.nanonets.com/#/keys).
 
-Convert any document format into LLM-ready data format (markdown) with advanced intelligent document processing capabilities powered by pre-trained models.
+Transform any document, image, or URL into LLM-ready formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
 
-**🆕 NEW: Cloud Mode Available!** - Process documents using the powerful Nanonets cloud API with a free API key for faster, more accurate results.
+## 🚀 **Key Features**
 
-## Installation
+- **🌟 Cloud Processing (Default)**: Instant conversion with Nanonets API - no local setup needed
+- **⚡ Local Processing**: CPU/GPU options for complete privacy and control
+- **📄 Universal Input**: PDFs, Word docs, Excel, PowerPoint, images, URLs, and raw text
+- **🎯 Smart Output**: Markdown, JSON, CSV, HTML, and plain text formats
+- **🤖 LLM-Optimized**: Clean, structured output perfect for AI processing
+- **🧠 Intelligent Extraction**: Extract specific fields or structured data using AI
+- **🔧 Advanced OCR**: Multiple OCR engines with automatic fallback
+- **📊 Table Processing**: Accurate table extraction and formatting
+- **🖼️ Image Handling**: Extract text from images and visual content
+- **🌐 URL Processing**: Direct conversion from web pages
+
+## 📦 **Installation**
 
 ```bash
 pip install llm-data-converter
 ```
 
-**Requirements:**
-- Python 3.8 or higher
+## 🎯 **Quick Start**
 
-### System Dependencies for Intelligent Document Processing
-
-For this library to work properly, you may need to install additional system dependencies:
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update
-sudo apt install -y libgl1 libglib2.0-0 libgomp1
-pip install setuptools
-```
-
-**macOS:**
-```bash
-# Usually not needed, but if you encounter OpenGL issues:
-brew install mesa
-```
-
-**Note:** The package will automatically download and cache intelligent models on first use. For cloud mode, no system dependencies or model downloads are required.
-
-## Quick Start
+### Basic Usage (Cloud Mode - Default)
 
 ```python
 from llm_converter import FileConverter
 
-# Local mode (default) - works offline
+# Default cloud mode - no setup required
 converter = FileConverter()
-result = converter.convert("document.pdf").to_markdown()
-print(result)
+
+# Convert any document
+result = converter.convert("document.pdf")
+
+# Get different output formats
+markdown = result.to_markdown()
+json_data = result.to_json()
+html = result.to_html()
+csv_tables = result.to_csv()
+
+# Extract specific fields
+extracted_fields = result.to_json(specified_fields=[
+    "title", "author", "date", "summary", "key_points"
+])
+
+# Extract using JSON schema
+schema = {
+    "title": "string",
+    "author": "string", 
+    "date": "string",
+    "summary": "string",
+    "key_points": ["string"],
+    "metadata": {
+        "page_count": "number",
+        "language": "string"
+    }
+}
+structured_data = result.to_json(json_schema=schema)
 ```
 
-**Cloud Mode (New!)** - For faster, more accurate results:
+### With API Key (Unlimited Access)
+
 ```python
-from llm_converter import FileConverter
-
-# Only api_key is required for cloud mode
-# Get API key from https://app.nanonets.com/#/keys
-converter = FileConverter(cloud_mode=True, api_key="your_api_key")
-result = converter.convert("document.pdf").to_markdown()  # Same interface!
-print(result)
-
-# Optional: Choose specific model for cloud processing
-converter = FileConverter(cloud_mode=True, api_key="your_api_key", model="gemini")  # model is optional
-result = converter.convert("document.pdf").to_markdown()
-print(result)
+# Get your free API key from https://app.nanonets.com/#/keys
+converter = FileConverter(api_key="your_api_key_here")
+result = converter.convert("document.pdf")
 ```
 
-**CPU/GPU Processing Preferences:**
-```python
-from llm_converter import FileConverter
+### Local Processing
 
-# Force CPU-only processing (useful for servers without GPU)
+```python
+# Force local CPU processing
 converter = FileConverter(cpu_preference=True)
-result = converter.convert("document.pdf").to_markdown()
 
-# Force GPU processing (will raise error if GPU not available)
+# Force local GPU processing (requires CUDA)
 converter = FileConverter(gpu_preference=True)
-result = converter.convert("document.pdf").to_markdown()
-
-# Auto-detect (default) - uses GPU if available, falls back to CPU
-converter = FileConverter()  # No preference specified
-result = converter.convert("document.pdf").to_markdown()
-
-# Check current processing mode
-print(f"Processing mode: {converter.get_processing_mode()}")  # cpu_forced, gpu_forced, gpu_auto, cpu_auto, or cloud
 ```
 
-## Features
+## 🔄 **Output Formats**
 
-- **Multiple Input Formats**: PDF, DOCX, TXT, HTML, URLs, Excel files, and more
-- **Multiple Output Formats**: Markdown, HTML, JSON, Plain Text
-- **LLM Integration**: Seamless integration with LiteLLM and other LLM libraries
-- **Local Processing**: Process documents locally without external dependencies
-- **Cloud Processing**: Fast, accurate processing with Nanonets cloud API
-- **Layout Preservation**: Maintain document structure and formatting
-- **CPU/GPU Processing Modes**: Flexible processing options:
-  - **Auto-detect**: Automatically uses GPU if available, falls back to CPU
-  - **CPU-only**: Force CPU processing (useful for servers without GPU)
-  - **GPU-only**: Force GPU processing (requires CUDA-compatible GPU)
-- **Intelligent Document Processing**: Advanced document understanding and conversion powered by pre-trained models:
-  - **Layout Detection**: Intelligent models for document structure understanding
-  - **Text Recognition**: High-accuracy text extraction with confidence scoring
-  - **Table Structure**: Intelligent table detection and conversion to markdown format
-  - **Automatic Model Download**: Models are automatically downloaded and cached
+- **Markdown**: Clean, LLM-friendly format with preserved structure
+- **JSON**: Structured data with metadata and intelligent parsing
+- **HTML**: Formatted output with styling and layout
+- **CSV**: Extract tables and data in spreadsheet format
+- **Text**: Plain text with smart formatting
 
-## Usage Examples
+## 💡 **Examples**
 
-### Convert PDF to Markdown
-
-```python
-from llm_converter import FileConverter
-
-# Local mode (default)
-converter = FileConverter()
-result = converter.convert("document.pdf").to_markdown()
-print(result)
-
-# Cloud mode (just add cloud_mode=True and api_key)
-converter = FileConverter(cloud_mode=True, api_key="your_api_key")
-result = converter.convert("document.pdf").to_markdown()  # Same interface!
-print(result)
-```
-
-### Convert Image to HTML
+### Convert Multiple File Types
 
 ```python
 from llm_converter import FileConverter
 
 converter = FileConverter()
-result = converter.convert("sample.png").to_html()
-print(result)
+
+# PDF document
+pdf_result = converter.convert("report.pdf")
+print(pdf_result.to_markdown())
+
+# Word document  
+docx_result = converter.convert("document.docx")
+print(docx_result.to_json())
+
+# Excel spreadsheet
+excel_result = converter.convert("data.xlsx")
+print(excel_result.to_csv())
+
+# PowerPoint presentation
+pptx_result = converter.convert("slides.pptx")
+print(pptx_result.to_html())
+
+# Image with text
+image_result = converter.convert("screenshot.png")
+print(image_result.to_text())
+
+# Web page
+url_result = converter.convert("https://example.com")
+print(url_result.to_markdown())
 ```
 
 ### Extract Tables to CSV
 
 ```python
-from llm_converter import FileConverter
-
-converter = FileConverter()
-
-# Extract first table as CSV
-result = converter.convert("report.pdf")
-csv_data = result.to_csv()  # First table only
+# Extract all tables from a document
+result = converter.convert("financial_report.pdf")
+csv_data = result.to_csv(include_all_tables=True)
 print(csv_data)
-
-# Extract all tables as CSV
-csv_all = result.to_csv(include_all_tables=True)
-print(csv_all)
-
-# Save to file
-with open("tables.csv", "w") as f:
-    f.write(csv_all)
 ```
 
-### Extract Specific Fields (Cloud Mode)
+### Enhanced JSON Conversion
+
+The library now uses intelligent document understanding for JSON conversion:
 
 ```python
 from llm_converter import FileConverter
 
-# Cloud mode converter
-converter = FileConverter(cloud_mode=True, api_key="your_api_key")
+converter = FileConverter()
+result = converter.convert("document.pdf")
 
-# Extract specific fields from invoice
+# Enhanced JSON with Ollama (when available)
+json_data = result.to_json()
+print(json_data["format"])  # "ollama_structured_json" or "structured_json"
+
+# The enhanced conversion provides:
+# - Better document structure understanding
+# - Intelligent table parsing
+# - Automatic metadata extraction  
+# - Key information identification
+# - Proper data type handling
+```
+
+**Requirements for enhanced JSON (if using cpu mode):**
+- Install: `pip install 'llm-data-converter[local-llm]'`
+- [Install Ollama](https://ollama.ai/) and run: `ollama serve`
+- Pull a model: `ollama pull llama3.2`
+
+*If Ollama is not available, the library automatically falls back to the standard JSON parser.*
+
+### Extract Specific Fields & Structured Data
+
+```python
+# Extract specific fields from any document
 result = converter.convert("invoice.pdf")
 
-# Extract specific fields
-invoice_data = result.to_json(specified_fields=[
+# Method 1: Extract specific fields
+extracted = result.to_json(specified_fields=[
     "invoice_number", 
     "total_amount", 
-    "vendor_name", 
+    "vendor_name",
     "due_date"
 ])
-print(invoice_data)
 
-# Extract using JSON schema for structured data
+# Method 2: Extract using JSON schema
 schema = {
     "invoice_number": "string",
     "total_amount": "number", 
     "vendor_name": "string",
-    "due_date": "string",
-    "items": [{
+    "line_items": [{
         "description": "string",
-        "quantity": "number", 
-        "unit_price": "number"
+        "amount": "number"
     }]
 }
 
-structured_data = result.to_json(json_schema=schema)
-print(structured_data)
+structured = result.to_json(json_schema=schema)
 ```
+
+**How it works:**
+- Automatically uses cloud API when available
+- Falls back to local Ollama for privacy-focused processing
+- Same interface works for both cloud and local modes
+
+**Cloud Mode Usage Examples:**
+
+```python
+from llm_converter import FileConverter
+
+# Default cloud mode (rate-limited without API key)
+converter = FileConverter()
+
+# With API key for unlimited access
+converter = FileConverter(api_key="your_api_key_here")
+
+# Extract specific fields from invoice
+result = converter.convert("invoice.pdf")
+
+# Extract key invoice information
+invoice_fields = result.to_json(specified_fields=[
+    "invoice_number",
+    "total_amount", 
+    "vendor_name",
+    "due_date",
+    "items_count"
+])
+
+print("Extracted Invoice Fields:")
+print(invoice_fields)
+# Output: {"extracted_fields": {"invoice_number": "INV-001", ...}, "format": "specified_fields"}
+
+# Extract structured data using schema
+invoice_schema = {
+    "invoice_number": "string",
+    "total_amount": "number",
+    "vendor_name": "string",
+    "billing_address": {
+        "street": "string",
+        "city": "string", 
+        "zip_code": "string"
+    },
+    "line_items": [{
+        "description": "string",
+        "quantity": "number",
+        "unit_price": "number",
+        "total": "number"
+    }],
+    "taxes": {
+        "tax_rate": "number",
+        "tax_amount": "number"
+    }
+}
+
+structured_invoice = result.to_json(json_schema=invoice_schema)
+print("Structured Invoice Data:")
+print(structured_invoice)
+# Output: {"structured_data": {...}, "schema": {...}, "format": "structured_json"}
+
+# Extract from different document types
+receipt = converter.convert("receipt.jpg")
+receipt_data = receipt.to_json(specified_fields=[
+    "merchant_name", "total_amount", "date", "payment_method"
+])
+
+contract = converter.convert("contract.pdf") 
+contract_schema = {
+    "parties": [{
+        "name": "string",
+        "role": "string"
+    }],
+    "contract_value": "number",
+    "start_date": "string",
+    "end_date": "string",
+    "key_terms": ["string"]
+}
+contract_data = contract.to_json(json_schema=contract_schema)
+```
+
+**Local extraction requirements (if using cpu_preference=True):**
+- Install ollama package: `pip install 'llm-data-converter[local-llm]'`
+- [Install Ollama](https://ollama.ai/) and run: `ollama serve`
+- Pull a model: `ollama pull llama3.2`
 
 ### Chain with LLM
 
 ```python
-from llm_converter import FileConverter
-from litellm import completion
-
-converter = FileConverter()
-document_content = converter.convert("report.pdf").to_markdown()
+# Perfect for LLM workflows
+document_text = converter.convert("research_paper.pdf").to_markdown()
 
 # Use with any LLM
-response = completion(
-    model="openai/gpt-4o",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant that analyzes documents."},
-        {"role": "user", "content": f"Summarize this document:\n\n{document_content}"}
-    ]
+response = your_llm_client.chat(
+    messages=[{
+        "role": "user", 
+        "content": f"Summarize this research paper:\n\n{document_text}"
+    }]
 )
-
-print(response.choices[0].message.content)
 ```
 
-## Supported Formats
-
-### Input Formats
-- **Documents**: PDF, DOCX, TXT
-- **Web**: URLs, HTML files
-- **Data**: Excel (XLSX, XLS), CSV
-- **Images**: PNG, JPG, JPEG 
-
-### Output Formats
-- **Markdown**: Clean, structured markdown with proper table formatting
-- **HTML**: Formatted HTML with styling
-- **JSON**: Structured JSON data
-- **CSV**: Extract tables as CSV format for spreadsheet analysis
-- **Plain Text**: Simple text extraction
-
-## CLI usage
-
-The `llm-converter` command-line tool provides easy access to all conversion features:
-
-### Basic Usage
+## 🖥️ **Command Line Interface**
 
 ```bash
-# Convert a PDF to markdown (default)
+# Basic conversion (cloud mode default)
 llm-converter document.pdf
 
-# Convert to different output formats
-llm-converter document.pdf --output html
+# With API key for unlimited access
+llm-converter document.pdf --api-key YOUR_API_KEY
+
+# Local processing modes
+llm-converter document.pdf --cpu-mode
+llm-converter document.pdf --gpu-mode
+
+# Different output formats
 llm-converter document.pdf --output json
-llm-converter document.pdf --output csv  # Extract tables to CSV
-llm-converter document.pdf --output text
+llm-converter document.pdf --output html
+llm-converter document.pdf --output csv
+
+# Extract specific fields
+llm-converter invoice.pdf --output json --extract-fields invoice_number total_amount
+
+# Extract with JSON schema
+llm-converter document.pdf --output json --json-schema schema.json
+
+# Multiple files
+llm-converter *.pdf --output markdown
+
+# Save to file
+llm-converter document.pdf --output-file result.md
+
+# Comprehensive field extraction examples
+llm-converter invoice.pdf --output json --extract-fields invoice_number vendor_name total_amount due_date line_items
+
+# Extract from different document types with specific fields
+llm-converter receipt.jpg --output json --extract-fields merchant_name total_amount date payment_method
+
+llm-converter contract.pdf --output json --extract-fields parties contract_value start_date end_date
+
+# Using JSON schema files for structured extraction
+llm-converter invoice.pdf --output json --json-schema invoice_schema.json
+llm-converter contract.pdf --output json --json-schema contract_schema.json
+
+# Combine with API key for unlimited access
+llm-converter document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
+
+# Force local processing with field extraction (requires Ollama)
+llm-converter document.pdf --cpu-mode --output json --extract-fields key_points conclusions recommendations
 ```
 
-### Cloud Mode
-
-```bash
-# Convert using cloud API - only api_key required
-llm-converter document.pdf --cloud-mode --api-key YOUR_API_KEY
-
-# Use environment variable for API key
-export NANONETS_API_KEY=your_api_key
-llm-converter document.pdf --cloud-mode --output json
-
-# Optional: Use specific model for cloud processing
-llm-converter document.pdf --cloud-mode --api-key YOUR_KEY --model gemini
-llm-converter document.pdf --cloud-mode --model openapi --output json
+**Example schema.json file:**
+```json
+{
+  "invoice_number": "string",
+  "total_amount": "number",
+  "vendor_name": "string",
+  "billing_address": {
+    "street": "string",
+    "city": "string",
+    "zip_code": "string"
+  },
+  "line_items": [{
+    "description": "string",
+    "quantity": "number",
+    "unit_price": "number"
+  }]
+}
 ```
 
-### Advanced Options
-
-```bash
-# Save output to file
-llm-converter document.pdf --output-file output.md
-
-# Force CPU-only processing
-llm-converter document.pdf --cpu-only
-
-# Force GPU processing (will error if GPU not available)
-llm-converter document.pdf --gpu-only
-
-# For image input
-llm-converter image.png 
-
-# Convert multiple files at once
-llm-converter file1.pdf file2.docx file3.xlsx --output markdown
-```
-
-### List Supported Formats
-
-```bash
-# See all supported input formats
-llm-converter --list-formats
-```
-
-### Examples
-
-```bash
-# Convert PDF to markdown
-llm-converter scanned_document.pdf --output markdown
-
-# Convert image to HTML with layout preservation
-llm-converter screenshot.png --output html
-
-# Convert multiple documents to JSON
-llm-converter report.pdf presentation.pptx data.xlsx --output json --output-file combined.json
-
-# Extract tables from documents to CSV
-llm-converter financial_report.pdf --output csv --output-file data.csv
-
-# Convert URL content to markdown
-llm-converter https://blog.example.com --output markdown --output-file blog_content.md
-
-# Cloud mode examples
-llm-converter document.pdf --cloud-mode --api-key YOUR_KEY
-llm-converter document.pdf --cloud-mode --output json  # env var NANONETS_API_KEY
-```
-
-## API Reference for library
+## 🔧 **API Reference for library**
 
 ### FileConverter
 
-Main class for converting documents to LLM-ready formats.
-
-#### Constructor Parameters
-
-- `preserve_layout: bool = True`: Whether to preserve document layout
-- `include_images: bool = True`: Whether to include images in output
-- `ocr_enabled: bool = True`: Whether to enable OCR for image and PDF processing
-- `cloud_mode: bool = False`: Whether to use cloud processing via Nanonets API
-- `api_key: Optional[str] = None`: API key for cloud mode (get from https://app.nanonets.com/#/keys)
-- `model: Optional[str] = None`: Model to use for cloud processing (gemini, openapi) - only for cloud mode
-- `cpu_preference: bool = False`: Force CPU-only processing (overrides GPU preference)
-- `gpu_preference: bool = False`: Force GPU processing (will raise error if GPU not available)
-
-#### Methods
-
-- `convert(file_path: str) -> ConversionResult`: Convert a file to internal format
-- `convert_url(url: str) -> ConversionResult`: Convert a URL page contents to internal format
-- `convert_text(text: str) -> ConversionResult`: Convert plain text to internal format
-- `get_processing_mode() -> str`: Get current processing mode (cpu_forced, gpu_forced, gpu_auto, cpu_auto, cloud)
-
-### ConversionResult
-
-Result object with methods to export to different formats.
-
-#### Methods
-
-- `to_markdown() -> str`: Export as markdown
-- `to_html() -> str`: Export as HTML  
-- `to_json() -> dict`: Export as JSON
-- `to_json(specified_fields=["field1", "field2"]) -> dict`: Extract specific fields (cloud mode only)
-- `to_json(json_schema={"field": "type"}) -> dict`: Extract using JSON schema (cloud mode only)
-- `to_csv() -> str`: Export tables as CSV 
-- `to_text() -> str`: Export as plain text
-
-## Troubleshooting
-
-### Cloud Mode Setup
-
-1. Get your free API key from [https://app.nanonets.com/#/keys](https://app.nanonets.com/#/keys)
-2. Set environment variable: `export NANONETS_API_KEY=your_key`
-3. Or provide directly: `FileConverter(cloud_mode=True, api_key="your_key")`
-
-### Installation Issues
-
-#### Tokenizers Build Error
-
-If you encounter an error like this during installation:
-```
-ERROR: Could not find a version that satisfies the requirement puccinialin
-ERROR: No matching distribution found for puccinialin
+```python
+FileConverter(
+    preserve_layout: bool = True,      # Preserve document structure
+    include_images: bool = True,       # Include image content
+    ocr_enabled: bool = True,         # Enable OCR processing
+    api_key: str = None,              # API key for unlimited cloud access
+    model: str = None,                # Model for cloud processing ("gemini", "openapi")
+    cpu_preference: bool = False,     # Force local CPU processing
+    gpu_preference: bool = False      # Force local GPU processing
+)
 ```
 
-This is typically caused by the `tokenizers` package failing to build from source. Here are several solutions:
+### ConversionResult Methods
 
-**Solution 1: Update pip and install pre-compiled wheels**
+```python
+result.to_markdown() -> str                    # Clean markdown output
+result.to_json(                              # Structured JSON
+    specified_fields: List[str] = None,       # Extract specific fields
+    json_schema: Dict = None                  # Extract with schema
+) -> Dict
+result.to_html() -> str                      # Formatted HTML
+result.to_csv() -> str                       # CSV format for tables
+result.to_text() -> str                      # Plain text
+```
+
+## 🏗️ **Advanced Configuration**
+
+### Custom OCR Settings
+
+```python
+converter = FileConverter(
+    cpu_preference=True,        # Use local processing
+    ocr_enabled=True,          # Enable OCR
+    preserve_layout=True,      # Maintain structure
+    include_images=True        # Process images
+)
+```
+
+### Environment Variables
+
 ```bash
-pip install --upgrade pip
-pip install llm-data-converter --no-cache-dir
+export NANONETS_API_KEY="your_api_key"
+# Now all conversions use your API key automatically
 ```
 
-**Solution 2: Install with specific tokenizers version**
-```bash
-pip install tokenizers==0.21.0
-pip install llm-data-converter
-```
+## 🤝 **Contributing**
 
-**Solution 3: Use conda (recommended for complex dependencies)**
-```bash
-conda install -c conda-forge llm-data-converter
-```
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-#### Numpy/Homebrew Conflict (macOS)
+## 📄 **License**
 
-If you see this error on macOS:
-```
-error: uninstall-no-record-file
-× Cannot uninstall numpy 2.1.2
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-**Solution: Use virtual environment (recommended)**
-```bash
-# Create and activate a virtual environment
-python3 -m venv venv
-source venv/bin/activate
-pip install llm-data-converter
-```
+## 🆘 **Support**
 
-### Getting Help
+- 📧 **Email**: support@nanonets.com  
+- 🐛 **Issues**: [GitHub Issues](https://github.com/NanoNets/llm-data-converter/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/NanoNets/llm-data-converter/discussions)
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/nanonets/llm-data-converter/issues)
-- **Documentation**: Check this README and the [scripts documentation](scripts/README.md)
-- **Community**: Join discussions on GitHub
+---
 
-## License
-
-MIT License - see LICENSE file for details. 
+⭐ **Star this repo** if you find it helpful! Your support helps us improve the library. 

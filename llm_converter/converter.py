@@ -32,7 +32,6 @@ class FileConverter:
         preserve_layout: bool = True,
         include_images: bool = True,
         ocr_enabled: bool = True,
-        cloud_mode: bool = False,
         api_key: Optional[str] = None,
         model: Optional[str] = None,
         cpu_preference: bool = False,
@@ -44,19 +43,26 @@ class FileConverter:
             preserve_layout: Whether to preserve document layout
             include_images: Whether to include images in output
             ocr_enabled: Whether to enable OCR for image and PDF processing
-            cloud_mode: Whether to use cloud processing via Nanonets API
-            api_key: API key for cloud mode (get from https://app.nanonets.com/#/keys)
+            api_key: API key for cloud processing (optional - get from https://app.nanonets.com/#/keys)
             model: Model to use for cloud processing (gemini, openapi) - only for cloud mode
-            cpu_preference: Force CPU-only processing (overrides GPU preference)
-            gpu_preference: Force GPU processing (will raise error if GPU not available)
+            cpu_preference: Force local CPU-only processing (disables cloud mode)
+            gpu_preference: Force local GPU processing (disables cloud mode, requires GPU)
+        
+        Note:
+            - Cloud mode is the default unless cpu_preference or gpu_preference is specified
+            - Without API key, cloud mode uses rate-limited free tier
+            - For unlimited access, provide an API key from https://app.nanonets.com/#/keys
         """
         self.preserve_layout = preserve_layout
         self.include_images = include_images
-        self.cloud_mode = cloud_mode
         self.api_key = api_key
         self.model = model
         self.cpu_preference = cpu_preference
         self.gpu_preference = gpu_preference
+        
+        # Determine processing mode
+        # Cloud mode is default unless CPU/GPU preference is explicitly set
+        self.cloud_mode = not (self.cpu_preference or self.gpu_preference)
         
         # Validate CPU/GPU preferences
         if self.cpu_preference and self.gpu_preference:
@@ -76,69 +82,61 @@ class FileConverter:
         else:
             self.ocr_enabled = ocr_enabled
         
-        # Try to get API key from environment if cloud mode is enabled
+        # Try to get API key from environment if not provided
         if self.cloud_mode and not self.api_key:
             self.api_key = os.environ.get('NANONETS_API_KEY')
-            if not self.api_key:
-                logger.warning(
-                    "Cloud mode enabled but no API key provided. "
-                    "Please provide api_key parameter or set NANONETS_API_KEY environment variable. "
-                    "Get your API key from https://app.nanonets.com/#/keys"
-                )
         
-        # Initialize processors in order of preference
+        # Initialize processors
         self.processors = []
         
-        # Add cloud processor first if cloud mode is enabled and API key is available
-        if self.cloud_mode and self.api_key:
+        if self.cloud_mode:
+            # Cloud mode setup
             cloud_processor = CloudProcessor(
-                api_key=self.api_key,
-                model_type=self.model,   # Pass model as model_type to cloud processor
+                api_key=self.api_key,  # Can be None for rate-limited access
+                model_type=self.model,
                 preserve_layout=preserve_layout,
                 include_images=include_images
             )
             self.processors.append(cloud_processor)
-            logger.info("Cloud processing enabled with Nanonets API - skipping local model initialization")
-        else:
-            # Only initialize local processors if not in cloud mode or if cloud mode is not properly configured
-            if self.cloud_mode and not self.api_key:
-                logger.warning("Cloud mode requested but no API key available - falling back to local processing")
             
-            logger.info("Initializing local processors...")
-            local_processors = [
-                PDFProcessor(preserve_layout=preserve_layout, include_images=include_images, ocr_enabled=self.ocr_enabled),
-                DOCXProcessor(preserve_layout=preserve_layout, include_images=include_images),
-                TXTProcessor(preserve_layout=preserve_layout, include_images=include_images),
-                ExcelProcessor(preserve_layout=preserve_layout, include_images=include_images),
-                HTMLProcessor(preserve_layout=preserve_layout, include_images=include_images),
-                PPTXProcessor(preserve_layout=preserve_layout, include_images=include_images),
-                ImageProcessor(preserve_layout=preserve_layout, include_images=include_images, ocr_enabled=self.ocr_enabled),
-                URLProcessor(preserve_layout=preserve_layout, include_images=include_images),
-            ]
-            
-            # Add GPU processor based on preferences and availability
-            gpu_available = should_use_gpu_processor()
-            
-            if self.cpu_preference:
-                logger.info("CPU preference specified - using CPU-based processors only")
-            elif self.gpu_preference:
-                if gpu_available:
-                    logger.info("GPU preference specified - adding GPU processor with Nanonets OCR (supports: .jpg, .jpeg, .png, .bmp, .tiff, .webp, .gif, .pdf)")
-                    gpu_processor = GPUProcessor(preserve_layout=preserve_layout, include_images=include_images, ocr_enabled=self.ocr_enabled)
-                    local_processors.append(gpu_processor)
-                else:
-                    # This should not happen due to validation in __init__, but just in case
-                    raise RuntimeError("GPU preference specified but no GPU is available")
+            if self.api_key:
+                logger.info("Cloud processing enabled with API key - unlimited access")
             else:
-                # Auto-detect: use GPU if available
-                if gpu_available:
-                    logger.info("GPU detected - adding GPU processor with Nanonets OCR (supports: .jpg, .jpeg, .png, .bmp, .tiff, .webp, .gif, .pdf)")
-                    gpu_processor = GPUProcessor(preserve_layout=preserve_layout, include_images=include_images, ocr_enabled=self.ocr_enabled)
-                    local_processors.append(gpu_processor)
-                else:
-                    logger.info("No GPU detected - using CPU-based processors only")
-            
-            self.processors.extend(local_processors)
+                logger.info("Cloud processing enabled without API key - using rate-limited free tier")
+                logger.warning("For unlimited access, provide an API key from https://app.nanonets.com/#/keys")
+        else:
+            # Local mode setup
+            logger.info("Local processing mode enabled")
+            self._setup_local_processors()
+    
+    def _setup_local_processors(self):
+        """Setup local processors based on CPU/GPU preferences."""
+        local_processors = [
+            PDFProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images, ocr_enabled=self.ocr_enabled),
+            DOCXProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images),
+            TXTProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images),
+            ExcelProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images),
+            HTMLProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images),
+            PPTXProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images),
+            ImageProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images, ocr_enabled=self.ocr_enabled),
+            URLProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images),
+        ]
+        
+        # Add GPU processor based on preferences and availability
+        gpu_available = should_use_gpu_processor()
+        
+        if self.cpu_preference:
+            logger.info("CPU preference specified - using CPU-based processors only")
+        elif self.gpu_preference:
+            if gpu_available:
+                logger.info("GPU preference specified - adding GPU processor with Nanonets OCR")
+                gpu_processor = GPUProcessor(preserve_layout=self.preserve_layout, include_images=self.include_images, ocr_enabled=self.ocr_enabled)
+                local_processors.append(gpu_processor)
+            else:
+                # This should not happen due to validation in __init__, but just in case
+                raise RuntimeError("GPU preference specified but no GPU is available")
+        
+        self.processors.extend(local_processors)
     
     def convert(self, file_path: str) -> ConversionResult:
         """Convert a file to internal format.

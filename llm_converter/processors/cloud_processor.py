@@ -36,10 +36,10 @@ class CloudConversionResult(ConversionResult):
             return self._cached_outputs[cache_key]
         
         try:
-            # Make direct API call with specific output type
-            headers = {
-                'Authorization': f'Bearer {self.cloud_processor.api_key}'
-            }
+            # Prepare headers - API key is optional
+            headers = {}
+            if self.cloud_processor.api_key:
+                headers['Authorization'] = f'Bearer {self.cloud_processor.api_key}'
             
             # Prepare file for upload
             with open(self.file_path, 'rb') as file:
@@ -62,7 +62,10 @@ class CloudConversionResult(ConversionResult):
                     data['json_schema'] = json.dumps(json_schema)
                 
                 # Log the request
-                logger.info(f"Making cloud API call for {output_type} on {self.file_path}")
+                if self.cloud_processor.api_key:
+                    logger.info(f"Making cloud API call with API key for {output_type} on {self.file_path}")
+                else:
+                    logger.info(f"Making cloud API call without API key (rate-limited) for {output_type} on {self.file_path}")
                 
                 # Make API request
                 response = requests.post(
@@ -72,6 +75,21 @@ class CloudConversionResult(ConversionResult):
                     data=data,
                     timeout=300
                 )
+                
+                # Handle rate limiting (429) specifically
+                if response.status_code == 429:
+                    if not self.cloud_processor.api_key:
+                        error_msg = (
+                            "Rate limit exceeded for free tier usage. "
+                            "To get unlimited access, please provide an API key from https://app.nanonets.com/#/keys\n"
+                            "Usage: FileConverter(api_key='your_api_key_here')"
+                        )
+                        logger.error(error_msg)
+                        raise ConversionError(error_msg)
+                    else:
+                        error_msg = "Rate limit exceeded even with API key. Please try again later."
+                        logger.error(error_msg)
+                        raise ConversionError(error_msg)
                 
                 response.raise_for_status()
                 result_data = response.json()
@@ -83,9 +101,12 @@ class CloudConversionResult(ConversionResult):
                 self._cached_outputs[cache_key] = content
                 return content
                 
+        except ConversionError:
+            # Re-raise ConversionError (like rate limiting) without fallback
+            raise
         except Exception as e:
             logger.error(f"Failed to get {output_type} from cloud API: {e}")
-            # Try fallback to local conversion
+            # Try fallback to local conversion for other errors
             return self._convert_locally(output_type)
     
     def _convert_locally(self, output_type: str) -> str:
@@ -189,12 +210,12 @@ class CloudConversionResult(ConversionResult):
 class CloudProcessor(BaseProcessor):
     """Processor for cloud-based document conversion using Nanonets API."""
     
-    def __init__(self, api_key: str, output_type: str = None, model_type: Optional[str] = None, 
+    def __init__(self, api_key: Optional[str] = None, output_type: str = None, model_type: Optional[str] = None, 
                  specified_fields: Optional[list] = None, json_schema: Optional[dict] = None, **kwargs):
         """Initialize cloud processor.
         
         Args:
-            api_key: Nanonets API key
+            api_key: Nanonets API key (optional - without it, requests are rate-limited)
             output_type: API output type (markdown, flat-json, html, csv, specified-fields, specified-json)
             model_type: Model type for cloud processing (gemini, openapi)
             specified_fields: List of fields to extract (for specified-fields output type)
@@ -216,10 +237,8 @@ class CloudProcessor(BaseProcessor):
     
     def can_process(self, file_path: str) -> bool:
         """Check if the processor can handle the file."""
-        if not self.api_key:
-            return False
-            
         # Cloud processor supports most common document formats
+        # API key is optional - without it, uses rate-limited free tier
         supported_extensions = {
             '.pdf', '.docx', '.doc', '.xlsx', '.xls', '.pptx', '.ppt', 
             '.txt', '.html', '.htm', '.png', '.jpg', '.jpeg', '.gif', 
@@ -239,16 +258,10 @@ class CloudProcessor(BaseProcessor):
             CloudConversionResult that makes API calls when output methods are called
             
         Raises:
-            ConversionError: If file doesn't exist or API key is missing
+            ConversionError: If file doesn't exist
         """
         if not os.path.exists(file_path):
             raise ConversionError(f"File not found: {file_path}")
-        
-        if not self.api_key:
-            raise ConversionError(
-                "API key required for cloud processing. "
-                "Get your API key from https://app.nanonets.com/#/keys"
-            )
         
         # Create metadata without making any API calls
         metadata = {
@@ -256,10 +269,14 @@ class CloudProcessor(BaseProcessor):
             'processing_mode': 'cloud',
             'api_provider': 'nanonets',
             'file_size': os.path.getsize(file_path),
-            'model_type': self.model_type
+            'model_type': self.model_type,
+            'has_api_key': bool(self.api_key)
         }
         
-        logger.info(f"Created lazy cloud converter for {file_path} - API calls will be made on demand")
+        if self.api_key:
+            logger.info(f"Created cloud converter for {file_path} with API key - unlimited access")
+        else:
+            logger.info(f"Created cloud converter for {file_path} without API key - rate-limited access")
         
         # Return lazy result that will make API calls when needed
         return CloudConversionResult(

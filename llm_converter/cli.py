@@ -107,34 +107,40 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Convert a PDF to markdown (default, local mode)
+  # Convert a PDF to markdown (default cloud mode)
   llm-converter document.pdf
 
-  # Convert using cloud mode (requires API key)
-  llm-converter document.pdf --cloud-mode --api-key YOUR_API_KEY
+  # Convert with API key for unlimited access
+  llm-converter document.pdf --api-key YOUR_API_KEY
+
+  # Force local CPU processing
+  llm-converter document.pdf --cpu-mode
+
+  # Force local GPU processing  
+  llm-converter document.pdf --gpu-mode
 
   # Convert to different output formats
   llm-converter document.pdf --output html
-  llm-converter document.pdf --output json --cloud-mode
+  llm-converter document.pdf --output json
   llm-converter document.pdf --output csv  # Extract tables as CSV
 
   # Use specific model for cloud processing
-  llm-converter document.pdf --cloud-mode --api-key YOUR_KEY --model gemini
-  llm-converter document.pdf --cloud-mode --model openapi --output json
+  llm-converter document.pdf --api-key YOUR_KEY --model gemini
+  llm-converter document.pdf --model openapi --output json
 
-  # Convert a URL (local mode only)
+  # Convert a URL (works in all modes)
   llm-converter https://example.com --output html
 
-  # Convert plain text (local mode only)
+  # Convert plain text (works in all modes)
   llm-converter "Hello world" --output json
 
   # Convert multiple files
   llm-converter file1.pdf file2.docx file3.xlsx --output markdown
 
-  # Extract specific fields using local Ollama
+  # Extract specific fields using Ollama (local) or cloud
   llm-converter invoice.pdf --output json --extract-fields invoice_number total_amount vendor_name
 
-  # Extract using JSON schema with local Ollama
+  # Extract using JSON schema (local Ollama or cloud)
   llm-converter document.pdf --output json --json-schema schema.json
 
   # Save output to file
@@ -142,7 +148,7 @@ Examples:
 
   # Use environment variable for API key
   export NANONETS_API_KEY=your_api_key
-  llm-converter document.pdf --cloud-mode
+  llm-converter document.pdf
 
   # List supported formats
   llm-converter --list-formats
@@ -167,20 +173,26 @@ Examples:
     
     # Processing mode arguments
     parser.add_argument(
-        "--cloud-mode",
+        "--cpu-mode",
         action="store_true",
-        help="Use Nanonets cloud API for processing (requires API key)"
+        help="Force local CPU-only processing (disables cloud mode)"
+    )
+    
+    parser.add_argument(
+        "--gpu-mode", 
+        action="store_true",
+        help="Force local GPU processing (disables cloud mode, requires GPU)"
     )
     
     parser.add_argument(
         "--api-key",
-        help="API key for cloud mode (get from https://app.nanonets.com/#/keys)"
+        help="API key for unlimited cloud access (get from https://app.nanonets.com/#/keys)"
     )
     
     parser.add_argument(
         "--model",
         choices=["gemini", "openapi"],
-        help="Model to use for cloud processing (gemini, openapi) - only for cloud mode"
+        help="Model to use for cloud processing (gemini, openapi)"
     )
     
     parser.add_argument(
@@ -198,12 +210,12 @@ Examples:
     parser.add_argument(
         "--extract-fields",
         nargs="+",
-        help="Extract specific fields using local Ollama (e.g., --extract-fields invoice_number total_amount)"
+        help="Extract specific fields using Ollama or cloud (e.g., --extract-fields invoice_number total_amount)"
     )
     
     parser.add_argument(
         "--json-schema",
-        help="JSON schema file for structured extraction using local Ollama"
+        help="JSON schema file for structured extraction using Ollama or cloud"
     )
     
     parser.add_argument(
@@ -279,26 +291,30 @@ Examples:
     
     # Initialize converter
     converter = FileConverter(
-        cloud_mode=args.cloud_mode,
         api_key=args.api_key,
         model=args.model,
+        cpu_preference=args.cpu_mode,
+        gpu_preference=args.gpu_mode,
         preserve_layout=True,
         include_images=True,
         ocr_enabled=True
     )
     
     if args.verbose:
-        mode = "cloud" if args.cloud_mode else "local"
+        mode = "local" if (args.cpu_mode or args.gpu_mode) else "cloud"
         print(f"Initialized converter in {mode} mode:")
         print(f"  - Preserve layout: True")
         print(f"  - Include images: True")
         print(f"  - Intelligent processing: True")
         print(f"  - Output format: {args.output}")
-        if args.cloud_mode:
-            cloud_enabled = converter.is_cloud_enabled()
-            print(f"  - Cloud API: {'enabled' if cloud_enabled else 'disabled'}")
+        if mode == "cloud":
+            has_api_key = bool(args.api_key or converter.api_key)
+            print(f"  - API key: {'provided' if has_api_key else 'not provided (rate-limited)'}")
             if args.model:
                 print(f"  - Model: {args.model}")
+        else:
+            processor_type = "GPU" if args.gpu_mode else "CPU"
+            print(f"  - Local processing: {processor_type}")
         print()
     
     # Process inputs

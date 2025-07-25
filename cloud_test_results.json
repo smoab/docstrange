@@ -1,0 +1,348 @@
+{
+  "summary": {
+    "documents_tested": 9,
+    "total_tests": 63,
+    "successful_tests": 19,
+    "failed_tests": 44,
+    "rate_limited": 0,
+    "success_rate": 30.158730158730158,
+    "api_key_used": false
+  },
+  "detailed_results": {
+    "sample.html": {
+      "file_size_mb": 0.02,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.00028228759765625,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 511,
+          "conversion_time": 0.0003879070281982422,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample.html', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 20818, 'model_ty..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample.xlsx": {
+      "file_size_mb": 0.01,
+      "formats": {
+        "markdown": {
+          "success": true,
+          "output_size": 3333,
+          "conversion_time": 0.0004622936248779297,
+          "preview": "# Sheet: Sheet1  | | First Name | Last Name | Gender | Country | Age | Date | Id | | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | | 1 | Dulce | Abril | Female | United States | 32 | 15/10/2..."
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.0002410411834716797,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 511,
+          "conversion_time": 0.00020599365234375,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample.xlsx', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 13914, 'model_ty..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample.doc": {
+      "file_size_mb": 0.1,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.0010192394256591797,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 511,
+          "conversion_time": 0.0010480880737304688,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample.doc', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 100352, 'model_ty..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample_scanned.pdf": {
+      "file_size_mb": 0.78,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.00020384788513183594,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 527,
+          "conversion_time": 0.0002510547637939453,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample_scanned.pdf', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 814445, '..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "invoice.pdf": {
+      "file_size_mb": 0.34,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.00043892860412597656,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 513,
+          "conversion_time": 0.00034689903259277344,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/invoice.pdf', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 359725, 'model_t..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample.pdf": {
+      "file_size_mb": 0.16,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.0003228187561035156,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 511,
+          "conversion_time": 0.00024390220642089844,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample.pdf', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 168941, 'model_ty..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample.png": {
+      "file_size_mb": 0.15,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.0006010532379150391,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 511,
+          "conversion_time": 0.000244140625,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample.png', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 157912, 'model_ty..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample2.png": {
+      "file_size_mb": 0.15,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.0003712177276611328,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 513,
+          "conversion_time": 0.0010890960693359375,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample2.png', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 158417, 'model_t..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    },
+    "sample.docx": {
+      "file_size_mb": 0.11,
+      "formats": {
+        "markdown": {
+          "success": false,
+          "error": "Empty output"
+        },
+        "html": {
+          "success": true,
+          "output_size": 5457,
+          "conversion_time": 0.0003600120544433594,
+          "preview": "<!DOCTYPE html> <html lang=\"en\"> <head>     <meta charset=\"UTF-8\">     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">     <title>Converted Document</title>     <link rel=\"preco..."
+        },
+        "json": {
+          "success": true,
+          "output_size": 513,
+          "conversion_time": 0.00031304359436035156,
+          "preview": "{'document': {'document': {}, 'metadata': {'empty_document': True}, 'source_file': 'sample_documents/sample.docx', 'processing_mode': 'cloud', 'api_provider': 'nanonets', 'file_size': 111303, 'model_t..."
+        },
+        "csv": {
+          "success": false,
+          "error": "No tables found in the document content"
+        },
+        "text": {
+          "success": false,
+          "error": "Empty output"
+        }
+      },
+      "field_extraction": {
+        "success": false,
+        "error": "No fields extracted"
+      },
+      "schema_extraction": {
+        "success": false,
+        "error": "No structured data extracted"
+      }
+    }
+  }
+}
