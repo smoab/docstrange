@@ -1,9 +1,8 @@
 # Document Data Extractor
 
 [![PyPI version](https://badge.fury.io/py/document-data-extractor.svg?v=2)](https://badge.fury.io/py/document-data-extractor)
-<!-- [![Downloads](https://pepy.tech/badge/document-data-extractor)](https://pepy.tech/project/document-data-extractor) -->
 [![Python](https://img.shields.io/pypi/pyversions/document-data-extractor.svg)](https://pypi.org/project/document-data-extractor/)
-[![GitHub stars](https://img.shields.io/github/stars/NanoNets/document-data-extractor?style=social)](https://github.com/NanoNets/document-data-extractor)
+[![GitHub stars](https://img.shields.io/github/stars/NanoNets/document-data-extractor?style=social)](https://github.com/NanoNets/llm-data-converter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **Try Cloud Mode for Free!**  
@@ -423,8 +422,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - **Email**: support@nanonets.com  
-- **Issues**: [GitHub Issues](https://github.com/NanoNets/document-data-extractor/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/document-data-extractor/discussions)
+- **Issues**: [GitHub Issues](https://github.com/NanoNets/llm-data-converter/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/llm-data-converter/discussions)
 
 ---
 

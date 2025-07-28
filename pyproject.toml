@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "document-data-extractor"
-version = "1.0.1"
+version = "1.0.3"
 description = "Best open-source document to markdown extractor for LLM training data. Convert PDF, Word, PowerPoint, Excel, images, URLs to clean markdown, JSON, HTML locally. Alternative to Unstructured, Docling, Marker, MarkItDown, MinerU, PaddleOCR, Tesseract"
 readme = "README.md"
 license = {text = "MIT"}
@@ -72,10 +72,10 @@ local-llm = [
 document-data-extractor = "document_extractor.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/nanonets/document-data-extractor"
-Repository = "https://github.com/nanonets/document-data-extractor"
-Documentation = "https://github.com/nanonets/document-data-extractor#readme"
-Issues = "https://github.com/nanonets/document-data-extractor/issues"
+Homepage = "https://github.com/nanonets/llm-data-converter"
+Repository = "https://github.com/nanonets/llm-data-converter"
+Documentation = "https://github.com/nanonets/llm-data-converter#readme"
+Issues = "https://github.com/nanonets/llm-data-converter/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["document_extractor"]

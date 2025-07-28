@@ -55,7 +55,7 @@ The `ModelDownloader` class automatically:
 
 ## Environment Variables
 
-- `LLM_CONVERTER_PREFER_HF=true` - Force use of Hugging Face instead of S3
+- `document_extractor_PREFER_HF=true` - Force use of Hugging Face instead of S3
 
 ## Benefits of S3 Hosting
 
