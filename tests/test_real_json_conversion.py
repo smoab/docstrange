@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 def test_markdown_to_json():
     """Test converting a markdown string to structured JSON."""
@@ -79,12 +79,12 @@ For more information, visit our [documentation](https://example.com/docs).
 The implementation has exceeded expectations and provides a solid foundation for future development.
 """
 
-    # Create a converter and convert the markdown
-    converter = FileConverter()
-    result = converter._processors['txt'].process(sample_markdown, {})
+    # Create a extractor and extract the markdown
+    extractor = DocumentExtractor()
+    result = extractor._processors['txt'].process(sample_markdown, {})
     
     # Export as structured JSON
-    json_data = result.to_json()
+    json_data = result.extract_data()
     
     print("=== Structured JSON Output ===")
     print(json.dumps(json_data, indent=2))

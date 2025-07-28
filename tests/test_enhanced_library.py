@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Test script for the enhanced llm-data-converter library.
+Test script for the enhanced document-data-extractor library.
 """
 
 import os
 import tempfile
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 
 def test_basic_functionality():
@@ -13,7 +13,7 @@ def test_basic_functionality():
     print("🧪 Testing Enhanced LLM Data Converter Library")
     print("=" * 50)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Test 1: Text file conversion
     print("\n1. Testing text file conversion...")
@@ -22,14 +22,14 @@ def test_basic_functionality():
             f.write("This is a test document.\n\nIt has multiple lines.\n\n# This is a heading\n\n- List item 1\n- List item 2")
             temp_file = f.name
         
-        result = converter.convert(temp_file)
+        result = extractor.extract(temp_file)
         print(f"✅ Text conversion successful: {len(result.content)} characters")
         print(f"   Metadata: {result.metadata}")
         
         # Test different output formats
-        markdown = result.to_markdown()
-        html = result.to_html()
-        json_output = result.to_json()
+        markdown = result.extract_markdown()
+        html = result.extract_html()
+        json_output = result.extract_data()
         
         print(f"   Markdown length: {len(markdown)}")
         print(f"   HTML length: {len(html)}")
@@ -43,7 +43,7 @@ def test_basic_functionality():
     # Test 2: URL conversion
     print("\n2. Testing URL conversion...")
     try:
-        result = converter.convert_url("https://httpbin.org/html")
+        result = extractor.convert_url("https://httpbin.org/html")
         print(f"✅ URL conversion successful: {len(result.content)} characters")
         print(f"   Status code: {result.metadata.get('status_code')}")
         
@@ -53,8 +53,8 @@ def test_basic_functionality():
     # Test 3: Plain text conversion
     print("\n3. Testing plain text conversion...")
     try:
-        text = "This is plain text for testing the converter."
-        result = converter.convert_text(text)
+        text = "This is plain text for testing the extractor."
+        result = extractor.convert_text(text)
         print(f"✅ Plain text conversion successful: {len(result.content)} characters")
         
     except Exception as e:
@@ -63,7 +63,7 @@ def test_basic_functionality():
     # Test 4: Supported formats
     print("\n4. Testing supported formats...")
     try:
-        formats = converter.get_supported_formats()
+        formats = extractor.get_supported_formats()
         print(f"✅ Supported formats: {formats}")
         
     except Exception as e:
@@ -72,12 +72,12 @@ def test_basic_functionality():
     # Test 5: Configuration options
     print("\n5. Testing configuration options...")
     try:
-        converter_enhanced = FileConverter(
+        converter_enhanced = DocumentExtractor(
             preserve_layout=True,
             include_images=True,
             ocr_enabled=True
         )
-        print(f"✅ Enhanced converter created with OCR enabled")
+        print(f"✅ Enhanced extractor created with OCR enabled")
         
     except Exception as e:
         print(f"❌ Configuration failed: {e}")
@@ -89,7 +89,7 @@ def test_processor_specific_functionality():
     print("🔧 Testing Processor-Specific Functionality")
     print("=" * 50)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Test CSV processing
     print("\n1. Testing CSV processing...")
@@ -98,7 +98,7 @@ def test_processor_specific_functionality():
             f.write("Name,Age,City\nJohn,30,New York\nJane,25,Los Angeles\nBob,35,Chicago")
             temp_file = f.name
         
-        result = converter.convert(temp_file)
+        result = extractor.extract(temp_file)
         print(f"✅ CSV conversion successful: {len(result.content)} characters")
         print(f"   Rows: {result.metadata.get('row_count')}")
         print(f"   Columns: {result.metadata.get('column_count')}")
@@ -134,7 +134,7 @@ def test_processor_specific_functionality():
             f.write(html_content)
             temp_file = f.name
         
-        result = converter.convert(temp_file)
+        result = extractor.extract(temp_file)
         print(f"✅ HTML conversion successful: {len(result.content)} characters")
         print(f"   Contains table: {'table' in result.content.lower()}")
         print(f"   Contains list: {'item' in result.content.lower()}")
@@ -162,12 +162,12 @@ def test_error_handling():
     print("⚠️  Testing Error Handling")
     print("=" * 50)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Test non-existent file
     print("\n1. Testing non-existent file...")
     try:
-        result = converter.convert("nonexistent_file.txt")
+        result = extractor.extract("nonexistent_file.txt")
         print("❌ Should have raised FileNotFoundError")
     except FileNotFoundError:
         print("✅ Correctly handled non-existent file")
@@ -181,7 +181,7 @@ def test_error_handling():
             f.write(b"test content")
             temp_file = f.name
         
-        result = converter.convert(temp_file)
+        result = extractor.extract(temp_file)
         print("❌ Should have raised UnsupportedFormatError")
         os.unlink(temp_file)
     except Exception as e:
@@ -196,11 +196,11 @@ def test_ocr_functionality():
     print("🤖 Testing OCR Functionality")
     print("=" * 50)
     
-    # Test OCR-enabled converter
-    print("\n1. Testing OCR-enabled converter...")
+    # Test OCR-enabled extractor
+    print("\n1. Testing OCR-enabled extractor...")
     try:
-        converter_ocr = FileConverter(ocr_enabled=True)
-        print("✅ OCR-enabled converter created successfully")
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        print("✅ OCR-enabled extractor created successfully")
         
         # Check if PaddleOCR is available
         try:

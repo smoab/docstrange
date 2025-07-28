@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from llm_converter.result import ConversionResult
+from document_extractor.result import ConversionResult
 
 def test_basic_structure():
     """Test basic markdown structure parsing."""
@@ -28,7 +28,7 @@ Another section with content.
 """
     
     result = ConversionResult(markdown_content, {"source": "test"})
-    json_data = result.to_json()
+    json_data = result.extract_data()
     
     print("=== Basic Structure Test ===")
     print(json.dumps(json_data, indent=2))
@@ -98,7 +98,7 @@ Visit [OpenAI](https://openai.com) for more info.
 """
     
     result = ConversionResult(markdown_content, {"source": "comprehensive_test"})
-    json_data = result.to_json()
+    json_data = result.extract_data()
     
     print("=== Content Types Test ===")
     print(json.dumps(json_data, indent=2))
@@ -145,7 +145,7 @@ def test_no_headers():
 Some more text here."""
     
     result = ConversionResult(markdown_content)
-    json_data = result.to_json()
+    json_data = result.extract_data()
     
     print("=== No Headers Test ===")
     print(json.dumps(json_data, indent=2))
@@ -160,7 +160,7 @@ Some more text here."""
 def test_empty_content():
     """Test empty or whitespace-only content."""
     result = ConversionResult("   \n\n   ")
-    json_data = result.to_json()
+    json_data = result.extract_data()
     
     print("=== Empty Content Test ===")
     print(json.dumps(json_data, indent=2))
@@ -203,7 +203,7 @@ More top-level content.
 """
     
     result = ConversionResult(markdown_content)
-    json_data = result.to_json()
+    json_data = result.extract_data()
     
     print("=== Complex Hierarchy Test ===")
     print(json.dumps(json_data, indent=2))

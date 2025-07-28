@@ -9,8 +9,8 @@ import json
 import time
 import traceback
 from pathlib import Path
-from llm_converter import FileConverter
-from llm_converter.exceptions import ConversionError
+from document_extractor import DocumentExtractor
+from document_extractor.exceptions import ConversionError
 
 
 def get_file_size_mb(file_path):
@@ -19,25 +19,25 @@ def get_file_size_mb(file_path):
     return round(size_bytes / (1024 * 1024), 2)
 
 
-def test_document_conversion(converter, file_path, output_format):
+def test_document_conversion(extractor, file_path, output_format):
     """Test conversion of a single document to a specific format."""
     print(f"  📄 Testing {output_format.upper()} conversion...")
     
     try:
         # Convert document
         start_time = time.time()
-        result = converter.convert(file_path)
+        result = extractor.extract(file_path)
         conversion_time = time.time() - start_time
         
         # Get output based on format
         if output_format == "markdown":
-            output = result.to_markdown()
+            output = result.extract_markdown()
         elif output_format == "html":
-            output = result.to_html()
+            output = result.extract_html()
         elif output_format == "json":
-            output = result.to_json()
+            output = result.extract_data()
         elif output_format == "csv":
-            output = result.to_csv(include_all_tables=True)
+            output = result.extract_csv(include_all_tables=True)
         elif output_format == "text":
             output = result.to_text()
         else:
@@ -77,17 +77,17 @@ def test_document_conversion(converter, file_path, output_format):
         return {"success": False, "error": str(e)}
 
 
-def test_field_extraction(converter, file_path):
+def test_field_extraction(extractor, file_path):
     """Test field extraction functionality."""
     print(f"  🎯 Testing field extraction...")
     
     try:
-        result = converter.convert(file_path)
+        result = extractor.extract(file_path)
         
         # Test specified fields extraction
         fields_to_extract = ["title", "date", "total_amount", "vendor_name", "summary"]
         start_time = time.time()
-        extracted = result.to_json(specified_fields=fields_to_extract)
+        extracted = result.extract_data(specified_fields=fields_to_extract)
         extraction_time = time.time() - start_time
         
         if extracted and "extracted_fields" in extracted:
@@ -116,12 +116,12 @@ def test_field_extraction(converter, file_path):
         return {"success": False, "error": str(e)}
 
 
-def test_schema_extraction(converter, file_path):
+def test_schema_extraction(extractor, file_path):
     """Test JSON schema extraction functionality."""
     print(f"  🏗️  Testing schema extraction...")
     
     try:
-        result = converter.convert(file_path)
+        result = extractor.extract(file_path)
         
         # Test with a simple schema
         schema = {
@@ -136,7 +136,7 @@ def test_schema_extraction(converter, file_path):
         }
         
         start_time = time.time()
-        structured = result.to_json(json_schema=schema)
+        structured = result.extract_data(json_schema=schema)
         extraction_time = time.time() - start_time
         
         if structured and ("structured_data" in structured or "extracted_data" in structured):
@@ -167,18 +167,18 @@ def main():
     print("🚀 Cloud Mode Comprehensive Test")
     print("=" * 50)
     
-    # Initialize converter in cloud mode (default)
+    # Initialize extractor in cloud mode (default)
     api_key = os.environ.get('NANONETS_API_KEY')
     if api_key:
         print("🔑 Using API key from environment for unlimited access")
-        converter = FileConverter(api_key=api_key)
+        extractor = DocumentExtractor(api_key=api_key)
     else:
         print("⚠️  No API key found - using rate-limited free tier")
         print("💡 Set NANONETS_API_KEY environment variable for unlimited access")
-        converter = FileConverter()
+        extractor = DocumentExtractor()
     
-    print(f"🌐 Cloud mode: {converter.cloud_mode}")
-    print(f"🔑 Has API key: {bool(converter.api_key)}")
+    print(f"🌐 Cloud mode: {extractor.cloud_mode}")
+    print(f"🔑 Has API key: {bool(extractor.api_key)}")
     print()
     
     # Get sample documents
@@ -228,7 +228,7 @@ def main():
         # Test all output formats
         for output_format in output_formats:
             total_tests += 1
-            result = test_document_conversion(converter, str(file_path), output_format)
+            result = test_document_conversion(extractor, str(file_path), output_format)
             results[file_name]["formats"][output_format] = result
             
             if result["success"]:
@@ -241,7 +241,7 @@ def main():
         
         # Test field extraction
         total_tests += 1
-        field_result = test_field_extraction(converter, str(file_path))
+        field_result = test_field_extraction(extractor, str(file_path))
         results[file_name]["field_extraction"] = field_result
         if field_result["success"]:
             successful_tests += 1
@@ -252,7 +252,7 @@ def main():
         
         # Test schema extraction
         total_tests += 1
-        schema_result = test_schema_extraction(converter, str(file_path))
+        schema_result = test_schema_extraction(extractor, str(file_path))
         results[file_name]["schema_extraction"] = schema_result
         if schema_result["success"]:
             successful_tests += 1
@@ -326,7 +326,7 @@ def main():
                 "failed_tests": total_tests - successful_tests - rate_limited_count,
                 "rate_limited": rate_limited_count,
                 "success_rate": (successful_tests/total_tests)*100,
-                "api_key_used": bool(converter.api_key)
+                "api_key_used": bool(extractor.api_key)
             },
             "detailed_results": results
         }, f, indent=2, default=str)

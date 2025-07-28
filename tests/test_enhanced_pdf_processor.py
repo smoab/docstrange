@@ -12,8 +12,8 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from llm_converter.converter import FileConverter
-from llm_converter.processors.pdf_processor import PDFProcessor
+from document_extractor.extractor import DocumentExtractor
+from document_extractor.processors.pdf_processor import PDFProcessor
 
 # Configure logging
 logging.basicConfig(
@@ -30,8 +30,8 @@ def test_pdf_processor_enhancements():
     print("Testing Enhanced PDF Processor with OCR Support")
     print("=" * 80)
     
-    # Initialize converter with OCR enabled
-    converter = FileConverter(
+    # Initialize extractor with OCR enabled
+    extractor = DocumentExtractor(
         preserve_layout=True,
         include_images=False,
         ocr_enabled=True
@@ -53,7 +53,7 @@ def test_pdf_processor_enhancements():
         
         try:
             # Process the PDF
-            result = converter.convert(file_path)
+            result = extractor.extract(file_path)
             
             print(f"✅ Processing successful!")
             print(f"📊 Metadata:")
@@ -136,7 +136,7 @@ def test_ocr_capabilities():
     if os.path.exists(image_file):
         print(f"\n🖼️  Testing OCR with image: {image_file}")
         
-        from llm_converter.processors.image_processor import ImageProcessor
+        from document_extractor.processors.image_processor import ImageProcessor
         
         processor = ImageProcessor(ocr_enabled=True)
         try:
@@ -191,7 +191,7 @@ def main():
     # Test PDF processor directly
     test_pdf_processor_directly()
     
-    # Test full converter
+    # Test full extractor
     test_pdf_processor_enhancements()
     
     print("\n" + "=" * 80)

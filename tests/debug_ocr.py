@@ -3,7 +3,7 @@
 
 import logging
 import os
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 # Set up logging to see what's happening
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -48,7 +48,7 @@ def test_ocr_debug():
         print("\n🤖 Testing OCR Service Directly")
         print("-" * 30)
         
-        from llm_converter.services.ocr_service import OCRServiceFactory
+        from document_extractor.services.ocr_service import OCRServiceFactory
         
         ocr_service = OCRServiceFactory.create_service()
         print("✅ OCR service created")
@@ -63,10 +63,10 @@ def test_ocr_debug():
         layout_result = ocr_service.extract_text_with_layout(test_image_path)
         print(f"Layout OCR result: '{layout_result}'")
         
-        # Test with converter
-        print("\n🔄 Testing with FileConverter...")
-        converter = FileConverter(ocr_enabled=True)
-        result = converter.convert(test_image_path)
+        # Test with extractor
+        print("\n🔄 Testing with DocumentExtractor...")
+        extractor = DocumentExtractor(ocr_enabled=True)
+        result = extractor.extract(test_image_path)
         print(f"Converter result: '{result.content}'")
         
     except Exception as e:

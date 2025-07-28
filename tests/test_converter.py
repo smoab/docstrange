@@ -1,18 +1,18 @@
-"""Tests for the llm-data-converter library."""
+"""Tests for the document-data-extractor library."""
 
 import os
 import tempfile
 import pytest
 
-from llm_converter import FileConverter, ConversionError, UnsupportedFormatError
+from document_extractor import DocumentExtractor, ConversionError, UnsupportedFormatError
 
 
 class TestFileConverter:
-    """Test cases for FileConverter class."""
+    """Test cases for DocumentExtractor class."""
     
     def setup_method(self):
         """Set up test fixtures."""
-        self.converter = FileConverter()
+        self.extractor = DocumentExtractor()
     
     def test_convert_text_file(self):
         """Test converting a text file."""
@@ -22,8 +22,8 @@ class TestFileConverter:
             temp_file = f.name
         
         try:
-            result = self.converter.convert(temp_file)
-            content = result.to_markdown()
+            result = self.extractor.extract(temp_file)
+            content = result.extract_markdown()
             
             assert "This is a test text file" in content
             assert "It has multiple lines" in content
@@ -34,9 +34,9 @@ class TestFileConverter:
     def test_convert_text(self):
         """Test converting plain text."""
         text = "This is plain text for testing."
-        result = self.converter.convert_text(text)
+        result = self.extractor.convert_text(text)
         
-        assert result.to_markdown() == text
+        assert result.extract_markdown() == text
         assert result.to_text() == text
         assert result.metadata["content_type"] == "text"
     
@@ -44,7 +44,7 @@ class TestFileConverter:
         """Test converting a URL."""
         # Use a simple test URL
         url = "https://httpbin.org/html"
-        result = self.converter.convert_url(url)
+        result = self.extractor.convert_url(url)
         
         assert result.metadata["url"] == url
         assert result.metadata["status_code"] == 200
@@ -57,18 +57,18 @@ class TestFileConverter:
         
         try:
             with pytest.raises(UnsupportedFormatError):
-                self.converter.convert(temp_file)
+                self.extractor.extract(temp_file)
         finally:
             os.unlink(temp_file)
     
     def test_file_not_found(self):
         """Test handling of non-existent files."""
         with pytest.raises(FileNotFoundError):
-            self.converter.convert("nonexistent_file.txt")
+            self.extractor.extract("nonexistent_file.txt")
     
     def test_supported_formats(self):
         """Test getting supported formats."""
-        formats = self.converter.get_supported_formats()
+        formats = self.extractor.get_supported_formats()
         
         assert '.txt' in formats
         assert '.pdf' in formats
@@ -80,19 +80,19 @@ class TestFileConverter:
     def test_output_formats(self):
         """Test different output formats."""
         text = "Test content"
-        result = self.converter.convert_text(text)
+        result = self.extractor.convert_text(text)
         
         # Test markdown output
-        markdown = result.to_markdown()
+        markdown = result.extract_markdown()
         assert markdown == text
         
         # Test HTML output
-        html = result.to_html()
+        html = result.extract_html()
         assert "DOCTYPE html" in html
         assert text in html
         
         # Test JSON output
-        json_output = result.to_json()
+        json_output = result.extract_data()
         assert json_output["content"] == text
         assert json_output["format"] == "json"
         
@@ -101,16 +101,16 @@ class TestFileConverter:
         assert text_output == text
     
     def test_converter_configuration(self):
-        """Test converter configuration options."""
-        converter = FileConverter(
+        """Test extractor configuration options."""
+        extractor = DocumentExtractor(
             preserve_layout=False,
             include_images=True,
             ocr_enabled=True
         )
         
-        assert converter.preserve_layout is False
-        assert converter.include_images is True
-        assert converter.ocr_enabled is True
+        assert extractor.preserve_layout is False
+        assert extractor.include_images is True
+        assert extractor.ocr_enabled is True
 
 
 class TestConversionResult:

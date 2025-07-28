@@ -2,7 +2,7 @@
 
 ## 🎯 **Project Overview**
 
-Successfully created a comprehensive Python library `llm-data-converter` that converts any document, text, or URL into LLM-ready data formats. The library is production-ready with full OCR capabilities, multiple output formats, and seamless LLM integration.
+Successfully created a comprehensive Python library `document-data-extractor` that converts any document, text, or URL into LLM-ready data formats. The library is production-ready with full OCR capabilities, multiple output formats, and seamless LLM integration.
 
 ## ✅ **Successfully Implemented Features**
 
@@ -33,9 +33,9 @@ Successfully created a comprehensive Python library `llm-data-converter` that co
 
 ### **Library Structure**
 ```
-llm_converter/
+document_extractor/
 ├── __init__.py              # Main package exports
-├── converter.py             # Main FileConverter class
+├── extractor.py             # Main DocumentExtractor class
 ├── result.py               # ConversionResult class
 ├── exceptions.py           # Custom exceptions
 ├── cli.py                  # Command-line interface
@@ -53,7 +53,7 @@ llm_converter/
 ```
 
 ### **Key Classes**
-1. **FileConverter**: Main orchestrator class
+1. **DocumentExtractor**: Main orchestrator class
 2. **ConversionResult**: Result object with multiple export formats
 3. **BaseProcessor**: Abstract base class for all format processors
 4. **Format-specific processors**: Handle individual file types
@@ -87,14 +87,14 @@ llm_converter/
 
 ### **Basic Usage**
 ```python
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
-# Initialize converter
-converter = FileConverter(ocr_enabled=True)
+# Initialize extractor
+extractor = DocumentExtractor(ocr_enabled=True)
 
 # Convert any file
-result = converter.convert("document.pdf")
-markdown = result.to_markdown()
+result = extractor.extract("document.pdf")
+markdown = result.extract_markdown()
 
 # Use with LLM
 from litellm import completion
@@ -107,15 +107,15 @@ response = completion(
 ### **Advanced Usage**
 ```python
 # OCR-enabled conversion
-converter = FileConverter(ocr_enabled=True, preserve_layout=True)
-result = converter.convert("screenshot.png")
+extractor = DocumentExtractor(ocr_enabled=True, preserve_layout=True)
+result = extractor.extract("screenshot.png")
 
 # URL conversion
-result = converter.convert_url("https://example.com")
+result = extractor.convert_url("https://example.com")
 
 # Batch processing
 files = ["doc1.pdf", "doc2.docx", "data.xlsx"]
-results = [converter.convert(f).to_markdown() for f in files]
+results = [extractor.extract(f).extract_markdown() for f in files]
 ```
 
 ### **Command Line**
@@ -124,9 +124,9 @@ results = [converter.convert(f).to_markdown() for f in files]
 source venv/bin/activate
 
 # Convert files
-llm-converter document.pdf --output markdown
-llm-converter https://example.com --output html
-llm-converter "Hello world" --output json
+document-data-extractor document.pdf --output markdown
+document-data-extractor https://example.com --output html
+document-data-extractor "Hello world" --output json
 ```
 
 ## 🎯 **Key Improvements Made**
@@ -241,7 +241,7 @@ All dependencies are automatically installed:
 
 ## ✅ **Conclusion**
 
-The enhanced `llm-data-converter` library successfully meets all original requirements and exceeds them with:
+The enhanced `document-data-extractor` library successfully meets all original requirements and exceeds them with:
 
 1. **Complete OCR Integration**: PaddleOCR for image text extraction
 2. **Enhanced PDF Processing**: PyMuPDF with PyPDF2 fallback

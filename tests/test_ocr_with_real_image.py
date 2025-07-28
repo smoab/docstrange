@@ -5,7 +5,7 @@ Tests OCR extraction on sample.png from sample_documents folder.
 """
 
 import os
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 
 def test_ocr_with_real_image():
@@ -26,8 +26,8 @@ def test_ocr_with_real_image():
     # Test with OCR disabled (should extract metadata only)
     print("\n🔍 Testing without OCR (metadata extraction)...")
     try:
-        converter_no_ocr = FileConverter(ocr_enabled=False)
-        result_no_ocr = converter_no_ocr.convert(image_path)
+        converter_no_ocr = DocumentExtractor(ocr_enabled=False)
+        result_no_ocr = converter_no_ocr.extract(image_path)
         
         print(f"   ✅ Metadata extraction successful")
         print(f"   Content length: {len(result_no_ocr.content)} characters")
@@ -51,8 +51,8 @@ def test_ocr_with_real_image():
     # Test with OCR enabled
     print("\n🤖 Testing with OCR enabled...")
     try:
-        converter_ocr = FileConverter(ocr_enabled=True)
-        result_ocr = converter_ocr.convert(image_path)
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        result_ocr = converter_ocr.extract(image_path)
         
         print(f"   ✅ OCR extraction successful")
         print(f"   Content length: {len(result_ocr.content)} characters")
@@ -76,9 +76,9 @@ def test_ocr_with_real_image():
     # Test markdown output
     print("\n📝 Testing markdown output...")
     try:
-        converter_ocr = FileConverter(ocr_enabled=True)
-        result = converter_ocr.convert(image_path)
-        markdown = result.to_markdown()
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        result = converter_ocr.extract(image_path)
+        markdown = result.extract_markdown()
         
         print(f"   ✅ Markdown conversion successful")
         print(f"   Markdown length: {len(markdown)} characters")
@@ -96,9 +96,9 @@ def test_ocr_with_real_image():
     # Test JSON output
     print("\n📊 Testing JSON output...")
     try:
-        converter_ocr = FileConverter(ocr_enabled=True)
-        result = converter_ocr.convert(image_path)
-        json_output = result.to_json()
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        result = converter_ocr.extract(image_path)
+        json_output = result.extract_data()
         
         print(f"   ✅ JSON conversion successful")
         print(f"   JSON keys: {list(json_output.keys())}")
@@ -121,12 +121,12 @@ def test_ocr_comparison():
     
     try:
         # Test without OCR
-        converter_no_ocr = FileConverter(ocr_enabled=False)
-        result_no_ocr = converter_no_ocr.convert(image_path)
+        converter_no_ocr = DocumentExtractor(ocr_enabled=False)
+        result_no_ocr = converter_no_ocr.extract(image_path)
         
         # Test with OCR
-        converter_ocr = FileConverter(ocr_enabled=True)
-        result_ocr = converter_ocr.convert(image_path)
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        result_ocr = converter_ocr.extract(image_path)
         
         print(f"📊 Comparison Results:")
         print(f"   Without OCR:")
@@ -168,9 +168,9 @@ def test_llm_integration_with_ocr():
         return
     
     try:
-        converter_ocr = FileConverter(ocr_enabled=True)
-        result = converter_ocr.convert(image_path)
-        markdown = result.to_markdown()
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        result = converter_ocr.extract(image_path)
+        markdown = result.extract_markdown()
         
         print(f"✅ OCR content ready for LLM integration")
         print(f"   Content length: {len(markdown)} characters")
@@ -181,9 +181,9 @@ def test_llm_integration_with_ocr():
             print(f"from litellm import completion")
             print(f"")
             print(f"# Convert image to markdown")
-            print(f"converter = FileConverter(ocr_enabled=True)")
-            print(f"result = converter.convert('sample.png')")
-            print(f"markdown = result.to_markdown()")
+            print(f"extractor = DocumentExtractor(ocr_enabled=True)")
+            print(f"result = extractor.extract('sample.png')")
+            print(f"markdown = result.extract_markdown()")
             print(f"")
             print(f"# Use with LLM")
             print(f"response = completion(")
@@ -232,15 +232,15 @@ def test_all_sample_files():
         print(f"   - {file_name}: {size} bytes")
     
     # Test each file
-    converter = FileConverter(ocr_enabled=True)
+    extractor = DocumentExtractor(ocr_enabled=True)
     results = {}
     
     for file_name, file_path in sample_files:
         print(f"\n📄 Testing {file_name}...")
         
         try:
-            result = converter.convert(file_path)
-            markdown = result.to_markdown()
+            result = extractor.extract(file_path)
+            markdown = result.extract_markdown()
             
             results[file_name] = {
                 'success': True,

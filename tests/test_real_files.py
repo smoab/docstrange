@@ -7,7 +7,7 @@ Downloads real sample files for each supported format and tests our library.
 import os
 import tempfile
 import requests
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 
 def download_sample_files():
@@ -80,7 +80,7 @@ def test_file_extraction():
     print("\n🧪 Testing File Extraction Capabilities")
     print("=" * 60)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     samples = download_sample_files()
     
     # Add our sample text file
@@ -93,10 +93,10 @@ def test_file_extraction():
         
         try:
             # Test basic conversion
-            result = converter.convert(file_path)
+            result = extractor.extract(file_path)
             
             # Get markdown output
-            markdown = result.to_markdown()
+            markdown = result.extract_markdown()
             
             # Store results
             results[format_type] = {
@@ -141,12 +141,12 @@ def test_ocr_capabilities():
     print("   To test OCR, you would need to:")
     print("   1. Download an image with text (screenshot, document scan, etc.)")
     print("   2. Place it in the current directory")
-    print("   3. Run: converter.convert('image.png')")
+    print("   3. Run: extractor.extract('image.png')")
     
-    # Test OCR-enabled converter creation
+    # Test OCR-enabled extractor creation
     try:
-        converter_ocr = FileConverter(ocr_enabled=True)
-        print("   ✅ OCR-enabled converter created successfully")
+        converter_ocr = DocumentExtractor(ocr_enabled=True)
+        print("   ✅ OCR-enabled extractor created successfully")
         
         # Check if PaddleOCR is available
         try:
@@ -164,7 +164,7 @@ def test_url_extraction():
     print("\n🌐 Testing URL Extraction")
     print("=" * 60)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Test URLs
     test_urls = [
@@ -177,8 +177,8 @@ def test_url_extraction():
         print(f"\n   Testing URL: {url}")
         
         try:
-            result = converter.convert_url(url)
-            markdown = result.to_markdown()
+            result = extractor.convert_url(url)
+            markdown = result.extract_markdown()
             
             print(f"      ✅ URL extraction successful")
             print(f"      Content length: {len(result.content)} characters")
@@ -194,7 +194,7 @@ def test_batch_processing():
     print("\n📦 Testing Batch Processing")
     print("=" * 60)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Create multiple sample files
     sample_files = []
@@ -225,8 +225,8 @@ def test_batch_processing():
     batch_results = []
     for file_type, file_path in sample_files:
         try:
-            result = converter.convert(file_path)
-            markdown = result.to_markdown()
+            result = extractor.extract(file_path)
+            markdown = result.extract_markdown()
             batch_results.append((file_type, len(markdown)))
             print(f"      ✅ {file_type.upper()}: {len(markdown)} characters")
         except Exception as e:

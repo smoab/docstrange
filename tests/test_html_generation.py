@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Test script for the improved HTML generation."""
 
-from llm_converter.result import ConversionResult
+from document_extractor.result import ConversionResult
 
 def test_html_generation():
     """Test the HTML generation with various markdown elements."""
@@ -99,7 +99,7 @@ Final paragraph with all elements: **bold**, *italic*, `code`, [link](https://ex
     result = ConversionResult(markdown_content)
     
     # Generate HTML
-    html_output = result.to_html()
+    html_output = result.extract_html()
     
     # Save to file for inspection
     with open('test_output.html', 'w', encoding='utf-8') as f:

@@ -1,13 +1,13 @@
 # LLM Data Converter
 
-[![PyPI version](https://badge.fury.io/py/llm-data-converter.svg?v=2)](https://badge.fury.io/py/llm-data-converter)
-[![Downloads](https://pepy.tech/badge/llm-data-converter)](https://pepy.tech/project/llm-data-converter)
-[![Python](https://img.shields.io/pypi/pyversions/llm-data-converter.svg)](https://pypi.org/project/llm-data-converter/)
-[![GitHub stars](https://img.shields.io/github/stars/NanoNets/llm-data-converter?style=social)](https://github.com/NanoNets/llm-data-converter)
+[![PyPI version](https://badge.fury.io/py/document-data-extractor.svg?v=2)](https://badge.fury.io/py/document-data-extractor)
+[![Downloads](https://pepy.tech/badge/document-data-extractor)](https://pepy.tech/project/document-data-extractor)
+[![Python](https://img.shields.io/pypi/pyversions/document-data-extractor.svg)](https://pypi.org/project/document-data-extractor/)
+[![GitHub stars](https://img.shields.io/github/stars/NanoNets/document-data-extractor?style=social)](https://github.com/NanoNets/document-data-extractor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **Try Cloud Mode for Free!**  
-> Convert documents instantly with our cloud API - no setup required.  
+> Extract documents data instantly with our cloud API - no setup required.  
 > For unlimited processing, [get your free API key](https://app.nanonets.com/#/keys).
 
 Transform any document, image, or URL into LLM-ready formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
@@ -28,7 +28,7 @@ Transform any document, image, or URL into LLM-ready formats (Markdown, JSON, CS
 ## Installation
 
 ```bash
-pip install llm-data-converter
+pip install document-data-extractor
 ```
 
 ## Quick Start
@@ -36,22 +36,22 @@ pip install llm-data-converter
 ### Basic Usage (Cloud Mode - Default)
 
 ```python
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 # Default cloud mode - no setup required
-converter = FileConverter()
+extractor = DocumentExtractor()
 
-# Convert any document
-result = converter.convert("document.pdf")
+# Extract data from any document
+result = extractor.extract("document.pdf")
 
 # Get different output formats
-markdown = result.to_markdown()
-json_data = result.to_json()
-html = result.to_html()
-csv_tables = result.to_csv()
+markdown = result.extract_markdown()
+json_data = result.extract_data()
+html = result.extract_html()
+csv_tables = result.extract_csv()
 
 # Extract specific fields
-extracted_fields = result.to_json(specified_fields=[
+extracted_fields = result.extract_data(specified_fields=[
     "title", "author", "date", "summary", "key_points"
 ])
 
@@ -67,25 +67,25 @@ schema = {
         "language": "string"
     }
 }
-structured_data = result.to_json(json_schema=schema)
+structured_data = result.extract_data(json_schema=schema)
 ```
 
 ### With API Key (Unlimited Access)
 
 ```python
 # Get your free API key from https://app.nanonets.com/#/keys
-converter = FileConverter(api_key="your_api_key_here")
-result = converter.convert("document.pdf")
+extractor = DocumentExtractor(api_key="your_api_key_here")
+result = extractor.extract("document.pdf")
 ```
 
 ### Local Processing
 
 ```python
 # Force local CPU processing
-converter = FileConverter(cpu_preference=True)
+extractor = DocumentExtractor(cpu=True)
 
 # Force local GPU processing (requires CUDA)
-converter = FileConverter(gpu_preference=True)
+extractor = DocumentExtractor(gpu=True)
 ```
 
 ## Output Formats
@@ -101,41 +101,41 @@ converter = FileConverter(gpu_preference=True)
 ### Convert Multiple File Types
 
 ```python
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
-converter = FileConverter()
+extractor = DocumentExtractor()
 
 # PDF document
-pdf_result = converter.convert("report.pdf")
-print(pdf_result.to_markdown())
+pdf_result = extractor.extract("report.pdf")
+print(pdf_result.extract_markdown())
 
 # Word document  
-docx_result = converter.convert("document.docx")
-print(docx_result.to_json())
+docx_result = extractor.extract("document.docx")
+print(docx_result.extract_data())
 
 # Excel spreadsheet
-excel_result = converter.convert("data.xlsx")
-print(excel_result.to_csv())
+excel_result = extractor.extract("data.xlsx")
+print(excel_result.extract_csv())
 
 # PowerPoint presentation
-pptx_result = converter.convert("slides.pptx")
-print(pptx_result.to_html())
+pptx_result = extractor.extract("slides.pptx")
+print(pptx_result.extract_html())
 
 # Image with text
-image_result = converter.convert("screenshot.png")
+image_result = extractor.extract("screenshot.png")
 print(image_result.to_text())
 
 # Web page
-url_result = converter.convert("https://example.com")
-print(url_result.to_markdown())
+url_result = extractor.extract("https://example.com")
+print(url_result.extract_markdown())
 ```
 
 ### Extract Tables to CSV
 
 ```python
 # Extract all tables from a document
-result = converter.convert("financial_report.pdf")
-csv_data = result.to_csv(include_all_tables=True)
+result = extractor.extract("financial_report.pdf")
+csv_data = result.extract_csv(include_all_tables=True)
 print(csv_data)
 ```
 
@@ -144,13 +144,13 @@ print(csv_data)
 The library now uses intelligent document understanding for JSON conversion:
 
 ```python
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
-converter = FileConverter()
-result = converter.convert("document.pdf")
+extractor = DocumentExtractor()
+result = extractor.extract("document.pdf")
 
 # Enhanced JSON with Ollama (when available)
-json_data = result.to_json()
+json_data = result.extract_data()
 print(json_data["format"])  # "ollama_structured_json" or "structured_json"
 
 # The enhanced conversion provides:
@@ -161,8 +161,8 @@ print(json_data["format"])  # "ollama_structured_json" or "structured_json"
 # - Proper data type handling
 ```
 
-**Requirements for enhanced JSON (if using cpu_preference=True):**
-- Install: `pip install 'llm-data-converter[local-llm]'`
+**Requirements for enhanced JSON (if using cpu=True):**
+- Install: `pip install 'document-data-extractor[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
 
@@ -172,10 +172,10 @@ print(json_data["format"])  # "ollama_structured_json" or "structured_json"
 
 ```python
 # Extract specific fields from any document
-result = converter.convert("invoice.pdf")
+result = extractor.extract("invoice.pdf")
 
 # Method 1: Extract specific fields
-extracted = result.to_json(specified_fields=[
+extracted = result.extract_data(specified_fields=[
     "invoice_number", 
     "total_amount", 
     "vendor_name",
@@ -193,7 +193,7 @@ schema = {
     }]
 }
 
-structured = result.to_json(json_schema=schema)
+structured = result.extract_data(json_schema=schema)
 ```
 
 **How it works:**
@@ -204,19 +204,19 @@ structured = result.to_json(json_schema=schema)
 **Cloud Mode Usage Examples:**
 
 ```python
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 # Default cloud mode (rate-limited without API key)
-converter = FileConverter()
+extractor = DocumentExtractor()
 
 # With API key for unlimited access
-converter = FileConverter(api_key="your_api_key_here")
+extractor = DocumentExtractor(api_key="your_api_key_here")
 
 # Extract specific fields from invoice
-result = converter.convert("invoice.pdf")
+result = extractor.extract("invoice.pdf")
 
 # Extract key invoice information
-invoice_fields = result.to_json(specified_fields=[
+invoice_fields = result.extract_data(specified_fields=[
     "invoice_number",
     "total_amount", 
     "vendor_name",
@@ -250,18 +250,18 @@ invoice_schema = {
     }
 }
 
-structured_invoice = result.to_json(json_schema=invoice_schema)
+structured_invoice = result.extract_data(json_schema=invoice_schema)
 print("Structured Invoice Data:")
 print(structured_invoice)
 # Output: {"structured_data": {...}, "schema": {...}, "format": "structured_json"}
 
 # Extract from different document types
-receipt = converter.convert("receipt.jpg")
-receipt_data = receipt.to_json(specified_fields=[
+receipt = extractor.extract("receipt.jpg")
+receipt_data = receipt.extract_data(specified_fields=[
     "merchant_name", "total_amount", "date", "payment_method"
 ])
 
-contract = converter.convert("contract.pdf") 
+contract = extractor.extract("contract.pdf") 
 contract_schema = {
     "parties": [{
         "name": "string",
@@ -272,11 +272,11 @@ contract_schema = {
     "end_date": "string",
     "key_terms": ["string"]
 }
-contract_data = contract.to_json(json_schema=contract_schema)
+contract_data = contract.extract_data(json_schema=contract_schema)
 ```
 
-**Local extraction requirements (if using cpu_preference=True):**
-- Install ollama package: `pip install 'llm-data-converter[local-llm]'`
+**Local extraction requirements (if using cpu=True):**
+- Install ollama package: `pip install 'document-data-extractor[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
 
@@ -284,7 +284,7 @@ contract_data = contract.to_json(json_schema=contract_schema)
 
 ```python
 # Perfect for LLM workflows
-document_text = converter.convert("research_paper.pdf").to_markdown()
+document_text = extractor.extract("research_paper.pdf").extract_markdown()
 
 # Use with any LLM
 response = your_llm_client.chat(
@@ -299,49 +299,49 @@ response = your_llm_client.chat(
 
 ```bash
 # Basic conversion (cloud mode default)
-llm-converter document.pdf
+document-data-extractor document.pdf
 
 # With API key for unlimited access
-llm-converter document.pdf --api-key YOUR_API_KEY
+document-data-extractor document.pdf --api-key YOUR_API_KEY
 
 # Local processing modes
-llm-converter document.pdf --cpu-mode
-llm-converter document.pdf --gpu-mode
+document-data-extractor document.pdf --cpu-mode
+document-data-extractor document.pdf --gpu-mode
 
 # Different output formats
-llm-converter document.pdf --output json
-llm-converter document.pdf --output html
-llm-converter document.pdf --output csv
+document-data-extractor document.pdf --output json
+document-data-extractor document.pdf --output html
+document-data-extractor document.pdf --output csv
 
 # Extract specific fields
-llm-converter invoice.pdf --output json --extract-fields invoice_number total_amount
+document-data-extractor invoice.pdf --output json --extract-fields invoice_number total_amount
 
 # Extract with JSON schema
-llm-converter document.pdf --output json --json-schema schema.json
+document-data-extractor document.pdf --output json --json-schema schema.json
 
 # Multiple files
-llm-converter *.pdf --output markdown
+document-data-extractor *.pdf --output markdown
 
 # Save to file
-llm-converter document.pdf --output-file result.md
+document-data-extractor document.pdf --output-file result.md
 
 # Comprehensive field extraction examples
-llm-converter invoice.pdf --output json --extract-fields invoice_number vendor_name total_amount due_date line_items
+document-data-extractor invoice.pdf --output json --extract-fields invoice_number vendor_name total_amount due_date line_items
 
 # Extract from different document types with specific fields
-llm-converter receipt.jpg --output json --extract-fields merchant_name total_amount date payment_method
+document-data-extractor receipt.jpg --output json --extract-fields merchant_name total_amount date payment_method
 
-llm-converter contract.pdf --output json --extract-fields parties contract_value start_date end_date
+document-data-extractor contract.pdf --output json --extract-fields parties contract_value start_date end_date
 
 # Using JSON schema files for structured extraction
-llm-converter invoice.pdf --output json --json-schema invoice_schema.json
-llm-converter contract.pdf --output json --json-schema contract_schema.json
+document-data-extractor invoice.pdf --output json --json-schema invoice_schema.json
+document-data-extractor contract.pdf --output json --json-schema contract_schema.json
 
 # Combine with API key for unlimited access
-llm-converter document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
+document-data-extractor document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
 
 # Force local processing with field extraction (requires Ollama)
-llm-converter document.pdf --cpu-mode --output json --extract-fields key_points conclusions recommendations
+document-data-extractor document.pdf --cpu-mode --output json --extract-fields key_points conclusions recommendations
 ```
 
 **Example schema.json file:**
@@ -365,30 +365,30 @@ llm-converter document.pdf --cpu-mode --output json --extract-fields key_points 
 
 ## API Reference for library
 
-### FileConverter
+### DocumentExtractor
 
 ```python
-FileConverter(
+DocumentExtractor(
     preserve_layout: bool = True,      # Preserve document structure
     include_images: bool = True,       # Include image content
     ocr_enabled: bool = True,         # Enable OCR processing
     api_key: str = None,              # API key for unlimited cloud access
     model: str = None,                # Model for cloud processing ("gemini", "openapi")
-    cpu_preference: bool = False,     # Force local CPU processing
-    gpu_preference: bool = False      # Force local GPU processing
+    cpu: bool = False,     # Force local CPU processing
+    gpu: bool = False      # Force local GPU processing
 )
 ```
 
 ### ConversionResult Methods
 
 ```python
-result.to_markdown() -> str                    # Clean markdown output
-result.to_json(                              # Structured JSON
+result.extract_markdown() -> str                    # Clean markdown output
+result.extract_data(                              # Structured JSON
     specified_fields: List[str] = None,       # Extract specific fields
     json_schema: Dict = None                  # Extract with schema
 ) -> Dict
-result.to_html() -> str                      # Formatted HTML
-result.to_csv() -> str                       # CSV format for tables
+result.extract_html() -> str                      # Formatted HTML
+result.extract_csv() -> str                       # CSV format for tables
 result.to_text() -> str                      # Plain text
 ```
 
@@ -397,8 +397,8 @@ result.to_text() -> str                      # Plain text
 ### Custom OCR Settings
 
 ```python
-converter = FileConverter(
-    cpu_preference=True,        # Use local processing
+extractor = DocumentExtractor(
+    cpu=True,        # Use local processing
     ocr_enabled=True,          # Enable OCR
     preserve_layout=True,      # Maintain structure
     include_images=True        # Process images
@@ -423,8 +423,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - **Email**: support@nanonets.com  
-- **Issues**: [GitHub Issues](https://github.com/NanoNets/llm-data-converter/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/llm-data-converter/discussions)
+- **Issues**: [GitHub Issues](https://github.com/NanoNets/document-data-extractor/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/document-data-extractor/discussions)
 
 ---
 

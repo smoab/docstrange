@@ -4,8 +4,8 @@
 import logging
 import sys
 from pathlib import Path
-from llm_converter import FileConverter
-from llm_converter.config import InternalConfig
+from document_extractor import DocumentExtractor
+from document_extractor.config import InternalConfig
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def test_advanced_ocr():
     """Test the advanced OCR service."""
     try:
-        from llm_converter.services.advanced_ocr import AdvancedOCRService
+        from document_extractor.services.advanced_ocr import AdvancedOCRService
         
         # Initialize the advanced OCR service
         logger.info("Initializing Advanced OCR Service...")
@@ -58,7 +58,7 @@ def test_advanced_ocr():
 def test_ocr_service_factory():
     """Test the OCR service factory with different providers."""
     try:
-        from llm_converter.services.ocr_service import OCRServiceFactory
+        from document_extractor.services.ocr_service import OCRServiceFactory
         
         logger.info("Testing OCR Service Factory...")
         
@@ -86,7 +86,7 @@ def test_ocr_service_factory():
 def test_model_downloader():
     """Test the model downloader."""
     try:
-        from llm_converter.services.model_downloader import ModelDownloader
+        from document_extractor.services.model_downloader import ModelDownloader
         
         logger.info("Testing Model Downloader...")
         
@@ -143,10 +143,10 @@ file_path = "sample_documents/sample.png"
 print(f"\n=== Testing with file: {file_path} ===")
 
 try:
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Test the conversion
-    result = converter.convert(file_path).to_markdown()
+    result = extractor.extract(file_path).extract_markdown()
     
     print("\n📝=============================== Advanced OCR Output:===============================")
     print(result)

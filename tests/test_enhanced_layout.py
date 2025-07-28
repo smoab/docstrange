@@ -9,7 +9,7 @@ from pathlib import Path
 # Add the project root to the path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from llm_converter.services.nanonets_ocr import NanonetsOCRService
+from document_extractor.services.nanonets_ocr import NanonetsOCRService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -54,7 +54,7 @@ def test_layout_detection():
             logger.info("✅ NanonetsOCRService initialized successfully")
             
             # Test layout element creation
-            from llm_converter.services.nanonets_ocr import LayoutElement
+            from document_extractor.services.nanonets_ocr import LayoutElement
             
             test_element = LayoutElement(
                 text="Test Heading",
@@ -79,7 +79,7 @@ def test_layout_detection():
 def test_layout_classification():
     """Test the layout classification logic."""
     
-    from llm_converter.services.nanonets_ocr import NanonetsOCRService, LayoutElement
+    from document_extractor.services.nanonets_ocr import NanonetsOCRService, LayoutElement
     
     ocr_service = NanonetsOCRService()
     

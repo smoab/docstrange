@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Setup script for llm-data-converter
+# Setup script for document-data-extractor
 # This script creates a virtual environment and installs all dependencies
 
-echo "🚀 Setting up llm-data-converter environment..."
+echo "🚀 Setting up document-data-extractor environment..."
 
 # Check if Python 3 is available
 if ! command -v python3.10 &> /dev/null; then

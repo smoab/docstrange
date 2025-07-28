@@ -7,7 +7,7 @@ Uses more reliable sample file sources and provides detailed analysis.
 import os
 import tempfile
 import requests
-from llm_converter import FileConverter
+from document_extractor import DocumentExtractor
 
 
 def download_sample_files():
@@ -125,7 +125,7 @@ def test_file_extraction():
     print("\n🧪 Testing File Extraction Capabilities")
     print("=" * 60)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Get downloaded samples
     downloaded_samples = download_sample_files()
@@ -143,10 +143,10 @@ def test_file_extraction():
         
         try:
             # Test basic conversion
-            result = converter.convert(file_path)
+            result = extractor.extract(file_path)
             
             # Get markdown output
-            markdown = result.to_markdown()
+            markdown = result.extract_markdown()
             
             # Analyze content
             content_analysis = analyze_content(markdown)
@@ -215,7 +215,7 @@ def test_markdown_quality():
     print("\n📝 Testing Markdown Quality")
     print("=" * 60)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Test with different content types
     test_contents = [
@@ -229,8 +229,8 @@ def test_markdown_quality():
         print(f"\n   Testing: {content_name}")
         
         try:
-            result = converter.convert_text(content)
-            markdown = result.to_markdown()
+            result = extractor.convert_text(content)
+            markdown = result.extract_markdown()
             
             print(f"      Original: {len(content)} chars")
             print(f"      Markdown: {len(markdown)} chars")
@@ -245,7 +245,7 @@ def test_llm_integration_ready():
     print("\n🤖 Testing LLM Integration Readiness")
     print("=" * 60)
     
-    converter = FileConverter()
+    extractor = DocumentExtractor()
     
     # Create a sample business document
     sample_doc = """# Quarterly Business Report
@@ -272,8 +272,8 @@ This report covers Q4 2024 performance and strategic initiatives.
     """
     
     try:
-        result = converter.convert_text(sample_doc)
-        markdown = result.to_markdown()
+        result = extractor.convert_text(sample_doc)
+        markdown = result.extract_markdown()
         
         print("   ✅ Document converted to LLM-ready format")
         print(f"   Content length: {len(markdown)} characters")

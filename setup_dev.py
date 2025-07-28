@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Development setup script for llm-data-converter.
+Development setup script for document-data-extractor.
 """
 
 import subprocess
@@ -23,7 +23,7 @@ def run_command(command, description):
 
 def main():
     """Main setup function."""
-    print("🚀 Setting up llm-data-converter development environment...\n")
+    print("🚀 Setting up document-data-extractor development environment...\n")
     
     # Check Python version
     if sys.version_info < (3, 8):
