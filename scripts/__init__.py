@@ -1,1 +1,1 @@
-# Scripts for LLM Data Converter development and deployment 
+# Scripts for Document Data Extractor development and deployment 

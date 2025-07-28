@@ -1,4 +1,4 @@
-# LLM Data Converter - Enhanced Implementation Summary
+# Document Data Extractor - Enhanced Implementation Summary
 
 ## 🎯 **Project Overview**
 

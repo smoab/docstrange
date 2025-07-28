@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "document-data-extractor"
-version = "2.2.0"
+version = "1.0.1"
 description = "Best open-source document to markdown extractor for LLM training data. Convert PDF, Word, PowerPoint, Excel, images, URLs to clean markdown, JSON, HTML locally. Alternative to Unstructured, Docling, Marker, MarkItDown, MinerU, PaddleOCR, Tesseract"
 readme = "README.md"
 license = {text = "MIT"}

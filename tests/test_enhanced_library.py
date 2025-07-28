@@ -10,7 +10,7 @@ from document_extractor import DocumentExtractor
 
 def test_basic_functionality():
     """Test basic functionality of the enhanced library."""
-    print("🧪 Testing Enhanced LLM Data Converter Library")
+    print("🧪 Testing Enhanced Document Data Extractor Library")
     print("=" * 50)
     
     extractor = DocumentExtractor()
