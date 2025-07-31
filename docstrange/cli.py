@@ -321,7 +321,7 @@ Examples:
         if result["success"]:
             results.append(result["result"])
             if not args.verbose:
-                print(f"✅ Processed: {input_item}", file=sys.stderr)
+                print(f"Processing ... : {input_item}", file=sys.stderr)
         else:
             errors.append(result)
             print(f"❌ Failed: {input_item} - {result['error']}", file=sys.stderr)

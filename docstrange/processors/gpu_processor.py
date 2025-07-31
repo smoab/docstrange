@@ -195,7 +195,6 @@ Example:
             # Create the result structure
             result = {
                 "document": extracted_data,
-                "conversion_metadata": self.metadata,
                 "format": "gpu_structured_json",
                 "gpu_processing_info": {
                     'ocr_provider': self.ocr_provider,

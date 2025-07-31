@@ -151,8 +151,6 @@ class CloudConversionResult(ConversionResult):
                 extracted_data = json.loads(content)
                 return {
                     "extracted_fields": extracted_data,
-                    "requested_fields": specified_fields,
-                    "conversion_metadata": self.metadata,
                     "format": "specified_fields"
                 }
             
@@ -162,8 +160,6 @@ class CloudConversionResult(ConversionResult):
                 extracted_data = json.loads(content)
                 return {
                     "structured_data": extracted_data,
-                    "schema": json_schema,
-                    "conversion_metadata": self.metadata,
                     "format": "structured_json"
                 }
             
@@ -173,7 +169,6 @@ class CloudConversionResult(ConversionResult):
                 parsed_content = json.loads(json_content)
                 return {
                     "document": parsed_content,
-                    "conversion_metadata": self.metadata,
                     "format": "cloud_flat_json"
                 }
                 
@@ -181,7 +176,6 @@ class CloudConversionResult(ConversionResult):
             logger.error(f"Failed to parse JSON content: {e}")
             return {
                 "document": {"raw_content": content if 'content' in locals() else ""},
-                "conversion_metadata": self.metadata,
                 "format": "json_parse_error",
                 "error": str(e)
             }
