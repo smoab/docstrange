@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docstrange"
-version = "1.0.3"
-description = "Best open-source document to markdown extractor for LLM training data. Convert PDF, Word, PowerPoint, Excel, images, URLs to clean markdown, JSON, HTML locally. Alternative to Unstructured, Docling, Marker, MarkItDown, MinerU, PaddleOCR, Tesseract"
+version = "1.0.4"
+description = "Extract and Convert PDF, Word, PowerPoint, Excel, images, URLs into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [

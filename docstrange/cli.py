@@ -137,10 +137,10 @@ Examples:
   # Convert multiple files
   docstrange file1.pdf file2.docx file3.xlsx --output markdown
 
-  # Extract specific fields using Ollama (local) or cloud
+  # Extract specific fields using Ollama (CPU mode only) or cloud
   docstrange invoice.pdf --output json --extract-fields invoice_number total_amount vendor_name
 
-  # Extract using JSON schema (local Ollama or cloud)
+  # Extract using JSON schema (Ollama for CPU mode, cloud for default mode)
   docstrange document.pdf --output json --json-schema schema.json
 
   # Save output to file
@@ -210,12 +210,12 @@ Examples:
     parser.add_argument(
         "--extract-fields",
         nargs="+",
-        help="Extract specific fields using Ollama or cloud (e.g., --extract-fields invoice_number total_amount)"
+        help="Extract specific fields using Ollama (CPU mode) or cloud (default mode) (e.g., --extract-fields invoice_number total_amount)"
     )
     
     parser.add_argument(
         "--json-schema",
-        help="JSON schema file for structured extraction using Ollama or cloud"
+        help="JSON schema file for structured extraction using Ollama (CPU mode) or cloud (default mode)"
     )
     
     parser.add_argument(
@@ -358,8 +358,6 @@ Examples:
                 result_json = result.extract_data(
                     specified_fields=args.extract_fields,
                     json_schema=json_schema,
-                    ollama_url=args.ollama_url,
-                    ollama_model=args.ollama_model
                 )
                 output_content = json.dumps(result_json, indent=2)
             except Exception as e:
@@ -396,8 +394,6 @@ Examples:
                     result_json = r.extract_data(
                         specified_fields=args.extract_fields,
                         json_schema=json_schema,
-                        ollama_url=args.ollama_url,
-                        ollama_model=args.ollama_model
                     )
                     extracted_results.append(result_json)
                 
