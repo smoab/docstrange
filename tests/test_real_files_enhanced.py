@@ -229,7 +229,7 @@ def test_markdown_quality():
         print(f"\n   Testing: {content_name}")
         
         try:
-            result = extractor.extract_test(content)
+            result = extractor.extract_text(content)
             markdown = result.extract_markdown()
             
             print(f"      Original: {len(content)} chars")
@@ -272,7 +272,7 @@ This report covers Q4 2024 performance and strategic initiatives.
     """
     
     try:
-        result = extractor.extract_test(sample_doc)
+        result = extractor.extract_text(sample_doc)
         markdown = result.extract_markdown()
         
         print("   ✅ Document converted to LLM-ready format")

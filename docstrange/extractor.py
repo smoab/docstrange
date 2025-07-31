@@ -199,7 +199,7 @@ class DocumentExtractor:
         # Fallback to regular conversion for local mode
         return self.extract(file_path)
     
-    def convert_url(self, url: str) -> ConversionResult:
+    def extract_url(self, url: str) -> ConversionResult:
         """Convert a URL to internal format.
         
         Args:
@@ -228,7 +228,7 @@ class DocumentExtractor:
         logger.info(f"Converting URL: {url}")
         return url_processor.process(url)
     
-    def extract_test(self, text: str) -> ConversionResult:
+    def extract_text(self, text: str) -> ConversionResult:
         """Convert plain text to internal format.
         
         Args:

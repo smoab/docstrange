@@ -54,7 +54,7 @@ def process_single_input(extractor: DocumentExtractor, input_item: str, output_f
         if input_item.startswith(('http://', 'https://')):
             if extractor.cloud_mode:
                 raise ConversionError("URL processing is not supported in cloud mode. Use local mode for URLs.")
-            result = extractor.convert_url(input_item)
+            result = extractor.extract_url(input_item)
             input_type = "URL"
         # Check if it's a file
         elif os.path.exists(input_item):
