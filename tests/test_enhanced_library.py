@@ -54,7 +54,7 @@ def test_basic_functionality():
     print("\n3. Testing plain text conversion...")
     try:
         text = "This is plain text for testing the extractor."
-        result = extractor.convert_text(text)
+        result = extractor.extract_test(text)
         print(f"✅ Plain text conversion successful: {len(result.content)} characters")
         
     except Exception as e:

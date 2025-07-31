@@ -228,7 +228,7 @@ class DocumentExtractor:
         logger.info(f"Converting URL: {url}")
         return url_processor.process(url)
     
-    def convert_text(self, text: str) -> ConversionResult:
+    def extract_test(self, text: str) -> ConversionResult:
         """Convert plain text to internal format.
         
         Args:

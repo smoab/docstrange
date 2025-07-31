@@ -34,7 +34,7 @@ class TestFileConverter:
     def test_convert_text(self):
         """Test converting plain text."""
         text = "This is plain text for testing."
-        result = self.extractor.convert_text(text)
+        result = self.extractor.extract_test(text)
         
         assert result.extract_markdown() == text
         assert result.extract_text() == text
@@ -80,7 +80,7 @@ class TestFileConverter:
     def test_output_formats(self):
         """Test different output formats."""
         text = "Test content"
-        result = self.extractor.convert_text(text)
+        result = self.extractor.extract_test(text)
         
         # Test markdown output
         markdown = result.extract_markdown()

@@ -64,7 +64,7 @@ def process_single_input(extractor: DocumentExtractor, input_item: str, output_f
         else:
             if extractor.cloud_mode:
                 raise ConversionError("Text processing is not supported in cloud mode. Use local mode for text.")
-            result = extractor.convert_text(input_item)
+            result = extractor.extract_text(input_item)
             input_type = "Text"
         
         return {
@@ -271,9 +271,10 @@ Examples:
     if args.list_formats:
         # Create a extractor to get supported formats
         extractor = DocumentExtractor(
-            cloud_mode=args.cloud_mode,
             api_key=args.api_key,
-            model=args.model
+            model=args.model,
+            cpu=args.cpu_mode,
+            gpu=args.gpu_mode
         )
         print_supported_formats(extractor)
         return 0
@@ -282,30 +283,20 @@ Examples:
     if not args.input:
         parser.error("No input specified. Please provide file(s), URL(s), or text to extract.")
     
-    # Validate cloud mode arguments
-    if args.cloud_mode and not args.api_key and not os.environ.get('NANONETS_API_KEY'):
-        print("Error: Cloud mode requires an API key.", file=sys.stderr)
-        print("Get your free API key from https://app.nanonets.com/#/keys", file=sys.stderr)
-        print("Provide it using --api-key or set NANONETS_API_KEY environment variable.", file=sys.stderr)
-        return 1
+    # Cloud mode is default and works without API key (rate-limited)
+    # API key provides increased rate limits
     
     # Initialize extractor
     extractor = DocumentExtractor(
         api_key=args.api_key,
         model=args.model,
         cpu=args.cpu_mode,
-        gpu=args.gpu_mode,
-        preserve_layout=True,
-        include_images=True,
-        ocr_enabled=True
+        gpu=args.gpu_mode
     )
     
     if args.verbose:
         mode = "local" if (args.cpu_mode or args.gpu_mode) else "cloud"
         print(f"Initialized extractor in {mode} mode:")
-        print(f"  - Preserve layout: True")
-        print(f"  - Include images: True")
-        print(f"  - Intelligent processing: True")
         print(f"  - Output format: {args.output}")
         if mode == "cloud":
             has_api_key = bool(args.api_key or extractor.api_key)

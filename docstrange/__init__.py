@@ -8,7 +8,7 @@ from .processors import GPUConversionResult, CloudConversionResult
 from .exceptions import ConversionError, UnsupportedFormatError
 from .config import InternalConfig
 
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 __all__ = [
     "DocumentExtractor", 
     "ConversionResult", 
