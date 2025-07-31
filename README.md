@@ -3,7 +3,11 @@
 [![PyPI version](https://badge.fury.io/py/docstrange.svg?v=2)](https://badge.fury.io/py/docstrange)
 [![Python](https://img.shields.io/pypi/pyversions/docstrange.svg)](https://pypi.org/project/docstrange/)
 [![GitHub stars](https://img.shields.io/github/stars/NanoNets/docstrange?style=social)](https://github.com/NanoNets/docstrange)
+[![GitHub forks](https://img.shields.io/github/forks/NanoNets/docstrange?style=social)](https://github.com/NanoNets/docstrange)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS%20%7C%20windows-lightgrey)](https://pypi.org/project/docstrange/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NanoNets/docstrange/graphs/commit-activity)
 
 > **Free Cloud Processing!**  
 > Extract documents data instantly with our cloud API - no setup or api key needed for getting started.  
@@ -98,13 +102,6 @@ structured_data = result.extract_data(json_schema=schema)
 print(structured_data)
 ```
 
-### With API Key (Unlimited Access to GPU models)
-
-```python
-# Get your free API key from https://app.nanonets.com/#/keys
-extractor = DocumentExtractor(api_key="your_api_key_here")
-result = extractor.extract("document.pdf")
-```
 
 ### Local Processing
 
@@ -212,7 +209,7 @@ from docstrange import DocumentExtractor
 # Default cloud mode (rate-limited without API key)
 extractor = DocumentExtractor()
 
-# With API key for unlimited access
+# With API key for increased rate limit access
 extractor = DocumentExtractor(api_key="your_api_key_here")
 
 # Extract specific fields from invoice
@@ -298,13 +295,38 @@ response = your_llm_client.chat(
 )
 ```
 
+## Rate Limits
+
+DocStrange offers **free cloud processing** with rate limits to ensure fair usage:
+
+### Free Tier (No API Key)
+- **Rate Limit**: Moderate usage restrictions apply
+- **Access**: All output formats (Markdown, JSON, CSV, HTML)
+- **Setup**: Zero configuration - works immediately
+
+### Increased Rate Limits (With API Key)
+- **Rate Limit**: Higher limits for production use
+- **Setup**: Get your free API key from [app.nanonets.com](https://app.nanonets.com/#/keys)
+- **Usage**: Pass API key during initialization 
+
+```python
+# Free tier usage
+extractor = DocumentExtractor()
+
+# Increased rate limits with API key
+extractor = DocumentExtractor(api_key="your_api_key_here")
+
+```
+
+> **💡 Tip**: Start with the free tier to test functionality, then get an API key for production workloads or higher volume processing.
+
 ## Command Line Interface
 
 ```bash
 # Basic conversion (cloud mode default)
 docstrange document.pdf
 
-# With API key for unlimited access
+# With API key for increased rate limit access
 docstrange document.pdf --api-key YOUR_API_KEY
 
 # Local processing modes
@@ -340,7 +362,7 @@ docstrange contract.pdf --output json --extract-fields parties contract_value st
 docstrange invoice.pdf --output json --json-schema invoice_schema.json
 docstrange contract.pdf --output json --json-schema contract_schema.json
 
-# Combine with API key for unlimited access
+# Combine with API key for increased rate limit access
 docstrange document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
 
 # Force local processing with field extraction (requires Ollama)
@@ -372,7 +394,7 @@ docstrange document.pdf --cpu-mode --output json --extract-fields key_points con
 
 ```python
 DocumentExtractor(
-    api_key: str = None,              # API key for unlimited cloud access
+    api_key: str = None,              # free API key for increased rate limit on cloud access
     model: str = None,                # Model for cloud processing ("gemini", "openapi")
     cpu: bool = False,     # Force local CPU processing
     gpu: bool = False      # Force local GPU processing
