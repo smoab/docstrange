@@ -4,8 +4,8 @@
 import logging
 import sys
 from pathlib import Path
-from document_extractor import DocumentExtractor
-from document_extractor.config import InternalConfig
+from docstrange import DocumentExtractor
+from docstrange.config import InternalConfig
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def test_advanced_ocr():
     """Test the advanced OCR service."""
     try:
-        from document_extractor.services.advanced_ocr import AdvancedOCRService
+        from docstrange.services.advanced_ocr import AdvancedOCRService
         
         # Initialize the advanced OCR service
         logger.info("Initializing Advanced OCR Service...")
@@ -58,7 +58,7 @@ def test_advanced_ocr():
 def test_ocr_service_factory():
     """Test the OCR service factory with different providers."""
     try:
-        from document_extractor.services.ocr_service import OCRServiceFactory
+        from docstrange.services.ocr_service import OCRServiceFactory
         
         logger.info("Testing OCR Service Factory...")
         
@@ -86,7 +86,7 @@ def test_ocr_service_factory():
 def test_model_downloader():
     """Test the model downloader."""
     try:
-        from document_extractor.services.model_downloader import ModelDownloader
+        from docstrange.services.model_downloader import ModelDownloader
         
         logger.info("Testing Model Downloader...")
         

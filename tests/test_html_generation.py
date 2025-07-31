@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Test script for the improved HTML generation."""
 
-from document_extractor.result import ConversionResult
+from docstrange.result import ConversionResult
 
 def test_html_generation():
     """Test the HTML generation with various markdown elements."""

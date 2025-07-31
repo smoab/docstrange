@@ -7,7 +7,7 @@ Downloads real sample files for each supported format and tests our library.
 import os
 import tempfile
 import requests
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 
 def download_sample_files():

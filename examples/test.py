@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from document_extractor import FileConverter
+from docstrange import FileConverter
 
 
 file_path = "sample_documents/sample.png"

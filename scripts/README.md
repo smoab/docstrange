@@ -4,7 +4,7 @@ This directory contains scripts for managing model hosting on Nanonets S3.
 
 ## Model Hosting Infrastructure
 
-The document-data-extractor uses a dual hosting system:
+The docstrange uses a dual hosting system:
 1. **Primary**: Nanonets S3 bucket (`public-vlms`) - faster, no authentication required
 2. **Fallback**: Hugging Face Hub - original source, requires authentication for some models
 
@@ -16,7 +16,7 @@ The document-data-extractor uses a dual hosting system:
 
 **Bucket**: `public-vlms`
 **Region**: `us-west-2`
-**Base URL**: `https://public-vlms.s3-us-west-2.amazonaws.com/document-data-extractor/`
+**Base URL**: `https://public-vlms.s3-us-west-2.amazonaws.com/docstrange/`
 
 ### Hosted Models
 
@@ -42,8 +42,8 @@ python scripts/prepare_s3_models.py
 
 2. Upload to S3:
 ```bash
-aws s3 cp dist/layout-model-v2.2.0.tar.gz s3://public-vlms/document-data-extractor/ --acl public-read
-aws s3 cp dist/tableformer-model-v2.2.0.tar.gz s3://public-vlms/document-data-extractor/ --acl public-read
+aws s3 cp dist/layout-model-v2.2.0.tar.gz s3://public-vlms/docstrange/ --acl public-read
+aws s3 cp dist/tableformer-model-v2.2.0.tar.gz s3://public-vlms/docstrange/ --acl public-read
 ```
 
 ### Model Download Behavior

@@ -7,7 +7,7 @@ Uses more reliable sample file sources and provides detailed analysis.
 import os
 import tempfile
 import requests
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 
 def download_sample_files():

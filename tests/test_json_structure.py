@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from document_extractor.result import ConversionResult
+from docstrange.result import ConversionResult
 
 def test_basic_structure():
     """Test basic markdown structure parsing."""

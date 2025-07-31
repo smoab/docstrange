@@ -1,19 +1,19 @@
-# Document Data Extractor
+# DocStrange
 
-[![PyPI version](https://badge.fury.io/py/document-data-extractor.svg?v=2)](https://badge.fury.io/py/document-data-extractor)
-[![Python](https://img.shields.io/pypi/pyversions/document-data-extractor.svg)](https://pypi.org/project/document-data-extractor/)
-[![GitHub stars](https://img.shields.io/github/stars/NanoNets/document-data-extractor?style=social)](https://github.com/NanoNets/llm-data-converter)
+[![PyPI version](https://badge.fury.io/py/docstrange.svg?v=2)](https://badge.fury.io/py/docstrange)
+[![Python](https://img.shields.io/pypi/pyversions/docstrange.svg)](https://pypi.org/project/docstrange/)
+[![GitHub stars](https://img.shields.io/github/stars/NanoNets/docstrange?style=social)](https://github.com/NanoNets/docstrange)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Try Cloud Mode for Free!**  
-> Extract documents data instantly with our cloud API - no setup required.  
-> For unlimited processing, [get your free API key](https://app.nanonets.com/#/keys).
+> **Free Cloud Processing!**  
+> Extract documents data instantly with our cloud API - no setup or api key needed for getting started.  
 
-Transform any document, image, or URL into LLM-ready formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
+
+Extract and convert data from any document, images, pdfs, word doc, ppt or URL into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
 
 ## Key Features
 
-- **Cloud Processing (Default)**: Instant conversion with Nanonets API - no local setup needed
+- **Cloud Processing (Default)**: Instant free conversion with Nanonets API - no local setup needed
 - **Local Processing**: CPU/GPU options for complete privacy and control
 - **Universal Input**: PDFs, Word docs, Excel, PowerPoint, images, URLs, and raw text
 - **Smart Output**: Markdown, JSON, CSV, HTML, and plain text formats
@@ -27,49 +27,78 @@ Transform any document, image, or URL into LLM-ready formats (Markdown, JSON, CS
 ## Installation
 
 ```bash
-pip install document-data-extractor
+pip install docstrange
 ```
 
 ## Quick Start
 
-### Basic Usage (Cloud Mode - Default)
+### 1. Convert Document to Markdown
 
 ```python
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
-# Default cloud mode - no setup required
+# Initialize extractor (cloud mode by default)
 extractor = DocumentExtractor()
 
-# Extract data from any document
+# Convert any document to clean markdown
 result = extractor.extract("document.pdf")
-
-# Get different output formats
 markdown = result.extract_markdown()
-json_data = result.extract_data()
-html = result.extract_html()
-csv_tables = result.extract_csv()
-
-# Extract specific fields
-extracted_fields = result.extract_data(specified_fields=[
-    "title", "author", "date", "summary", "key_points"
-])
-
-# Extract using JSON schema
-schema = {
-    "title": "string",
-    "author": "string", 
-    "date": "string",
-    "summary": "string",
-    "key_points": ["string"],
-    "metadata": {
-        "page_count": "number",
-        "language": "string"
-    }
-}
-structured_data = result.extract_data(json_schema=schema)
+print(markdown)
 ```
 
-### With API Key (Unlimited Access)
+### 2. Extract All Important Information as JSON
+
+```python
+from docstrange import DocumentExtractor
+
+# Extract document as structured JSON
+extractor = DocumentExtractor()
+result = extractor.extract("document.pdf")
+
+# Get all important data as flat JSON
+json_data = result.extract_data()
+print(json_data)
+```
+
+### 3. Extract Specific Fields
+
+```python
+from docstrange import DocumentExtractor
+
+# Extract only the fields you need
+extractor = DocumentExtractor()
+result = extractor.extract("invoice.pdf")
+
+# Specify exactly which fields to extract
+fields = result.extract_data(specified_fields=[
+    "invoice_number", "total_amount", "vendor_name", "due_date"
+])
+print(fields)
+```
+
+### 4. Extract with Custom JSON Schema
+
+```python
+from docstrange import DocumentExtractor
+
+# Extract data conforming to your schema
+extractor = DocumentExtractor()
+result = extractor.extract("contract.pdf")
+
+# Define your required structure
+schema = {
+    "contract_number": "string",
+    "parties": ["string"],
+    "total_value": "number",
+    "start_date": "string",
+    "terms": ["string"]
+}
+
+structured_data = result.extract_data(json_schema=schema)
+print(structured_data)
+```
+
+### With API Key (Unlimited Access to GPU models)
 
 ```python
 # Get your free API key from https://app.nanonets.com/#/keys
@@ -100,7 +129,7 @@ extractor = DocumentExtractor(gpu=True)
 ### Convert Multiple File Types
 
 ```python
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 extractor = DocumentExtractor()
 
@@ -122,7 +151,7 @@ print(pptx_result.extract_html())
 
 # Image with text
 image_result = extractor.extract("screenshot.png")
-print(image_result.to_text())
+print(image_result.extract_text())
 
 # Web page
 url_result = extractor.extract("https://example.com")
@@ -134,34 +163,13 @@ print(url_result.extract_markdown())
 ```python
 # Extract all tables from a document
 result = extractor.extract("financial_report.pdf")
-csv_data = result.extract_csv(include_all_tables=True)
+csv_data = result.extract_csv()
 print(csv_data)
 ```
 
-### Enhanced JSON Conversion
-
-The library now uses intelligent document understanding for JSON conversion:
-
-```python
-from document_extractor import DocumentExtractor
-
-extractor = DocumentExtractor()
-result = extractor.extract("document.pdf")
-
-# Enhanced JSON with Ollama (when available)
-json_data = result.extract_data()
-print(json_data["format"])  # "ollama_structured_json" or "structured_json"
-
-# The enhanced conversion provides:
-# - Better document structure understanding
-# - Intelligent table parsing
-# - Automatic metadata extraction  
-# - Key information identification
-# - Proper data type handling
-```
 
 **Requirements for enhanced JSON (if using cpu=True):**
-- Install: `pip install 'document-data-extractor[local-llm]'`
+- Install: `pip install 'docstrange[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
 
@@ -195,15 +203,11 @@ schema = {
 structured = result.extract_data(json_schema=schema)
 ```
 
-**How it works:**
-- Automatically uses cloud API when available
-- Falls back to local Ollama for privacy-focused processing
-- Same interface works for both cloud and local modes
 
 **Cloud Mode Usage Examples:**
 
 ```python
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 # Default cloud mode (rate-limited without API key)
 extractor = DocumentExtractor()
@@ -275,7 +279,7 @@ contract_data = contract.extract_data(json_schema=contract_schema)
 ```
 
 **Local extraction requirements (if using cpu=True):**
-- Install ollama package: `pip install 'document-data-extractor[local-llm]'`
+- Install ollama package: `pip install 'docstrange[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
 
@@ -298,49 +302,49 @@ response = your_llm_client.chat(
 
 ```bash
 # Basic conversion (cloud mode default)
-document-data-extractor document.pdf
+docstrange document.pdf
 
 # With API key for unlimited access
-document-data-extractor document.pdf --api-key YOUR_API_KEY
+docstrange document.pdf --api-key YOUR_API_KEY
 
 # Local processing modes
-document-data-extractor document.pdf --cpu-mode
-document-data-extractor document.pdf --gpu-mode
+docstrange document.pdf --cpu-mode
+docstrange document.pdf --gpu-mode
 
 # Different output formats
-document-data-extractor document.pdf --output json
-document-data-extractor document.pdf --output html
-document-data-extractor document.pdf --output csv
+docstrange document.pdf --output json
+docstrange document.pdf --output html
+docstrange document.pdf --output csv
 
 # Extract specific fields
-document-data-extractor invoice.pdf --output json --extract-fields invoice_number total_amount
+docstrange invoice.pdf --output json --extract-fields invoice_number total_amount
 
 # Extract with JSON schema
-document-data-extractor document.pdf --output json --json-schema schema.json
+docstrange document.pdf --output json --json-schema schema.json
 
 # Multiple files
-document-data-extractor *.pdf --output markdown
+docstrange *.pdf --output markdown
 
 # Save to file
-document-data-extractor document.pdf --output-file result.md
+docstrange document.pdf --output-file result.md
 
 # Comprehensive field extraction examples
-document-data-extractor invoice.pdf --output json --extract-fields invoice_number vendor_name total_amount due_date line_items
+docstrange invoice.pdf --output json --extract-fields invoice_number vendor_name total_amount due_date line_items
 
 # Extract from different document types with specific fields
-document-data-extractor receipt.jpg --output json --extract-fields merchant_name total_amount date payment_method
+docstrange receipt.jpg --output json --extract-fields merchant_name total_amount date payment_method
 
-document-data-extractor contract.pdf --output json --extract-fields parties contract_value start_date end_date
+docstrange contract.pdf --output json --extract-fields parties contract_value start_date end_date
 
 # Using JSON schema files for structured extraction
-document-data-extractor invoice.pdf --output json --json-schema invoice_schema.json
-document-data-extractor contract.pdf --output json --json-schema contract_schema.json
+docstrange invoice.pdf --output json --json-schema invoice_schema.json
+docstrange contract.pdf --output json --json-schema contract_schema.json
 
 # Combine with API key for unlimited access
-document-data-extractor document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
+docstrange document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
 
 # Force local processing with field extraction (requires Ollama)
-document-data-extractor document.pdf --cpu-mode --output json --extract-fields key_points conclusions recommendations
+docstrange document.pdf --cpu-mode --output json --extract-fields key_points conclusions recommendations
 ```
 
 **Example schema.json file:**
@@ -368,9 +372,6 @@ document-data-extractor document.pdf --cpu-mode --output json --extract-fields k
 
 ```python
 DocumentExtractor(
-    preserve_layout: bool = True,      # Preserve document structure
-    include_images: bool = True,       # Include image content
-    ocr_enabled: bool = True,         # Enable OCR processing
     api_key: str = None,              # API key for unlimited cloud access
     model: str = None,                # Model for cloud processing ("gemini", "openapi")
     cpu: bool = False,     # Force local CPU processing
@@ -388,32 +389,9 @@ result.extract_data(                              # Structured JSON
 ) -> Dict
 result.extract_html() -> str                      # Formatted HTML
 result.extract_csv() -> str                       # CSV format for tables
-result.to_text() -> str                      # Plain text
+result.extract_text() -> str                      # Plain text
 ```
 
-## Advanced Configuration
-
-### Custom OCR Settings
-
-```python
-extractor = DocumentExtractor(
-    cpu=True,        # Use local processing
-    ocr_enabled=True,          # Enable OCR
-    preserve_layout=True,      # Maintain structure
-    include_images=True        # Process images
-)
-```
-
-### Environment Variables
-
-```bash
-export NANONETS_API_KEY="your_api_key"
-# Now all conversions use your API key automatically
-```
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
 ## License
 
@@ -422,8 +400,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - **Email**: support@nanonets.com  
-- **Issues**: [GitHub Issues](https://github.com/NanoNets/llm-data-converter/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/llm-data-converter/discussions)
+- **Issues**: [GitHub Issues](https://github.com/NanoNets/docstrange/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/docstrange/discussions)
 
 ---
 

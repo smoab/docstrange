@@ -1,16 +1,43 @@
-
-from document_extractor import DocumentExtractor
-
+from docstrange import DocumentExtractor
 
 file_path = "sample_documents/invoice.pdf"
 
 extractor = DocumentExtractor()
+
+result = extractor.extract(file_path).extract_data(specified_fields=[
+        "total_amount", 
+        "date", 
+        "vendor_name",
+        "invoice_number"
+    ])
+
+print(result)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exit()
+
 
 
 
 print("📝=============================== JSON Output:===============================")
 result = extractor.extract(file_path).extract_data()
 print(result)
+
+
 
 
 print("\n📝=============================== Specific Field :===============================")

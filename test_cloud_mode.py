@@ -9,8 +9,8 @@ import json
 import time
 import traceback
 from pathlib import Path
-from document_extractor import DocumentExtractor
-from document_extractor.exceptions import ConversionError
+from docstrange import DocumentExtractor
+from docstrange.exceptions import ConversionError
 
 
 def get_file_size_mb(file_path):
@@ -39,7 +39,7 @@ def test_document_conversion(extractor, file_path, output_format):
         elif output_format == "csv":
             output = result.extract_csv(include_all_tables=True)
         elif output_format == "text":
-            output = result.to_text()
+            output = result.extract_text()
         else:
             raise ValueError(f"Unknown output format: {output_format}")
         

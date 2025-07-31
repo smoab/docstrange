@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import logging
-from document_extractor import DocumentExtractor
-from document_extractor.config import InternalConfig
+from docstrange import DocumentExtractor
+from docstrange.config import InternalConfig
 
 # Set up detailed logging
 logging.basicConfig(level=logging.INFO, format='%(name)s - %(levelname)s - %(message)s')

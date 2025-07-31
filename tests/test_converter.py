@@ -1,10 +1,10 @@
-"""Tests for the document-data-extractor library."""
+"""Tests for the docstrange library."""
 
 import os
 import tempfile
 import pytest
 
-from document_extractor import DocumentExtractor, ConversionError, UnsupportedFormatError
+from docstrange import DocumentExtractor, ConversionError, UnsupportedFormatError
 
 
 class TestFileConverter:
@@ -37,7 +37,7 @@ class TestFileConverter:
         result = self.extractor.convert_text(text)
         
         assert result.extract_markdown() == text
-        assert result.to_text() == text
+        assert result.extract_text() == text
         assert result.metadata["content_type"] == "text"
     
     def test_convert_url(self):
@@ -97,7 +97,7 @@ class TestFileConverter:
         assert json_output["format"] == "json"
         
         # Test text output
-        text_output = result.to_text()
+        text_output = result.extract_text()
         assert text_output == text
     
     def test_converter_configuration(self):

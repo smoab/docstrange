@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Setup script for document-data-extractor
+# Setup script for docstrange
 # This script creates a virtual environment and installs all dependencies
 
-echo "🚀 Setting up document-data-extractor environment..."
+echo "🚀 Setting up docstrange environment..."
 
 # Check if Python 3 is available
 if ! command -v python3.10 &> /dev/null; then

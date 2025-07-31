@@ -5,7 +5,7 @@ Tests OCR extraction on sample.png from sample_documents folder.
 """
 
 import os
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 
 def test_ocr_with_real_image():

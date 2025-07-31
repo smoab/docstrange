@@ -3,7 +3,7 @@
 
 import logging
 import os
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 # Set up logging to see what's happening
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -48,7 +48,7 @@ def test_ocr_debug():
         print("\n🤖 Testing OCR Service Directly")
         print("-" * 30)
         
-        from document_extractor.services.ocr_service import OCRServiceFactory
+        from docstrange.services.ocr_service import OCRServiceFactory
         
         ocr_service = OCRServiceFactory.create_service()
         print("✅ OCR service created")

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Test script for the enhanced document-data-extractor library.
+Test script for the enhanced docstrange library.
 """
 
 import os
 import tempfile
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 
 def test_basic_functionality():

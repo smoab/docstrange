@@ -8,8 +8,8 @@ Usage:
     python scripts/prepare_s3_models.py
     
 Then upload to S3:
-    aws s3 cp dist/layout-model-v2.2.0.tar.gz s3://public-vlms/document-data-extractor/
-    aws s3 cp dist/tableformer-model-v2.2.0.tar.gz s3://public-vlms/document-data-extractor/
+    aws s3 cp dist/layout-model-v2.2.0.tar.gz s3://public-vlms/docstrange/
+    aws s3 cp dist/tableformer-model-v2.2.0.tar.gz s3://public-vlms/docstrange/
 """
 
 import os
@@ -112,8 +112,8 @@ def download_and_package_models():
     
     print(f"\n🎉 All models packaged in {output_dir}/")
     print("\n📤 To upload to S3, run:")
-    print("aws s3 cp dist/layout-model-v2.2.0.tar.gz s3://public-vlms/document-data-extractor/ --acl public-read")
-    print("aws s3 cp dist/tableformer-model-v2.2.0.tar.gz s3://public-vlms/document-data-extractor/ --acl public-read")
+    print("aws s3 cp dist/layout-model-v2.2.0.tar.gz s3://public-vlms/docstrange/ --acl public-read")
+    print("aws s3 cp dist/tableformer-model-v2.2.0.tar.gz s3://public-vlms/docstrange/ --acl public-read")
     
     print("\n🔧 EasyOCR downloads its own models automatically, no S3 upload needed!")
 

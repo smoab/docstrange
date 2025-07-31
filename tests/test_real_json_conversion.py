@@ -6,7 +6,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 def test_markdown_to_json():
     """Test converting a markdown string to structured JSON."""

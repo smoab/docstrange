@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Development setup script for document-data-extractor.
+Development setup script for docstrange.
 """
 
 import subprocess
@@ -23,7 +23,7 @@ def run_command(command, description):
 
 def main():
     """Main setup function."""
-    print("🚀 Setting up document-data-extractor development environment...\n")
+    print("🚀 Setting up docstrange development environment...\n")
     
     # Check Python version
     if sys.version_info < (3, 8):

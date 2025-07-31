@@ -2,7 +2,7 @@
 
 ## 🎯 **Project Overview**
 
-Successfully created a comprehensive Python library `document-data-extractor` that converts any document, text, or URL into LLM-ready data formats. The library is production-ready with full OCR capabilities, multiple output formats, and seamless LLM integration.
+Successfully created a comprehensive Python library `docstrange` that converts any document, text, or URL into LLM-ready data formats. The library is production-ready with full OCR capabilities, multiple output formats, and seamless LLM integration.
 
 ## ✅ **Successfully Implemented Features**
 
@@ -33,7 +33,7 @@ Successfully created a comprehensive Python library `document-data-extractor` th
 
 ### **Library Structure**
 ```
-document_extractor/
+docstrange/
 ├── __init__.py              # Main package exports
 ├── extractor.py             # Main DocumentExtractor class
 ├── result.py               # ConversionResult class
@@ -87,7 +87,7 @@ document_extractor/
 
 ### **Basic Usage**
 ```python
-from document_extractor import DocumentExtractor
+from docstrange import DocumentExtractor
 
 # Initialize extractor
 extractor = DocumentExtractor(ocr_enabled=True)
@@ -124,9 +124,9 @@ results = [extractor.extract(f).extract_markdown() for f in files]
 source venv/bin/activate
 
 # Convert files
-document-data-extractor document.pdf --output markdown
-document-data-extractor https://example.com --output html
-document-data-extractor "Hello world" --output json
+docstrange document.pdf --output markdown
+docstrange https://example.com --output html
+docstrange "Hello world" --output json
 ```
 
 ## 🎯 **Key Improvements Made**
@@ -241,7 +241,7 @@ All dependencies are automatically installed:
 
 ## ✅ **Conclusion**
 
-The enhanced `document-data-extractor` library successfully meets all original requirements and exceeds them with:
+The enhanced `docstrange` library successfully meets all original requirements and exceeds them with:
 
 1. **Complete OCR Integration**: PaddleOCR for image text extraction
 2. **Enhanced PDF Processing**: PyMuPDF with PyPDF2 fallback

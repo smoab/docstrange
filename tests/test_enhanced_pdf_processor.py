@@ -12,8 +12,8 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from document_extractor.extractor import DocumentExtractor
-from document_extractor.processors.pdf_processor import PDFProcessor
+from docstrange.extractor import DocumentExtractor
+from docstrange.processors.pdf_processor import PDFProcessor
 
 # Configure logging
 logging.basicConfig(
@@ -136,7 +136,7 @@ def test_ocr_capabilities():
     if os.path.exists(image_file):
         print(f"\n🖼️  Testing OCR with image: {image_file}")
         
-        from document_extractor.processors.image_processor import ImageProcessor
+        from docstrange.processors.image_processor import ImageProcessor
         
         processor = ImageProcessor(ocr_enabled=True)
         try:

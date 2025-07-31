@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "document-data-extractor"
-version = "1.0.3"
+name = "docstrange"
+version = "1.0.0"
 description = "Best open-source document to markdown extractor for LLM training data. Convert PDF, Word, PowerPoint, Excel, images, URLs to clean markdown, JSON, HTML locally. Alternative to Unstructured, Docling, Marker, MarkItDown, MinerU, PaddleOCR, Tesseract"
 readme = "README.md"
 license = {text = "MIT"}
@@ -26,7 +26,7 @@ classifiers = [
     "Topic :: Text Processing :: Markup",
     "Topic :: Multimedia :: Graphics :: Graphics Conversion",
 ]
-keywords = ["llm", "document-processing", "document-conversion", "markdown", "pdf", "image-processing", "intelligent-document-processing", "document-understanding", "ocr", "rag", "ai-training-data", "unstructured-alternative", "docling-alternative", "marker-alternative", "markitdown-alternative", "mineru-alternative", "paddleocr-alternative", "tesseract-alternative", "document-to-markdown", "pdf-to-markdown", "local-document-processing", "offline-document-extractor", "structured-data-extraction", "table-extraction", "layout-detection", "llm-ready-data", "document-ai", "text-extraction", "html-to-markdown", "excel-to-markdown", "powerpoint-to-markdown", "word-to-markdown", "batch-document-processing"]
+keywords = ["llm", "document-processing", "document-conversion", "markdown", "pdf", "image-processing", "intelligent-document-processing", "document-understanding", "ocr", "rag", "ai-training-data", "unstructured-alternative", "docling-alternative", "marker-alternative", "markitdown-alternative", "mineru-alternative", "paddleocr-alternative", "tesseract-alternative", "document-to-markdown", "pdf-to-markdown", "local-document-processing", "offline-document-extractor", "structured-data-extraction", "table-extraction", "layout-detection", "llm-ready-data", "document-ai", "text-extraction", "html-to-markdown", "excel-to-markdown", "powerpoint-to-markdown", "word-to-markdown", "batch-document-processing", "docstrange"]
 requires-python = ">=3.8"
 dependencies = [
     "Pillow>=9.0.0",
@@ -69,24 +69,20 @@ local-llm = [
 ]
 
 [project.scripts]
-document-data-extractor = "document_extractor.cli:main"
+docstrange = "docstrange.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/nanonets/llm-data-converter"
-Repository = "https://github.com/nanonets/llm-data-converter"
-Documentation = "https://github.com/nanonets/llm-data-converter#readme"
-Issues = "https://github.com/nanonets/llm-data-converter/issues"
+Homepage = "https://github.com/nanonets/docstrange"
+Repository = "https://github.com/nanonets/docstrange"
+Documentation = "https://github.com/nanonets/docstrange#readme"
+Issues = "https://github.com/nanonets/docstrange/issues"
 
-[tool.hatch.build.targets.wheel]
-packages = ["document_extractor"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["docstrange*"]
 
-[tool.hatch.build.targets.sdist]
-include = [
-    "/document_extractor",
-    "/README.md",
-    "/LICENSE",
-    "/pyproject.toml",
-]
+[tool.setuptools.package-data]
+docstrange = ["**/*"]
 
 [tool.black]
 line-length = 88
