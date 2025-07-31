@@ -1,3 +1,5 @@
+![DocStrange Banner](https://public-vlms.s3.us-west-2.amazonaws.com/logo.png)
+
 # DocStrange
 
 [![PyPI version](https://badge.fury.io/py/docstrange.svg?v=2)](https://badge.fury.io/py/docstrange)
