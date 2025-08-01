@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docstrange"
-version = "1.0.6"
+version = "1.0.7"
 description = "Extract and Convert PDF, Word, PowerPoint, Excel, images, URLs into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR."
 readme = "README.md"
 license = {text = "MIT"}
