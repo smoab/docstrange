@@ -217,7 +217,7 @@ class CloudProcessor(BaseProcessor):
         Args:
             api_key: API key for cloud processing (optional - uses rate-limited free tier without key)
             output_type: Output type for cloud processing (markdown, flat-json, html, csv, specified-fields, specified-json)
-            model_type: Model type for cloud processing (gemini, openapi)
+            model_type: Model type for cloud processing (gemini, openapi, nanonets)
             specified_fields: List of fields to extract (for specified-fields output type)
             json_schema: JSON schema defining fields and types to extract (for specified-json output type)
         """

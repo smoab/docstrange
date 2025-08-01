@@ -125,8 +125,9 @@ Examples:
   docstrange document.pdf --output csv  # Extract tables as CSV
 
   # Use specific model for cloud processing
-  docstrange document.pdf --api-key YOUR_KEY --model gemini
-  docstrange document.pdf --model openapi --output json
+docstrange document.pdf --model gemini
+docstrange document.pdf --model openapi --output json
+docstrange document.pdf --model nanonets --output csv
 
   # Convert a URL (works in all modes)
   docstrange https://example.com --output html
@@ -191,8 +192,8 @@ Examples:
     
     parser.add_argument(
         "--model",
-        choices=["gemini", "openapi"],
-        help="Model to use for cloud processing (gemini, openapi)"
+        choices=["gemini", "openapi", "nanonets"],
+        help="Model to use for cloud processing (gemini, openapi, nanonets)"
     )
     
     parser.add_argument(

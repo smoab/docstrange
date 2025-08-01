@@ -15,7 +15,7 @@
 > **☁️ Free Cloud Processing!**  
 > Extract documents data instantly with the cloud processing - no setup or api key needed for getting started.  
 
-> **🔒 Privacy First!**  
+> **🔒 Local Processing Available!**  
 > Use `cpu` or `gpu` mode for 100% local processing - no data sent anywhere, everything stays on your machine.
 
 Extract and convert data from any document, images, pdfs, word doc, ppt or URL into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
@@ -402,7 +402,7 @@ docstrange document.pdf --cpu-mode --output json --extract-fields key_points con
 ```python
 DocumentExtractor(
     api_key: str = None,              # free API key for increased rate limit on cloud access
-    model: str = None,                # Model for cloud processing ("gemini", "openapi")
+    model: str = None,                # Model for cloud processing ("gemini", "openapi", "nanonets")
     cpu: bool = False,     # Force local CPU processing
     gpu: bool = False      # Force local GPU processing
 )
