@@ -2,24 +2,30 @@
 
 # DocStrange
 
+
 [![PyPI version](https://badge.fury.io/py/docstrange.svg?v=2)](https://badge.fury.io/py/docstrange)
 [![Python](https://img.shields.io/pypi/pyversions/docstrange.svg)](https://pypi.org/project/docstrange/)
+[![PyPI Downloads](https://static.pepy.tech/badge/docstrange)](https://pepy.tech/projects/docstrange)
 [![GitHub stars](https://img.shields.io/github/stars/NanoNets/docstrange?style=social)](https://github.com/NanoNets/docstrange)
 [![GitHub forks](https://img.shields.io/github/forks/NanoNets/docstrange?style=social)](https://github.com/NanoNets/docstrange)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS%20%7C%20windows-lightgrey)](https://pypi.org/project/docstrange/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NanoNets/docstrange/graphs/commit-activity)
 
-> **Free Cloud Processing!**  
-> Extract documents data instantly with our cloud API - no setup or api key needed for getting started.  
+> **☁️ Free Cloud Processing!**  
+> Extract documents data instantly with the cloud processing - no setup or api key needed for getting started.  
 
+> **🔒 Privacy First!**  
+> Use `cpu` or `gpu` mode for 100% local processing - no data sent anywhere, everything stays on your machine.
 
 Extract and convert data from any document, images, pdfs, word doc, ppt or URL into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
 
+![DocStrange Demo](https://public-vlms.s3.us-west-2.amazonaws.com/markdown.gif)
+
 ## Key Features
 
-- **Cloud Processing (Default)**: Instant free conversion with Nanonets API - no local setup needed
-- **Local Processing**: CPU/GPU options for complete privacy and control
+- **☁️ Cloud Processing (Default)**: Instant free conversion with cloud API - no local setup needed
+- **🔒 Local Processing**: CPU/GPU options for complete privacy - no data sent anywhere
 - **Universal Input**: PDFs, Word docs, Excel, PowerPoint, images, URLs, and raw text
 - **Smart Output**: Markdown, JSON, CSV, HTML, and plain text formats
 - **LLM-Optimized**: Clean, structured output perfect for AI processing
