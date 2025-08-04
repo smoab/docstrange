@@ -170,11 +170,11 @@ def main():
     # Initialize extractor in cloud mode (default)
     api_key = os.environ.get('NANONETS_API_KEY')
     if api_key:
-        print("🔑 Using API key from environment for unlimited access")
+        print("🔑 Using API key from environment for increased limits")
         extractor = DocumentExtractor(api_key=api_key)
     else:
         print("⚠️  No API key found - using rate-limited free tier")
-        print("💡 Set NANONETS_API_KEY environment variable for unlimited access")
+        print("💡 Set NANONETS_API_KEY environment variable for increased limits")
         extractor = DocumentExtractor()
     
     print(f"🌐 Cloud mode: {extractor.cloud_mode}")
@@ -274,7 +274,7 @@ def main():
     
     if rate_limited_count > 0:
         print(f"\n💡 {rate_limited_count} tests were rate limited")
-        print("   Get an API key from https://app.nanonets.com/#/keys for unlimited access")
+        print("   Get an API key from https://app.nanonets.com/#/keys for increased limits")
     
     print()
     

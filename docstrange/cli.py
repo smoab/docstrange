@@ -110,7 +110,7 @@ Examples:
   # Convert a PDF to markdown (default cloud mode)
   docstrange document.pdf
 
-  # Convert with API key for unlimited access
+  # Convert with free API key with increased limits
   docstrange document.pdf --api-key YOUR_API_KEY
 
   # Force local CPU processing
@@ -187,7 +187,7 @@ docstrange document.pdf --model nanonets --output csv
     
     parser.add_argument(
         "--api-key",
-        help="API key for unlimited cloud access (get from https://app.nanonets.com/#/keys)"
+        help="API key for increased cloud access (get it free from https://app.nanonets.com/#/keys)"
     )
     
     parser.add_argument(

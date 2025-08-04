@@ -87,7 +87,7 @@ class CloudConversionResult(ConversionResult):
                     if not self.cloud_processor.api_key:
                         error_msg = (
                             "Rate limit exceeded for free tier usage. "
-                            "To get unlimited access, please provide an API key from https://app.nanonets.com/#/keys\n"
+                            "To get increased limits, please provide an API key from https://app.nanonets.com/#/keys for free\n"
                             "Usage: DocumentExtractor(api_key='your_api_key_here')"
                         )
                         logger.error(error_msg)
@@ -271,7 +271,7 @@ class CloudProcessor(BaseProcessor):
         }
         
         if self.api_key:
-            logger.info(f"Created cloud extractor for {file_path} with API key - unlimited access")
+            logger.info(f"Created cloud extractor for {file_path} with freeAPI key - increased limits")
         else:
             logger.info(f"Created cloud extractor for {file_path} without API key - rate-limited access")
         

@@ -12,7 +12,7 @@
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS%20%7C%20windows-lightgrey)](https://pypi.org/project/docstrange/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NanoNets/docstrange/graphs/commit-activity)
 
-> **☁️ Free Cloud Processing!**  
+> **☁️ Free Cloud Processing upto 10000 docs per month !**  
 > Extract documents data instantly with the cloud processing - no setup or api key needed for getting started.  
 
 > **🔒 Local Processing Available!**  
@@ -216,7 +216,7 @@ from docstrange import DocumentExtractor
 # Default cloud mode (rate-limited without API key)
 extractor = DocumentExtractor()
 
-# With API key for increased rate limit access
+# With free API key for increased rate limit access
 extractor = DocumentExtractor(api_key="your_api_key_here")
 
 # Extract specific fields from invoice
@@ -311,7 +311,7 @@ DocStrange offers **free cloud processing** with rate limits to ensure fair usag
 - **Access**: All output formats (Markdown, JSON, CSV, HTML)
 - **Setup**: Zero configuration - works immediately
 
-### Increased Rate Limits (With API Key)
+### Increased Rate Limits (With API Key) free processing of 10k docs per month
 - **Rate Limit**: Higher limits for production use
 - **Setup**: Get your free API key from [app.nanonets.com](https://app.nanonets.com/#/keys)
 - **Usage**: Pass API key during initialization 
@@ -320,12 +320,12 @@ DocStrange offers **free cloud processing** with rate limits to ensure fair usag
 # Free tier usage
 extractor = DocumentExtractor()
 
-# Increased rate limits with API key
+# Increased rate limits with free API key
 extractor = DocumentExtractor(api_key="your_api_key_here")
 
 ```
 
-> **💡 Tip**: Start with the free tier to test functionality, then get an API key for production workloads or higher volume processing.
+> **💡 Tip**: Start with the free tier to test functionality, then get a free API key for production workloads or higher volume processing.
 
 ## Command Line Interface
 
@@ -369,7 +369,7 @@ docstrange contract.pdf --output json --extract-fields parties contract_value st
 docstrange invoice.pdf --output json --json-schema invoice_schema.json
 docstrange contract.pdf --output json --json-schema contract_schema.json
 
-# Combine with API key for increased rate limit access
+# Combine with free API key for increased rate limit access
 docstrange document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
 
 # Force local processing with field extraction (requires Ollama)

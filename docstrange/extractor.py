@@ -43,7 +43,7 @@ class DocumentExtractor:
             preserve_layout: Whether to preserve document layout
             include_images: Whether to include images in output
             ocr_enabled: Whether to enable OCR for image and PDF processing
-            api_key: API key for cloud processing (optional - get from https://app.nanonets.com/#/keys)
+            api_key: API key for cloud processing (optional - get it for free from https://app.nanonets.com/#/keys)
             model: Model to use for cloud processing (gemini, openapi) - only for cloud mode
             cpu: Force local CPU-only processing (disables cloud mode)
             gpu: Force local GPU processing (disables cloud mode, requires GPU)
@@ -51,7 +51,7 @@ class DocumentExtractor:
         Note:
             - Cloud mode is the default unless cpu or gpu is specified
             - Without API key, cloud mode uses rate-limited free tier
-            - For unlimited access, provide an API key from https://app.nanonets.com/#/keys
+            - For increased limits, provide an API key from https://app.nanonets.com/#/keys for free
         """
         self.preserve_layout = preserve_layout
         self.include_images = include_images
@@ -100,10 +100,10 @@ class DocumentExtractor:
             self.processors.append(cloud_processor)
             
             if self.api_key:
-                logger.info("Cloud processing enabled with API key - unlimited access")
+                logger.info("Cloud processing enabled with free API key - increased limits")
             else:
                 logger.info("Cloud processing enabled without API key - using rate-limited free tier")
-                # logger.warning("For unlimited access, provide an API key from https://app.nanonets.com/#/keys")
+                # logger.warning("For increased limits , provide an API key from https://app.nanonets.com/#/keys" for free)
         else:
             # Local mode setup
             logger.info("Local processing mode enabled")
