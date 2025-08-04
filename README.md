@@ -1,4 +1,4 @@
-![DocStrange Banner](https://public-vlms.s3.us-west-2.amazonaws.com/logo.png)
+![DocStrange Banner](https://public-vlms.s3.us-west-2.amazonaws.com/logo3.png)
 
 # DocStrange
 
