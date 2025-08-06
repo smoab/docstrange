@@ -2,6 +2,7 @@
 
 # DocStrange
 
+> **[Try DocStrange Online →](https://docstrange.nanonets.com/)** | No installation required - test all features instantly in your browser!
 
 [![PyPI version](https://badge.fury.io/py/docstrange.svg?v=2)](https://badge.fury.io/py/docstrange)
 [![Python](https://img.shields.io/pypi/pyversions/docstrange.svg)](https://pypi.org/project/docstrange/)
@@ -21,6 +22,20 @@
 Extract and convert data from any document, images, pdfs, word doc, ppt or URL into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
 
 ![DocStrange Demo](https://public-vlms.s3.us-west-2.amazonaws.com/markdown.gif)
+
+## 🌐 Try Live Demo (No Installation Required)
+
+**Test DocStrange instantly in your browser without installing anything:**
+
+🔗 **[docstrange.nanonets.com](https://docstrange.nanonets.com/)**
+
+Perfect for:
+- **Quick testing** - Upload and convert documents instantly
+- **No setup** - No installation, dependencies 
+- **Live demo** - See  features in action before installing
+- **Share results** - Easy to share converted outputs with team members
+
+Once you're ready for automation, or local/private processing, install the Python library below.
 
 ## Key Features
 
@@ -42,6 +57,8 @@ pip install docstrange
 ```
 
 ## Quick Start
+
+> 💡 **New to DocStrange?** Try the [online demo](https://docstrange.nanonets.com/) first - no installation needed!
 
 ### 1. Convert Document to Markdown
 
@@ -329,6 +346,8 @@ extractor = DocumentExtractor(api_key="your_api_key_here")
 
 ## Command Line Interface
 
+> 💡 **Prefer a GUI?** Try the [web interface](https://docstrange.nanonets.com/) for drag-and-drop document conversion!
+
 ```bash
 # Basic conversion (cloud mode default)
 docstrange document.pdf
@@ -428,6 +447,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
+- **🌐 Online Demo**: [docstrange.nanonets.com](https://docstrange.nanonets.com/) - Test features instantly
 - **Email**: support@nanonets.com  
 - **Issues**: [GitHub Issues](https://github.com/NanoNets/docstrange/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/NanoNets/docstrange/discussions)
