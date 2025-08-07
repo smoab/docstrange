@@ -48,6 +48,7 @@ Once you're ready for automation, or local/private processing, install the Pytho
 - **Advanced OCR**: Multiple OCR engines with automatic fallback
 - **Table Processing**: Accurate table extraction and formatting
 - **Image Handling**: Extract text from images and visual content
+- **🤖 MCP Server**: Integrate with Claude Desktop for intelligent document navigation
 - **URL Processing**: Direct conversion from web pages
 
 ## Installation
@@ -440,6 +441,46 @@ result.extract_csv() -> str                       # CSV format for tables
 result.extract_text() -> str                      # Plain text
 ```
 
+## 🤖 MCP Server for Claude Desktop (Local Development)
+
+The docstrange repository includes an optional MCP (Model Context Protocol) server for local development that enables intelligent document processing in Claude Desktop with token-aware navigation.
+
+> **Note**: The MCP server is designed for local development and is **not included** in the PyPI package. Clone the repository to use it locally.
+
+### Features
+- **Smart Token Counting**: Automatically counts tokens and recommends processing strategy
+- **Hierarchical Navigation**: Navigate documents by structure when they exceed context limits
+- **Intelligent Chunking**: Automatically splits large documents into token-limited chunks
+- **Advanced Search**: Search within documents and get contextual results
+
+### Local Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/nanonets/docstrange.git
+cd docstrange
+```
+
+2. Install in development mode:
+```bash
+pip install -e ".[dev]"
+```
+
+3. Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "docstrange": {
+      "command": "python3",
+      "args": ["/path/to/docstrange/mcp_server_module/server.py"]
+    }
+  }
+}
+```
+
+4. Restart Claude Desktop
+
+For detailed setup and usage, see [mcp_server_module/README.md](mcp_server_module/README.md)
 
 ## License
 
