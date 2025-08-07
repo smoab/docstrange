@@ -239,7 +239,7 @@ class DocstrangeServer:
         result: ConversionResult = extractor.extract(abs_path)
         
         # Parse sections
-        markdown_content = result.content
+        markdown_content = result.extract_markdown()
         sections = self._parse_markdown_sections(markdown_content)
         
         # Calculate total tokens
