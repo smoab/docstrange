@@ -75,7 +75,7 @@ markdown = result.extract_markdown()
 print(markdown)
 ```
 
-### 2. Extract All Important Information as JSON
+### 3. Extract All Important Information as JSON
 
 ```python
 from docstrange import DocumentExtractor
@@ -89,7 +89,7 @@ json_data = result.extract_data()
 print(json_data)
 ```
 
-### 3. Extract Specific Fields
+### 4. Extract Specific Fields
 
 ```python
 from docstrange import DocumentExtractor
@@ -105,7 +105,7 @@ fields = result.extract_data(specified_fields=[
 print(fields)
 ```
 
-### 4. Extract with Custom JSON Schema
+### 5. Extract with Custom JSON Schema
 
 ```python
 from docstrange import DocumentExtractor
@@ -234,7 +234,10 @@ from docstrange import DocumentExtractor
 # Default cloud mode (rate-limited without API key)
 extractor = DocumentExtractor()
 
-# With free API key for increased rate limit access
+# Authenticated mode (10k docs/month) - run 'docstrange login' first
+extractor = DocumentExtractor()  # Auto-uses cached credentials
+
+# With API key for 10k docs/month (alternative to login)
 extractor = DocumentExtractor(api_key="your_api_key_here")
 
 # Extract specific fields from invoice
@@ -324,36 +327,65 @@ response = your_llm_client.chat(
 
 DocStrange offers **free cloud processing** with rate limits to ensure fair usage:
 
-### Free Tier (No API Key)
-- **Rate Limit**: Moderate usage restrictions apply
+### 🆓 Free Tier (No Setup Required)
+- **Rate Limit**: 10 calls only
 - **Access**: All output formats (Markdown, JSON, CSV, HTML)
 - **Setup**: Zero configuration - works immediately
 
-### Increased Rate Limits (With API Key) free processing of 10k docs per month
-- **Rate Limit**: Higher limits for production use
+### 🔐 Authenticated Access (Recommended)
+- **Rate Limit**: 10,000 documents/month
+- **Setup**: One command: `docstrange login`
+- **Benefits**: Same Google account as [docstrange.nanonets.com](https://docstrange.nanonets.com/)
+
+### 🔑 API Key Access (Alternative)
+- **Rate Limit**: 10,000 documents/month
 - **Setup**: Get your free API key from [app.nanonets.com](https://app.nanonets.com/#/keys)
-- **Usage**: Pass API key during initialization 
+- **Usage**: Pass API key during initialization
 
 ```python
-# Free tier usage
+# Free tier usage (10 calls only)
 extractor = DocumentExtractor()
 
-# Increased rate limits with free API key
+# Authenticated access (10k docs/month) - run 'docstrange login' first
+extractor = DocumentExtractor()  # Auto-uses cached credentials
+
+# API key access (10k docs/month)
 extractor = DocumentExtractor(api_key="your_api_key_here")
 
 ```
 
-> **💡 Tip**: Start with the free tier to test functionality, then get a free API key for production workloads or higher volume processing.
+> **💡 Tip**: Start with the free tier (10 calls) to test functionality, then authenticate with `docstrange login` for free 10,000 docs/month, or get an API key for the same enhanced limits.
 
 ## Command Line Interface
 
 > 💡 **Prefer a GUI?** Try the [web interface](https://docstrange.nanonets.com/) for drag-and-drop document conversion!
 
+### Authentication Commands
+
 ```bash
-# Basic conversion (cloud mode default)
+# One-time login for free 10k docs/month (alternative to api key)
+docstrange login
+
+# Check authentication status
+docstrange --login
+
+# Re-authenticate if needed
+docstrange login --reauth
+
+# Logout and clear cached credentials
+docstrange --logout
+```
+
+### Document Processing
+
+```bash
+# Basic conversion (cloud mode default - 10 calls free!)
 docstrange document.pdf
 
-# With API key for increased rate limit access
+# Authenticated processing (10k docs/month after login)
+docstrange document.pdf
+
+# With API key for 10k docs/month access (alternative to login)
 docstrange document.pdf --api-key YOUR_API_KEY
 
 # Local processing modes
@@ -389,7 +421,10 @@ docstrange contract.pdf --output json --extract-fields parties contract_value st
 docstrange invoice.pdf --output json --json-schema invoice_schema.json
 docstrange contract.pdf --output json --json-schema contract_schema.json
 
-# Combine with free API key for increased rate limit access
+# Combine with authentication for 10k docs/month access (after 'docstrange login')
+docstrange document.pdf --output json --extract-fields title author date summary
+
+# Or use API key for 10k docs/month access (alternative to login)
 docstrange document.pdf --api-key YOUR_API_KEY --output json --extract-fields title author date summary
 
 # Force local processing with field extraction (requires Ollama)
@@ -421,10 +456,10 @@ docstrange document.pdf --cpu-mode --output json --extract-fields key_points con
 
 ```python
 DocumentExtractor(
-    api_key: str = None,              # free API key for increased rate limit on cloud access
+    api_key: str = None,              # API key for 10k docs/month (or use 'docstrange login' for same limits)
     model: str = None,                # Model for cloud processing ("gemini", "openapi", "nanonets")
-    cpu: bool = False,     # Force local CPU processing
-    gpu: bool = False      # Force local GPU processing
+    cpu: bool = False,                # Force local CPU processing
+    gpu: bool = False                 # Force local GPU processing
 )
 ```
 

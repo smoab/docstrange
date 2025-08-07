@@ -100,6 +100,68 @@ def process_single_input(extractor: DocumentExtractor, input_item: str, output_f
         }
 
 
+def handle_login(force_reauth: bool = False) -> int:
+    """Handle login command."""
+    try:
+        from .services.auth_service import get_authenticated_token
+        
+        print("\n🔐 DocStrange Authentication")
+        print("=" * 50)
+        
+        token = get_authenticated_token(force_reauth=force_reauth)
+        if token:
+            print("✅ Authentication successful!")
+            
+            # Get cached credentials to show user info
+            try:
+                from .services.auth_service import AuthService
+                auth_service = AuthService()
+                cached_creds = auth_service.get_cached_credentials()
+                
+                if cached_creds and cached_creds.get('auth0_direct'):
+                    print(f"👤 Logged in as: {cached_creds.get('user_email', 'Unknown')}")
+                    print(f"👤 Name: {cached_creds.get('user_name', 'Unknown')}")
+                    print(f"🔐 Via: Auth0 Google Login")
+                    print(f"🔑 Access Token: {token[:12]}...{token[-4:]}")
+                    print("💾 Credentials cached securely")
+                else:
+                    print(f"🔑 Access Token: {token[:12]}...{token[-4:]}")
+                    print("💾 Credentials cached securely")
+            except:
+                print(f"🔑 Access Token: {token[:12]}...{token[-4:]}")
+                print("💾 Credentials cached securely")
+            
+            print("\n💡 You can now use DocStrange cloud features without specifying --api-key")
+            print("🌐 Your CLI is authenticated with the same Google account used on docstrange.nanonets.com")
+            return 0
+        else:
+            print("❌ Authentication failed.")
+            return 1
+    except ImportError:
+        print("❌ Authentication service not available.", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"❌ Authentication error: {e}", file=sys.stderr)
+        return 1
+
+
+def handle_logout() -> int:
+    """Handle logout command."""
+    try:
+        from .services.auth_service import clear_auth
+        
+        clear_auth()
+        print("✅ Logged out successfully.")
+        print("💾 Cached authentication credentials cleared.")
+        return 0
+    except ImportError:
+        print("❌ Authentication service not available.", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"❌ Error clearing credentials: {e}", file=sys.stderr)
+        return 1
+
+
 def main():
     """Main CLI function."""
     parser = argparse.ArgumentParser(
@@ -107,6 +169,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+  # Authentication (browser-based login)
+  docstrange login                    # One-click browser login
+  docstrange login --reauth          # Force re-authentication
+  
   # Convert a PDF to markdown (default cloud mode)
   docstrange document.pdf
 
@@ -261,6 +327,24 @@ docstrange document.pdf --model nanonets --output csv
         help="Enable verbose output"
     )
     
+    parser.add_argument(
+        "--login",
+        action="store_true",
+        help="Perform browser-based authentication login"
+    )
+    
+    parser.add_argument(
+        "--reauth",
+        action="store_true", 
+        help="Force re-authentication (use with --login)"
+    )
+    
+    parser.add_argument(
+        "--logout",
+        action="store_true",
+        help="Clear cached authentication credentials"
+    )
+    
     args = parser.parse_args()
     
     # Handle version flag
@@ -279,6 +363,19 @@ docstrange document.pdf --model nanonets --output csv
         )
         print_supported_formats(extractor)
         return 0
+    
+    # Handle authentication commands
+    # Check if first argument is "login" command
+    if args.input and args.input[0] == "login":
+        force_reauth = "--reauth" in sys.argv
+        return handle_login(force_reauth)
+    
+    # Handle login flags
+    if args.login or args.logout:
+        if args.logout:
+            return handle_logout()
+        else:
+            return handle_login(args.reauth)
     
     # Check if input is provided
     if not args.input:

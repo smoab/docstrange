@@ -85,6 +85,19 @@ class DocumentExtractor:
         # Try to get API key from environment if not provided
         if self.cloud_mode and not self.api_key:
             self.api_key = os.environ.get('NANONETS_API_KEY')
+            
+            # If still no API key, try to get from cached credentials
+            if not self.api_key:
+                try:
+                    from .services.auth_service import get_authenticated_token
+                    cached_token = get_authenticated_token(force_reauth=False)
+                    if cached_token:
+                        self.api_key = cached_token
+                        logger.info("Using cached authentication credentials")
+                except ImportError:
+                    logger.debug("Authentication service not available")
+                except Exception as e:
+                    logger.warning(f"Could not retrieve cached credentials: {e}")
         
         # Initialize processors
         self.processors = []
@@ -108,6 +121,40 @@ class DocumentExtractor:
             # Local mode setup
             logger.info("Local processing mode enabled")
             self._setup_local_processors()
+    
+    def authenticate(self, force_reauth: bool = False) -> bool:
+        """
+        Perform browser-based authentication and update API key.
+        
+        Args:
+            force_reauth: Force re-authentication even if cached credentials exist
+            
+        Returns:
+            True if authentication successful, False otherwise
+        """
+        try:
+            from .services.auth_service import get_authenticated_token
+            
+            token = get_authenticated_token(force_reauth=force_reauth)
+            if token:
+                self.api_key = token
+                
+                # Update cloud processor if it exists
+                for processor in self.processors:
+                    if hasattr(processor, 'api_key'):
+                        processor.api_key = token
+                        logger.info("Updated processor with new authentication token")
+                
+                return True
+            else:
+                return False
+                
+        except ImportError:
+            logger.error("Authentication service not available")
+            return False
+        except Exception as e:
+            logger.error(f"Authentication failed: {e}")
+            return False
     
     def _setup_local_processors(self):
         """Setup local processors based on CPU/GPU preferences."""
