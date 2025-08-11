@@ -381,8 +381,8 @@ docstrange document.pdf --model nanonets --output csv
     if not args.input:
         parser.error("No input specified. Please provide file(s), URL(s), or text to extract.")
     
-    # Cloud mode is default and works without API key (rate-limited)
-    # API key provides increased rate limits
+    # Cloud mode is default. Without login/API key it's limited calls.
+    # Use 'docstrange login' (recommended) or --api-key for 10k docs/month for free.
     
     # Initialize extractor
     extractor = DocumentExtractor(
@@ -397,8 +397,8 @@ docstrange document.pdf --model nanonets --output csv
         print(f"Initialized extractor in {mode} mode:")
         print(f"  - Output format: {args.output}")
         if mode == "cloud":
-            has_api_key = bool(args.api_key or extractor.api_key)
-            print(f"  - API key: {'provided' if has_api_key else 'not provided (rate-limited)'}")
+            has_api_or_auth = bool(args.api_key or extractor.api_key)
+            print(f"  - Auth: {'authenticated (10k/month) free calls' if has_api_or_auth else 'not authenticated (limited free calls)'}")
             if args.model:
                 print(f"  - Model: {args.model}")
         else:

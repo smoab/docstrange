@@ -328,7 +328,7 @@ response = your_llm_client.chat(
 DocStrange offers **free cloud processing** with rate limits to ensure fair usage:
 
 ### 🆓 Free Tier (No Setup Required)
-- **Rate Limit**: 10 calls only
+- **Rate Limit**: limited calls 
 - **Access**: All output formats (Markdown, JSON, CSV, HTML)
 - **Setup**: Zero configuration - works immediately
 
@@ -343,7 +343,7 @@ DocStrange offers **free cloud processing** with rate limits to ensure fair usag
 - **Usage**: Pass API key during initialization
 
 ```python
-# Free tier usage (10 calls only)
+# Free tier usage (limited calls daily)
 extractor = DocumentExtractor()
 
 # Authenticated access (10k docs/month) - run 'docstrange login' first
@@ -354,7 +354,7 @@ extractor = DocumentExtractor(api_key="your_api_key_here")
 
 ```
 
-> **💡 Tip**: Start with the free tier (10 calls) to test functionality, then authenticate with `docstrange login` for free 10,000 docs/month, or get an API key for the same enhanced limits.
+> **💡 Tip**: Start with the free tier (limited calls) to test functionality, then authenticate with `docstrange login` for free 10,000 docs/month, or get an API key for the same enhanced limits.
 
 ## Command Line Interface
 
@@ -379,10 +379,10 @@ docstrange --logout
 ### Document Processing
 
 ```bash
-# Basic conversion (cloud mode default - 10 calls free!)
+# Basic conversion (cloud mode default - limited calls free!)
 docstrange document.pdf
 
-# Authenticated processing (10k docs/month after login)
+# Authenticated processing (10k docs/month for free after login)
 docstrange document.pdf
 
 # With API key for 10k docs/month access (alternative to login)

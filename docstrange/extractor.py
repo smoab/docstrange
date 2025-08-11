@@ -43,15 +43,15 @@ class DocumentExtractor:
             preserve_layout: Whether to preserve document layout
             include_images: Whether to include images in output
             ocr_enabled: Whether to enable OCR for image and PDF processing
-            api_key: API key for cloud processing (optional - get it for free from https://app.nanonets.com/#/keys)
+            api_key: API key for cloud processing (optional). Prefer 'docstrange login' for 10k docs/month; API key from https://app.nanonets.com/#/keys is an alternative
             model: Model to use for cloud processing (gemini, openapi) - only for cloud mode
             cpu: Force local CPU-only processing (disables cloud mode)
             gpu: Force local GPU processing (disables cloud mode, requires GPU)
         
         Note:
             - Cloud mode is the default unless cpu or gpu is specified
-            - Without API key, cloud mode uses rate-limited free tier
-            - For increased limits, provide an API key from https://app.nanonets.com/#/keys for free
+            - Without login or API key, limited calls per day
+            - For 10k docs/month, run 'docstrange login' (recommended) or use an API key from https://app.nanonets.com/#/keys
         """
         self.preserve_layout = preserve_layout
         self.include_images = include_images
@@ -113,9 +113,9 @@ class DocumentExtractor:
             self.processors.append(cloud_processor)
             
             if self.api_key:
-                logger.info("Cloud processing enabled with free API key - increased limits")
+                logger.info("Cloud processing enabled with authenticated access (10k docs/month)")
             else:
-                logger.info("Cloud processing enabled without API key - using rate-limited free tier")
+                logger.info("Cloud processing enabled without authentication (limited free calls). Run 'docstrange login' for 10k docs/month free calls or pass api_key.")
                 # logger.warning("For increased limits , provide an API key from https://app.nanonets.com/#/keys" for free)
         else:
             # Local mode setup
