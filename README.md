@@ -1,6 +1,6 @@
 ![DocStrange Banner](https://public-vlms.s3.us-west-2.amazonaws.com/logo3.png)
 
-# DocStrange
+# <img src="https://public-vlms.s3.us-west-2.amazonaws.com/docstrange_logo.svg" alt="DocStrange" width="32" style="vertical-align: middle; margin-right: 8px;"> DocStrange
 
 > **[Try DocStrange Online →](https://docstrange.nanonets.com/)** | No installation required - test all features instantly in your browser!
 
@@ -23,7 +23,7 @@ Extract and convert data from any document, images, pdfs, word doc, ppt or URL i
 
 ![DocStrange Demo](https://public-vlms.s3.us-west-2.amazonaws.com/markdown.gif)
 
-## 🌐 Try Live Demo (No Installation Required)
+## 🌐 Try Live Demo
 
 **Test DocStrange instantly in your browser without installing anything:**
 
@@ -356,7 +356,7 @@ extractor = DocumentExtractor(api_key="your_api_key_here")
 
 > **💡 Tip**: Start with the free tier (limited calls) to test functionality, then authenticate with `docstrange login` for free 10,000 docs/month, or get an API key for the same enhanced limits.
 
-## Command Line Interface
+## Command Line Interface (CLI)
 
 > 💡 **Prefer a GUI?** Try the [web interface](https://docstrange.nanonets.com/) for drag-and-drop document conversion!
 
@@ -366,7 +366,7 @@ extractor = DocumentExtractor(api_key="your_api_key_here")
 # One-time login for free 10k docs/month (alternative to api key)
 docstrange login
 
-# Check authentication status
+# Alternatively
 docstrange --login
 
 # Re-authenticate if needed
