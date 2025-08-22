@@ -66,10 +66,8 @@ def create_extractor_with_mode(processing_mode):
         if not check_gpu_availability():
             raise ValueError("GPU mode selected but GPU is not available. Please install PyTorch with CUDA support or use CPU mode.")
         return DocumentExtractor(gpu=True)
-    elif processing_mode == 'cpu':
+    else:  # cpu mode (default)
         return DocumentExtractor(cpu=True)
-    else:  # cloud mode (default)
-        return DocumentExtractor()
 
 # Initialize the document extractor
 extractor = DocumentExtractor()
@@ -182,10 +180,6 @@ def get_system_info():
     system_info = {
         'gpu_available': gpu_available,
         'processing_modes': {
-            'cloud': {
-                'available': True,
-                'description': 'Fast processing with AI models. Requires internet connection.'
-            },
             'cpu': {
                 'available': True,
                 'description': 'Process locally using CPU. Works offline, slower but private.'

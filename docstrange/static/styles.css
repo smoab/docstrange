@@ -599,6 +599,28 @@ body {
     line-height: 1.4;
 }
 
+/* Cloud Redirect */
+.cloud-redirect {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--primary-lightest);
+    border: 1px solid var(--primary-light);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.cloud-link {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.cloud-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {

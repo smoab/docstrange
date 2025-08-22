@@ -47,11 +47,11 @@ class DocStrangeApp {
                     description.style.color = '#D02B2B';
                 }
                 
-                // If GPU was selected, switch to cloud
+                // If GPU was selected, switch to CPU
                 if (gpuOption.checked) {
-                    const cloudOption = document.querySelector('input[name="processingMode"][value="cloud"]');
-                    if (cloudOption) {
-                        cloudOption.checked = true;
+                    const cpuOption = document.querySelector('input[name="processingMode"][value="cpu"]');
+                    if (cpuOption) {
+                        cpuOption.checked = true;
                     }
                 }
             } else {
@@ -229,7 +229,7 @@ class DocStrangeApp {
                 
                 // Handle specific GPU errors
                 if (errorMessage.includes('GPU') && errorMessage.includes('not available')) {
-                    this.showError('GPU mode is not available. Please select CPU or Cloud mode instead.');
+                    this.showError('GPU mode is not available. Please select CPU mode instead.');
                 } else {
                     this.showError(errorMessage);
                 }
