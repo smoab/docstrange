@@ -173,6 +173,9 @@ Examples:
   docstrange login                    # One-click browser login
   docstrange login --reauth          # Force re-authentication
   
+  # Start web interface
+  docstrange web                     # Start web interface at http://localhost:8000
+  
   # Convert a PDF to markdown (default cloud mode)
   docstrange document.pdf
 
@@ -369,6 +372,19 @@ docstrange document.pdf --model nanonets --output csv
     if args.input and args.input[0] == "login":
         force_reauth = "--reauth" in sys.argv
         return handle_login(force_reauth)
+    
+    # Handle web command
+    if args.input and args.input[0] == "web":
+        try:
+            from .web_app import run_web_app
+            print("Starting DocStrange web interface...")
+            print("Open your browser and go to: http://localhost:8000")
+            print("Press Ctrl+C to stop the server")
+            run_web_app(host='0.0.0.0', port=8000, debug=False)
+            return 0
+        except ImportError:
+            print("❌ Web interface not available. Install Flask: pip install Flask", file=sys.stderr)
+            return 1
     
     # Handle login flags
     if args.login or args.logout:

@@ -1,0 +1,129 @@
+"""Web application for docstrange document extraction."""
+
+import os
+import json
+import tempfile
+from pathlib import Path
+from typing import Optional
+from flask import Flask, request, jsonify, render_template, send_from_directory
+from werkzeug.utils import secure_filename
+from werkzeug.exceptions import RequestEntityTooLarge
+
+from .extractor import DocumentExtractor
+from .exceptions import ConversionError, UnsupportedFormatError, FileNotFoundError
+
+app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
+
+# Initialize the document extractor
+extractor = DocumentExtractor()
+
+@app.route('/')
+def index():
+    """Serve the main page."""
+    return render_template('index.html')
+
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    """Serve static files."""
+    return send_from_directory('static', filename)
+
+@app.route('/api/extract', methods=['POST'])
+def extract_document():
+    """API endpoint for document extraction."""
+    try:
+        # Check if file was uploaded
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Get parameters
+        output_format = request.form.get('output_format', 'markdown')
+        processing_mode = request.form.get('processing_mode', 'cloud')
+        
+        # Create extractor based on processing mode
+        if processing_mode == 'cpu':
+            extractor = DocumentExtractor(cpu=True)
+        elif processing_mode == 'gpu':
+            extractor = DocumentExtractor(gpu=True)
+        else:  # cloud mode (default)
+            extractor = DocumentExtractor()
+        
+        # Save uploaded file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file.filename).suffix) as tmp_file:
+            file.save(tmp_file.name)
+            tmp_path = tmp_file.name
+        
+        try:
+            # Extract content
+            result = extractor.extract(tmp_path)
+            
+            # Convert to requested format
+            if output_format == 'markdown':
+                content = result.extract_markdown()
+            elif output_format == 'html':
+                content = result.extract_html()
+            elif output_format == 'json':
+                content = result.extract_data()
+                content = json.dumps(content, indent=2)
+            elif output_format == 'csv':
+                content = result.extract_csv(include_all_tables=True)
+            elif output_format == 'flat-json':
+                content = result.extract_data()
+                content = json.dumps(content, indent=2)
+            else:
+                content = result.extract_markdown()  # Default to markdown
+            
+            # Get metadata
+            metadata = {
+                'file_type': Path(file.filename).suffix.lower(),
+                'file_name': file.filename,
+                'file_size': os.path.getsize(tmp_path),
+                'pages_processed': getattr(result, 'pages_processed', 1),
+                'processing_time': getattr(result, 'processing_time', 0),
+                'output_format': output_format,
+                'processing_mode': processing_mode
+            }
+            
+            return jsonify({
+                'success': True,
+                'content': content,
+                'metadata': metadata
+            })
+            
+        finally:
+            # Clean up temporary file
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
+                
+    except RequestEntityTooLarge:
+        return jsonify({'error': 'File too large. Maximum size is 100MB.'}), 413
+    except UnsupportedFormatError as e:
+        return jsonify({'error': f'Unsupported file format: {str(e)}'}), 400
+    except ConversionError as e:
+        return jsonify({'error': f'Conversion error: {str(e)}'}), 500
+    except Exception as e:
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+
+@app.route('/api/supported-formats')
+def get_supported_formats():
+    """Get list of supported file formats."""
+    formats = extractor.get_supported_formats()
+    return jsonify({'formats': formats})
+
+@app.route('/api/health')
+def health_check():
+    """Health check endpoint."""
+    return jsonify({'status': 'healthy', 'version': '1.0.0'})
+
+def run_web_app(host='0.0.0.0', port=8000, debug=False):
+    """Run the web application."""
+    print(f"Starting docstrange web interface at http://{host}:{port}")
+    print("Press Ctrl+C to stop the server")
+    app.run(host=host, port=port, debug=debug)
+
+if __name__ == '__main__':
+    run_web_app(debug=True) 
