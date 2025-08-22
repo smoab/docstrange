@@ -152,10 +152,14 @@ class DocStrangeApp {
         const fileInfo = document.getElementById('fileInfo');
         const fileName = document.getElementById('fileName');
         const fileSize = document.getElementById('fileSize');
+        const uploadArea = document.getElementById('fileUploadArea');
 
         fileName.textContent = file.name;
         fileSize.textContent = this.formatFileSize(file.size);
         fileInfo.style.display = 'flex';
+        
+        // Hide the drag and drop area when file is selected
+        uploadArea.style.display = 'none';
     }
 
     formatFileSize(bytes) {
@@ -168,7 +172,13 @@ class DocStrangeApp {
 
     removeFile() {
         this.selectedFile = null;
-        document.getElementById('fileInfo').style.display = 'none';
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadArea = document.getElementById('fileUploadArea');
+        
+        fileInfo.style.display = 'none';
+        // Show the drag and drop area again when file is removed
+        uploadArea.style.display = 'block';
+        
         document.getElementById('fileInput').value = '';
         this.disableSubmitButton();
         this.hideResults();
