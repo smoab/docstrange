@@ -23,6 +23,43 @@ def check_gpu_availability():
     except ImportError:
         return False
 
+def download_models():
+    """Download models synchronously before starting the app."""
+    print("🔄 Starting model download...")
+    
+    # Check GPU availability
+    gpu_available = check_gpu_availability()
+    
+    if gpu_available:
+        print("🚀 GPU detected - downloading GPU models")
+        # Download GPU models
+        extractor = DocumentExtractor(gpu=True)
+    else:
+        print("💻 GPU not available - downloading CPU models only")
+        # Download CPU models only
+        extractor = DocumentExtractor(cpu=True)
+    
+    # Test extraction to trigger model downloads
+    print("📥 Downloading models...")
+    
+    # Create a simple test file to trigger model downloads
+    test_content = "Test document for model download."
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as tmp_file:
+        tmp_file.write(test_content)
+        test_file_path = tmp_file.name
+    
+    try:
+        # This will trigger model downloads
+        result = extractor.extract(test_file_path)
+        print("✅ Model download completed successfully")
+    except Exception as e:
+        print(f"⚠️ Model download warning: {e}")
+        # Don't fail completely, just log the warning
+    finally:
+        # Clean up test file
+        if os.path.exists(test_file_path):
+            os.unlink(test_file_path)
+
 def create_extractor_with_mode(processing_mode):
     """Create DocumentExtractor with proper error handling for processing mode."""
     if processing_mode == 'gpu':
@@ -164,7 +201,9 @@ def get_system_info():
 
 def run_web_app(host='0.0.0.0', port=8000, debug=False):
     """Run the web application."""
-    print(f"Starting docstrange web interface at http://{host}:{port}")
+    print("🔄 Downloading models before starting the web interface...")
+    download_models()
+    print(f"✅ Starting docstrange web interface at http://{host}:{port}")
     print("Press Ctrl+C to stop the server")
     app.run(host=host, port=port, debug=debug)
 
