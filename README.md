@@ -51,6 +51,118 @@ Once you're ready for automation, or local/private processing, install the Pytho
 - **🤖 MCP Server**: Integrate with Claude Desktop for intelligent document navigation
 - **URL Processing**: Direct conversion from web pages
 
+## 🌐 Local Web Interface
+
+> 💡 **Want a GUI?** Run the local web interface for drag-and-drop document conversion with a beautiful UI!
+
+DocStrange includes a built-in web interface that provides a user-friendly way to process documents locally. The interface automatically downloads required models on startup and supports both CPU and GPU processing modes.
+
+### Quick Start
+
+1. **Install with web dependencies:**
+```bash
+pip install "docstrange[web]"
+```
+
+2. **Run the web interface:**
+```bash
+# Method 1: Using the CLI command
+docstrange web
+
+# Method 2: Using Python module
+python -m docstrange.web_app
+
+# Method 3: Direct Python import
+python -c "from docstrange.web_app import run_web_app; run_web_app()"
+```
+
+3. **Open your browser:**
+Navigate to `http://localhost:8000` (or the port shown in the terminal)
+
+### Features
+
+- **🖱️ Drag & Drop Interface**: Simply drag files onto the upload area
+- **📁 Multiple File Types**: Supports PDF, Word, Excel, PowerPoint, images, and more
+- **⚙️ Processing Modes**: Choose between Local CPU and Local GPU processing
+- **📊 Multiple Output Formats**: Markdown, HTML, JSON, CSV, and Flat JSON
+- **📥 Automatic Model Download**: Models are downloaded automatically on startup
+- **🔒 100% Local Processing**: No data leaves your machine
+- **📱 Responsive Design**: Works on desktop, tablet, and mobile
+
+### Supported File Types
+
+- **Documents**: PDF, DOCX, DOC, PPTX, PPT
+- **Spreadsheets**: XLSX, XLS, CSV
+- **Images**: PNG, JPG, JPEG, TIFF, BMP
+- **Web**: HTML, HTM
+- **Text**: TXT
+
+### Processing Modes
+
+- **Local CPU**: Works offline, slower but private (default)
+- **Local GPU**: Fastest local processing, requires CUDA support
+
+### Output Formats
+
+- **Markdown**: Clean, structured text perfect for documentation
+- **HTML**: Formatted output with styling and layout
+- **JSON**: Structured data with metadata
+- **CSV**: Table data in spreadsheet format
+- **Flat JSON**: Simplified JSON structure
+
+### Advanced Usage
+
+**Custom Port:**
+```bash
+# Run on a different port
+docstrange web --port 8080
+python -c "from docstrange.web_app import run_web_app; run_web_app(port=8080)"
+```
+
+**Development Mode:**
+```bash
+# Run with debug mode for development
+python -c "from docstrange.web_app import run_web_app; run_web_app(debug=True)"
+```
+
+**Custom Host:**
+```bash
+# Make accessible from other devices on the network
+python -c "from docstrange.web_app import run_web_app; run_web_app(host='0.0.0.0')"
+```
+
+### Troubleshooting
+
+**Port Already in Use:**
+```bash
+# Use a different port
+docstrange web --port 8001
+```
+
+**GPU Not Available:**
+- The interface automatically detects GPU availability
+- GPU option will be disabled if CUDA is not available
+- CPU mode will be selected automatically
+
+**Model Download Issues:**
+- Models are downloaded automatically on first startup
+- Check your internet connection during initial setup
+- Download progress is shown in the terminal
+
+**Installation Issues:**
+```bash
+# Install with all dependencies
+pip install -e ".[web]"
+
+# Or install Flask separately
+pip install Flask
+```
+
+### Cloud Alternative
+
+Need cloud processing? Use the official DocStrange Cloud service:
+🔗 **[docstrange.nanonets.com](https://docstrange.nanonets.com/)**
+
 ## Installation
 
 ```bash
@@ -530,4 +642,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Star this repo** if you find it helpful! Your support helps us improve the library. 
+**Star this repo** if you find it helpful! Your support helps us improve the library.
