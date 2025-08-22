@@ -15,6 +15,25 @@ from .exceptions import ConversionError, UnsupportedFormatError, FileNotFoundErr
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
 
+def check_gpu_availability():
+    """Check if GPU is available for processing."""
+    try:
+        import torch
+        return torch.cuda.is_available()
+    except ImportError:
+        return False
+
+def create_extractor_with_mode(processing_mode):
+    """Create DocumentExtractor with proper error handling for processing mode."""
+    if processing_mode == 'gpu':
+        if not check_gpu_availability():
+            raise ValueError("GPU mode selected but GPU is not available. Please install PyTorch with CUDA support or use CPU mode.")
+        return DocumentExtractor(gpu=True)
+    elif processing_mode == 'cpu':
+        return DocumentExtractor(cpu=True)
+    else:  # cloud mode (default)
+        return DocumentExtractor()
+
 # Initialize the document extractor
 extractor = DocumentExtractor()
 
@@ -45,12 +64,10 @@ def extract_document():
         processing_mode = request.form.get('processing_mode', 'cloud')
         
         # Create extractor based on processing mode
-        if processing_mode == 'cpu':
-            extractor = DocumentExtractor(cpu=True)
-        elif processing_mode == 'gpu':
-            extractor = DocumentExtractor(gpu=True)
-        else:  # cloud mode (default)
-            extractor = DocumentExtractor()
+        try:
+            extractor = create_extractor_with_mode(processing_mode)
+        except ValueError as e:
+            return jsonify({'error': str(e)}), 400
         
         # Save uploaded file temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file.filename).suffix) as tmp_file:
@@ -118,6 +135,32 @@ def get_supported_formats():
 def health_check():
     """Health check endpoint."""
     return jsonify({'status': 'healthy', 'version': '1.0.0'})
+
+@app.route('/api/system-info')
+def get_system_info():
+    """Get system information including GPU availability."""
+    gpu_available = check_gpu_availability()
+    
+    # Get additional system info
+    system_info = {
+        'gpu_available': gpu_available,
+        'processing_modes': {
+            'cloud': {
+                'available': True,
+                'description': 'Fast processing with AI models. Requires internet connection.'
+            },
+            'cpu': {
+                'available': True,
+                'description': 'Process locally using CPU. Works offline, slower but private.'
+            },
+            'gpu': {
+                'available': gpu_available,
+                'description': 'Process locally using GPU. Fastest local processing, requires CUDA.' if gpu_available else 'GPU not available. Install PyTorch with CUDA support.'
+            }
+        }
+    }
+    
+    return jsonify(system_info)
 
 def run_web_app(host='0.0.0.0', port=8000, debug=False):
     """Run the web application."""

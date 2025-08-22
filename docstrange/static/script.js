@@ -7,8 +7,71 @@ class DocStrangeApp {
         this.initializeApp();
     }
 
-    initializeApp() {
+    async initializeApp() {
+        await this.loadSystemInfo();
         this.initializeEventListeners();
+    }
+
+    async loadSystemInfo() {
+        try {
+            const response = await fetch('/api/system-info');
+            if (response.ok) {
+                const systemInfo = await response.json();
+                this.updateProcessingModeOptions(systemInfo);
+            }
+        } catch (error) {
+            console.warn('Could not load system info:', error);
+        }
+    }
+
+    updateProcessingModeOptions(systemInfo) {
+        const gpuOption = document.querySelector('input[name="processingMode"][value="gpu"]');
+        const gpuLabel = gpuOption?.closest('.radio-option');
+        const gpuWarning = document.getElementById('gpuWarning');
+        
+        if (gpuLabel) {
+            if (!systemInfo.gpu_available) {
+                // Show warning message
+                if (gpuWarning) {
+                    gpuWarning.style.display = 'block';
+                }
+                
+                // Disable GPU option if not available
+                gpuOption.disabled = true;
+                gpuLabel.classList.add('disabled');
+                
+                // Update description
+                const description = gpuLabel.querySelector('.radio-description');
+                if (description) {
+                    description.textContent = systemInfo.processing_modes.gpu.description;
+                    description.style.color = '#D02B2B';
+                }
+                
+                // If GPU was selected, switch to cloud
+                if (gpuOption.checked) {
+                    const cloudOption = document.querySelector('input[name="processingMode"][value="cloud"]');
+                    if (cloudOption) {
+                        cloudOption.checked = true;
+                    }
+                }
+            } else {
+                // Hide warning message
+                if (gpuWarning) {
+                    gpuWarning.style.display = 'none';
+                }
+                
+                // Enable GPU option if available
+                gpuOption.disabled = false;
+                gpuLabel.classList.remove('disabled');
+                
+                // Update description
+                const description = gpuLabel.querySelector('.radio-description');
+                if (description) {
+                    description.textContent = systemInfo.processing_modes.gpu.description;
+                    description.style.color = '';
+                }
+            }
+        }
     }
 
     initializeEventListeners() {
@@ -152,7 +215,14 @@ class DocStrangeApp {
             if (response.ok && result.success) {
                 this.displayResults(result);
             } else {
-                this.showError(result.error || 'Extraction failed');
+                const errorMessage = result.error || 'Extraction failed';
+                
+                // Handle specific GPU errors
+                if (errorMessage.includes('GPU') && errorMessage.includes('not available')) {
+                    this.showError('GPU mode is not available. Please select CPU or Cloud mode instead.');
+                } else {
+                    this.showError(errorMessage);
+                }
             }
         } catch (error) {
             console.error('Error during extraction:', error);
