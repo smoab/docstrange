@@ -1,8 +1,6 @@
 ![DocStrange Banner](https://public-vlms.s3.us-west-2.amazonaws.com/logo3.png)
 
-# <img src="https://public-vlms.s3.us-west-2.amazonaws.com/docstrange_logo.svg" alt="DocStrange" width="32" style="vertical-align: middle; margin-right: 8px;"> DocStrange
-
-> **[Try DocStrange Online →](https://docstrange.nanonets.com/)** | No installation required - test all features instantly in your browser!
+# <img src="https://public-vlms.s3.us-west-2.amazonaws.com/docstrange_logo.svg" alt="DocStrange" width="32" style="vertical-align: middle; margin-right: 8px;">  DocStrange
 
 [![PyPI version](https://badge.fury.io/py/docstrange.svg?v=2)](https://badge.fury.io/py/docstrange)
 [![Python](https://img.shields.io/pypi/pyversions/docstrange.svg)](https://pypi.org/project/docstrange/)
@@ -13,167 +11,107 @@
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macOS%20%7C%20windows-lightgrey)](https://pypi.org/project/docstrange/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NanoNets/docstrange/graphs/commit-activity)
 
-> **☁️ Free Cloud Processing upto 10000 docs per month !**  
-> Extract documents data instantly with the cloud processing - no setup or api key needed for getting started.  
+> 🚀 **[Try DocStrange Online →](https://docstrange.nanonets.com/)**
 
-> **🔒 Local Processing Available!**  
-> Use `cpu` or `gpu` mode for 100% local processing - no data sent anywhere, everything stays on your machine.
+# DocStrange
 
-Extract and convert data from any document, images, pdfs, word doc, ppt or URL into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR.
+DocStrange converts documents to Markdown, JSON, CSV, and HTML quickly and accurately.
+
+- Converts PDF, image, PPTX, DOCX, XLSX, and URL files.
+- Formats tables into clean, LLM-optimized Markdown.
+- Powered by an upgraded 7B model for higher accuracy and deeper document understanding.
+- Extracts text from images and scanned documents with advanced OCR.
+- Removes page artifacts for clean, readable output.
+- Does structured extraction, given specific fields or a JSON schema.
+- Includes a built-in, local Web UI for easy drag-and-drop conversion.
+- Offers a free cloud API for instant processing or a 100% private, local mode.
+- Works on GPU or CPU when running locally.
+- Integrates with Claude Desktop via an MCP server for intelligent document navigation.
+
+---
 
 ![DocStrange Demo](https://public-vlms.s3.us-west-2.amazonaws.com/markdown.gif)
 
-## 🌐 Try Live Demo
 
-**Test DocStrange instantly in your browser without installing anything:**
+## Processing Modes
+> **☁️ Free Cloud Processing upto 10000 docs per month !**  
+> Extract documents data instantly with the cloud processing - no complex setup needed 
 
-🔗 **[docstrange.nanonets.com](https://docstrange.nanonets.com/)**
+> **🔒 Local Processing !**  
+> Use `cpu` or `gpu` mode for 100% local processing - no data sent anywhere, everything stays on your machine.
 
-Perfect for:
-- **Quick testing** - Upload and convert documents instantly
-- **No setup** - No installation, dependencies 
-- **Live demo** - See  features in action before installing
-- **Share results** - Easy to share converted outputs with team members
 
-Once you're ready for automation, or local/private processing, install the Python library below.
+## **What's New**
 
-## Key Features
+**August 2025**
 
-- **☁️ Cloud Processing (Default)**: Instant free conversion with cloud API - no local setup needed
-- **🔒 Local Processing**: CPU/GPU options for complete privacy - no data sent anywhere
-- **Universal Input**: PDFs, Word docs, Excel, PowerPoint, images, URLs, and raw text
-- **Smart Output**: Markdown, JSON, CSV, HTML, and plain text formats
-- **LLM-Optimized**: Clean, structured output perfect for AI processing
-- **Intelligent Extraction**: Extract specific fields or structured data using AI
-- **Advanced OCR**: Multiple OCR engines with automatic fallback
-- **Table Processing**: Accurate table extraction and formatting
-- **Image Handling**: Extract text from images and visual content
-- **🤖 MCP Server**: Integrate with Claude Desktop for intelligent document navigation
-- **URL Processing**: Direct conversion from web pages
+- 🚀 **Major Model Upgrade**: The core model has been upgraded to **7B parameters**, delivering significantly higher accuracy and deeper understanding of complex documents.
+- 🖥️ **Local Web Interface**: Introducing a built-in, local GUI. Now you can convert documents with a simple drag-and-drop interface, 100% offline.
 
-## 🌐 Local Web Interface
+---
 
-> 💡 **Want a GUI?** Run the local web interface for drag-and-drop document conversion with a beautiful UI!
+## About
 
-DocStrange includes a built-in web interface that provides a user-friendly way to process documents locally. The interface automatically downloads required models on startup and supports both CPU and GPU processing modes.
+Convert and extract data from PDF, DOCX, images, and more into clean Markdown and structured JSON. Plus: Advanced table extraction, 100% local processing, and a built-in web UI.
 
-### Quick Start
+`DocStrange` is a Python library for converting a wide range of document formats—including **PDF**, **DOCX**, **PPTX**, **XLSX**, and **images** — into clean, usable data. It produces LLM-optimized **Markdown**, structured **JSON** (with schema support), **HTML**, and **CSV** outputs, making it an ideal tool for preparing content for RAG pipelines and other AI applications.
 
-1. **Install with web dependencies:**
-```bash
-pip install "docstrange[web]"
-```
+The library offers both a powerful cloud API and a 100% private, offline mode that runs locally on your CPU or GPU. Developed by **Nanonets**, DocStrange is built on a powerful pipeline of OCR and layout detection models and currently requires **Python >=3.8**.
 
-2. **Run the web interface:**
-```bash
-# Method 1: Using the CLI command
-docstrange web
+**To report a bug or request a feature, [please file an issue](https://github.com/NanoNets/docstrange/issues). To ask a question or request assistance, please use the [discussions forum](https://github.com/NanoNets/docstrange/discussions).**
 
-# Method 2: Using Python module
-python -m docstrange.web_app
+---
 
-# Method 3: Direct Python import
-python -c "from docstrange.web_app import run_web_app; run_web_app()"
-```
+## **How DocStrange Differs**
 
-3. **Open your browser:**
-Navigate to `http://localhost:8000` (or the port shown in the terminal)
+`DocStrange` focuses on end-to-end document understanding (OCR → layout → tables → clean Markdown or structured JSON) that you can run 100% locally. It is designed to deliver high-quality results from scans and photos without requiring the integration of multiple services.
 
-### Features
+- **vs. Cloud AI Services (like AWS Textract)**: `DocStrange` offers a completely private, local processing option and gives you full control over the conversion pipeline.
+- **vs. Orchestration Frameworks (like LangChain)**: `DocStrange` is a ready-to-use parsing pipeline, not just a framework. It handles the complex OCR and layout analysis so you don't have to build it yourself.
+- **vs. Other Document Parsers**: `DocStrange` is specifically built for robust OCR on scans and phone photos, not just digitally-native PDFs.
 
-- **🖱️ Drag & Drop Interface**: Simply drag files onto the upload area
-- **📁 Multiple File Types**: Supports PDF, Word, Excel, PowerPoint, images, and more
-- **⚙️ Processing Modes**: Choose between Local CPU and Local GPU processing
-- **📊 Multiple Output Formats**: Markdown, HTML, JSON, CSV, and Flat JSON
-- **📥 Automatic Model Download**: Models are downloaded automatically on startup
-- **🔒 100% Local Processing**: No data leaves your machine
-- **📱 Responsive Design**: Works on desktop, tablet, and mobile
+### **When to Pick DocStrange**
+- You need a **free cloud api** to extract information in structured format (markdown, json, csv, html) from different document types
+- You need **local processing** for privacy and compliance.
+- You are working with **scans, phone photos, or receipts** where high-quality OCR is critical.
+- You need a **fast path to clean Markdown or structured JSON** without training a model.
 
-### Supported File Types
+---
 
-- **Documents**: PDF, DOCX, DOC, PPTX, PPT
-- **Spreadsheets**: XLSX, XLS, CSV
-- **Images**: PNG, JPG, JPEG, TIFF, BMP
-- **Web**: HTML, HTM
-- **Text**: TXT
+## **Examples**
 
-### Processing Modes
+Try the live demo: Test `DocStrange` instantly in your browser with no installation required at [docstrange.nanonets.com](https://docstrange.nanonets.com/)
 
-- **Local CPU**: Works offline, slower but private (default)
-- **Local GPU**: Fastest local processing, requires CUDA support
+**See it in action:**
 
-### Output Formats
+![DocStrange Demo](https://public-vlms.s3.us-west-2.amazonaws.com/docstrange.gif) 
 
-- **Markdown**: Clean, structured text perfect for documentation
-- **HTML**: Formatted output with styling and layout
-- **JSON**: Structured data with metadata
-- **CSV**: Table data in spreadsheet format
-- **Flat JSON**: Simplified JSON structure
+<!-- 
+**Example outputs: Here's a quick preview of the quality of output**
 
-### Advanced Usage
+| Document Type | Source File | Output (Markdown) | Output (JSON) | Output (CSV) |
+| --- | --- | --- | --- | --- |
+| **Invoice PDF** | invoice.pdf | View Markdown | View JSON | View CSV |
+| **Research Paper** | paper.pdf | View Markdown | View JSON | NA |
+| **Word Document** | report.docx | View Markdown | View JSON | NA |
+| **Scanned Invoice** | [Ziebart.JPG](https://nanonets.com/media/1587320232578_ziebart.jpeg) | View Markdown | View JSON | View CSV | -->
 
-**Custom Port:**
-```bash
-# Run on a different port
-docstrange web --port 8080
-python -c "from docstrange.web_app import run_web_app; run_web_app(port=8080)"
-```
+---
 
-**Development Mode:**
-```bash
-# Run with debug mode for development
-python -c "from docstrange.web_app import run_web_app; run_web_app(debug=True)"
-```
-
-**Custom Host:**
-```bash
-# Make accessible from other devices on the network
-python -c "from docstrange.web_app import run_web_app; run_web_app(host='0.0.0.0')"
-```
-
-### Troubleshooting
-
-**Port Already in Use:**
-```bash
-# Use a different port
-docstrange web --port 8001
-```
-
-**GPU Not Available:**
-- The interface automatically detects GPU availability
-- GPU option will be disabled if CUDA is not available
-- CPU mode will be selected automatically
-
-**Model Download Issues:**
-- Models are downloaded automatically on first startup
-- Check your internet connection during initial setup
-- Download progress is shown in the terminal
-
-**Installation Issues:**
-```bash
-# Install with all dependencies
-pip install -e ".[web]"
-
-# Or install Flask separately
-pip install Flask
-```
-
-### Cloud Alternative
-
-Need cloud processing? Use the official DocStrange Cloud service:
-🔗 **[docstrange.nanonets.com](https://docstrange.nanonets.com/)**
-
-## Installation
+## **Installation**
+Install the library using pip:
 
 ```bash
 pip install docstrange
 ```
 
-## Quick Start
+## **Quick Start**
 
 > 💡 **New to DocStrange?** Try the [online demo](https://docstrange.nanonets.com/) first - no installation needed!
 
-### 1. Convert Document to Markdown
+**1. Convert any Document to LLM-Ready Markdown**
+
+This is the most common use case. Turn a complex PDF or DOCX file into clean, structured Markdown, perfect for RAG pipelines and other LLM applications.
 
 ```python
 from docstrange import DocumentExtractor
@@ -187,7 +125,9 @@ markdown = result.extract_markdown()
 print(markdown)
 ```
 
-### 3. Extract All Important Information as JSON
+**2. Extract Structured Data as JSON**
+
+Go beyond plain text and extract all detected entities and content from your document into a structured JSON format.
 
 ```python
 from docstrange import DocumentExtractor
@@ -201,7 +141,9 @@ json_data = result.extract_data()
 print(json_data)
 ```
 
-### 4. Extract Specific Fields
+**3. Extract Specific Fields from a PDF or Invoice** 
+
+Target only the key-value data you need, such as extracting the invoice_number or total_amount directly from a document.
 
 ```python
 from docstrange import DocumentExtractor
@@ -217,7 +159,9 @@ fields = result.extract_data(specified_fields=[
 print(fields)
 ```
 
-### 5. Extract with Custom JSON Schema
+**4. Extract with Custom JSON Schema**
+
+Ensure the structure of your output by providing a custom JSON schema. This is ideal for getting reliable, nested data structures for applications that process contracts or complex forms.
 
 ```python
 from docstrange import DocumentExtractor
@@ -239,8 +183,9 @@ structured_data = result.extract_data(json_schema=schema)
 print(structured_data)
 ```
 
+**Local Processing**
 
-### Local Processing
+For complete privacy and offline capability, run DocStrange entirely on your own machine. You can specify whether to use your CPU or GPU for processing.
 
 ```python
 # Force local CPU processing
@@ -250,17 +195,136 @@ extractor = DocumentExtractor(cpu=True)
 extractor = DocumentExtractor(gpu=True)
 ```
 
-## Output Formats
+---
 
-- **Markdown**: Clean, LLM-friendly format with preserved structure
-- **JSON**: Structured data with metadata and intelligent parsing
+## Local Web Interface
+
+💡 Want a GUI? Run the simple, drag-and-drop local web interface for private, offline document conversion.
+
+For users who prefer a graphical interface, DocStrange includes a powerful, self-hosted web UI. This allows for easy drag-and-drop conversion of PDF, DOCX, and other files directly in your browser, with 100% private, offline processing on your own CPU or GPU. The interface automatically downloads required models on its first run.
+
+### How to get started?
+
+1. **Install with web dependencies:**
+
+```bash
+pip install "docstrange[web]"
+```
+
+2. **Run the web interface:**
+
+```bash
+# Method 1: Using the CLI command
+docstrange web
+
+# Method 2: Using Python module
+python -m docstrange.web_app
+
+# Method 3: Direct Python import
+python -c "from docstrange.web_app import run_web_app; run_web_app()"
+```
+
+3. **Open your browser:** Navigate to `http://localhost:8000` (or the port shown in the terminal)
+
+### **Features of DocStrange's Local Web Interface:**
+
+- 🖱️ Drag & Drop Interface: Simply drag files onto the upload area.
+- 📁 Multiple File Types: Supports PDF, DOCX, XLSX, PPTX, images, and more.
+- ⚙️ Processing Modes: Choose between Local CPU and Local GPU processing.
+- 📊 Multiple Output Formats: Get Markdown, HTML, JSON, CSV, and Flat JSON.
+- 🔒 100% Local Processing: No data leaves your machine.
+- 📱 Responsive Design: Works on desktop, tablet, and mobile
+
+### **Supported File Types:**
+
+- **Documents**: PDF, DOCX, DOC, PPTX, PPT
+- **Spreadsheets**: XLSX, XLS, CSV
+- **Images**: PNG, JPG, JPEG, TIFF, BMP
+- **Web**: HTML, HTM
+- **Text**: TXT
+
+### **Processing Modes:**
+
+- **Local CPU**: Works offline, slower but private (default)
+- **Local GPU**: Fastest local processing, requires CUDA support
+- **Cloud processing:** For instant, zero-setup conversion, you can head over to [docstrange.nanonets.com](http://docstrange.nanonets.com/) **—** no setup
+
+### **Output Formats:**
+
+- **Markdown**: Clean, structured text perfect for documentation
 - **HTML**: Formatted output with styling and layout
-- **CSV**: Extract tables and data in spreadsheet format
-- **Text**: Plain text with smart formatting
+- **CSV**: Table data in spreadsheet format
+- **Flat JSON**: Simplified JSON structure
+- **Specific Fields**: Specific information from documents
 
-## Examples
 
-### Convert Multiple File Types
+### **Advanced Usage:**
+
+1. Run on a Custom Port:
+
+```bash
+# Run on a different port
+docstrange web --port 8080
+python -c "from docstrange.web_app import run_web_app; run_web_app(port=8080)"
+```
+
+2. Run in Development Mode:
+
+```bash
+# Run with debug mode for development
+python -c "from docstrange.web_app import run_web_app; run_web_app(debug=True)"
+```
+
+3. Run on a Custom Host (to make it accessible on your local network):
+
+```bash
+# Make accessible from other devices on the network
+python -c "from docstrange.web_app import run_web_app; run_web_app(host='0.0.0.0')"
+```
+
+### **Troubleshooting**
+
+1. Port Already in Use:
+
+```bash
+# Use a different port
+docstrange web --port 8001
+```
+
+2. GPU Not Available:
+
+- The interface automatically detects GPU availability
+- GPU option will be disabled if CUDA is not available
+- CPU mode will be selected automatically
+
+3. Model Download Issues:
+
+- Models are downloaded automatically on first startup
+- Check your internet connection during initial setup
+- Download progress is shown in the terminal
+
+4. Installation Issues:
+
+```bash
+# Install with all dependencies
+pip install -e ".[web]"
+# Or install Flask separately
+pip install Flask
+```
+
+**Cloud Alternative**
+
+Need cloud processing? Use the official DocStrange Cloud service: 🔗 **[docstrange.nanonets.com](https://docstrange.nanonets.com/)**
+
+---
+
+## Usage and Features
+
+You can use DocStrange in three main ways: as a simple Web Interface, as a flexible Python Library, or as a powerful Command Line Interface (CLI). This section provides a summary of the library's key capabilities, followed by detailed guides and examples for each method.
+
+1. **Convert Multiple File Types**
+
+DocStrange natively handles a wide variety of formats, returning the most appropriate output for each.
 
 ```python
 from docstrange import DocumentExtractor
@@ -271,7 +335,7 @@ extractor = DocumentExtractor()
 pdf_result = extractor.extract("report.pdf")
 print(pdf_result.extract_markdown())
 
-# Word document  
+# Word document
 docx_result = extractor.extract("document.docx")
 print(docx_result.extract_data())
 
@@ -292,7 +356,9 @@ url_result = extractor.extract("https://example.com")
 print(url_result.extract_markdown())
 ```
 
-### Extract Tables to CSV
+**b. Extract Tables to CSV**
+
+Easily extracts all tables from a document into a clean CSV format.
 
 ```python
 # Extract all tables from a document
@@ -301,15 +367,17 @@ csv_data = result.extract_csv()
 print(csv_data)
 ```
 
-
 **Requirements for enhanced JSON (if using cpu=True):**
+
 - Install: `pip install 'docstrange[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
 
 *If Ollama is not available, the library automatically falls back to the standard JSON parser.*
 
-### Extract Specific Fields & Structured Data
+**c. Extract Specific Fields & Structured Data**
+
+You can go beyond simple conversion and extract data in the exact structure you require. There are two ways to do this. You can either target and pull only the key-value data you need or ensure the structure of your output by providing a custom JSON schema. 
 
 ```python
 # Extract specific fields from any document
@@ -317,7 +385,7 @@ result = extractor.extract("invoice.pdf")
 
 # Method 1: Extract specific fields
 extracted = result.extract_data(specified_fields=[
-    "invoice_number", 
+    "invoice_number",
     "total_amount", 
     "vendor_name",
     "due_date"
@@ -337,8 +405,9 @@ schema = {
 structured = result.extract_data(json_schema=schema)
 ```
 
+**d. Cloud Mode Usage Examples:**
 
-**Cloud Mode Usage Examples:**
+Use DocStrange's cloud mode to extract precise, structured data from various documents by either specifying a list of fields to find or enforcing a custom JSON schema for the output. Authenticate with DocStrange login or a free API key to get 10,000 documents/month.
 
 ```python
 from docstrange import DocumentExtractor
@@ -416,11 +485,14 @@ contract_data = contract.extract_data(json_schema=contract_schema)
 ```
 
 **Local extraction requirements (if using cpu=True):**
+
 - Install ollama package: `pip install 'docstrange[local-llm]'`
 - [Install Ollama](https://ollama.ai/) and run: `ollama serve`
 - Pull a model: `ollama pull llama3.2`
 
-### Chain with LLM
+**e. Chain with LLM**
+
+The clean Markdown output is perfect for use in Retrieval-Augmented Generation (RAG) and other LLM workflows. 
 
 ```python
 # Perfect for LLM workflows
@@ -435,24 +507,39 @@ response = your_llm_client.chat(
 )
 ```
 
-## Rate Limits
+### **Key Capabilities**
 
-DocStrange offers **free cloud processing** with rate limits to ensure fair usage:
+- **🌐 Universal Input**: Process a wide range of formats, including **PDF**, **DOCX**, **PPTX**, **XLSX**, images, and URLs.
+- **🔒 Dual Processing Modes**: Choose between a cloud API for instant processing or **100% private, local processing** on your own CPU or GPU.
+- **🤖 Intelligent Extraction**: Extract **specific fields** or enforce a nested **JSON schema** to get structured data output.
+- **🖼️ Advanced OCR**: Handle scanned documents and images with an OCR pipeline that includes **multiple engine fallbacks**.
+- **📊 Table & Structure Recognition**: Accurately **extract tables** and preserve document structure, producing clean, **LLM-optimized** output.
+- **🖥️ Built-in Web UI**: Use the built-in **drag-and-drop web interface** for easy local conversions.
 
-### 🆓 Free Tier (No Setup Required)
-- **Rate Limit**: limited calls 
-- **Access**: All output formats (Markdown, JSON, CSV, HTML)
-- **Setup**: Zero configuration - works immediately
+### **How It Works**
 
-### 🔐 Authenticated Access (Recommended)
-- **Rate Limit**: 10,000 documents/month
-- **Setup**: One command: `docstrange login`
-- **Benefits**: Same Google account as [docstrange.nanonets.com](https://docstrange.nanonets.com/)
+DocStrange uses a multi-stage process to create structured output from documents.
 
-### 🔑 API Key Access (Alternative)
-- **Rate Limit**: 10,000 documents/month
-- **Setup**: Get your free API key from [app.nanonets.com](https://app.nanonets.com/#/keys)
-- **Usage**: Pass API key during initialization
+1. **Ingestion**: It natively handles various file formats, including PDF, DOCX, PPTX, images, and URLs.
+2. **Layout Detection**: The library identifies the structure of the document, such as headers, paragraphs, lists, and tables, to preserve the original reading order.
+3. **OCR & Text Extraction**: It employs advanced OCR for scanned documents and directly extracts text from digital files.
+4. **Formatting & Cleaning**: The extracted content is converted into clean, LLM-optimized Markdown and other formats, removing page artifacts.
+5. **Structured Extraction (Optional)**: If a schema or specific fields are provided, DocStrange uses an LLM to populate the desired JSON structure.
+
+---
+
+## Cloud API Tiers and Rate Limits
+
+`DocStrange` offers free cloud processing with different tiers to ensure fair usage.
+
+- **🔐 Authenticated Access (Recommended)**
+    - **Rate Limit**: **10,000 documents/month**.
+    - **Setup**: A single command: `docstrange login`.
+    - **Benefits**: Links to your Google account for a significantly higher free limit.
+- **🔑 API Key Access (Alternative)**
+    - **Rate Limit**: **10,000 documents/month**.
+    - **Setup**: Get a free API key from [docstrange.nanonets.com](https://docstrange.nanonets.com/).
+    - Usage: Pass the API key when initializing the library.
 
 ```python
 # Free tier usage (limited calls daily)
@@ -463,16 +550,19 @@ extractor = DocumentExtractor()  # Auto-uses cached credentials
 
 # API key access (10k docs/month)
 extractor = DocumentExtractor(api_key="your_api_key_here")
-
 ```
 
-> **💡 Tip**: Start with the free tier (limited calls) to test functionality, then authenticate with `docstrange login` for free 10,000 docs/month, or get an API key for the same enhanced limits.
+💡 **Tip**: Start with the anonymous free tier to test functionality, then authenticate with `docstrange login` for the full 10,000 documents/month limit.
 
-## Command Line Interface (CLI)
+---
 
-> 💡 **Prefer a GUI?** Try the [web interface](https://docstrange.nanonets.com/) for drag-and-drop document conversion!
+## **Command Line Interface (CLI)**
 
-### Authentication Commands
+💡 **Prefer a GUI?** Try the [web interface](https://docstrange.nanonets.com/) for drag-and-drop document conversion!
+
+For automation, scripting, and batch processing, you can use DocStrange directly from your terminal.
+
+**Authentication Commands**
 
 ```bash
 # One-time login for free 10k docs/month (alternative to api key)
@@ -488,7 +578,7 @@ docstrange login --reauth
 docstrange --logout
 ```
 
-### Document Processing
+**Document Processing**
 
 ```bash
 # Basic conversion (cloud mode default - limited calls free!)
@@ -544,6 +634,7 @@ docstrange document.pdf --cpu-mode --output json --extract-fields key_points con
 ```
 
 **Example schema.json file:**
+
 ```json
 {
   "invoice_number": "string",
@@ -562,9 +653,11 @@ docstrange document.pdf --cpu-mode --output json --extract-fields key_points con
 }
 ```
 
-## API Reference for library
+## **API Reference for library**
 
-### DocumentExtractor
+This section details the main classes and methods for programmatic use. 
+
+1. **DocumentExtractor**
 
 ```python
 DocumentExtractor(
@@ -575,7 +668,7 @@ DocumentExtractor(
 )
 ```
 
-### ConversionResult Methods
+**b. ConversionResult Methods**
 
 ```python
 result.extract_markdown() -> str                    # Clean markdown output
@@ -588,32 +681,38 @@ result.extract_csv() -> str                       # CSV format for tables
 result.extract_text() -> str                      # Plain text
 ```
 
-## 🤖 MCP Server for Claude Desktop (Local Development)
+---
 
-The docstrange repository includes an optional MCP (Model Context Protocol) server for local development that enables intelligent document processing in Claude Desktop with token-aware navigation.
+## **🤖 MCP Server for Claude Desktop (Local Development)**
 
-> **Note**: The MCP server is designed for local development and is **not included** in the PyPI package. Clone the repository to use it locally.
+The DocStrange repository includes an optional MCP (Model Context Protocol) server for local development that enables intelligent document processing in Claude Desktop with token-aware navigation.
 
-### Features
+> Note: The MCP server is designed for local development and is **not included** in the PyPI package. Clone the repository to use it locally.
+
+**Features**
+
 - **Smart Token Counting**: Automatically counts tokens and recommends processing strategy
 - **Hierarchical Navigation**: Navigate documents by structure when they exceed context limits
 - **Intelligent Chunking**: Automatically splits large documents into token-limited chunks
 - **Advanced Search**: Search within documents and get contextual results
 
-### Local Setup
+**Local Setup**
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/nanonets/docstrange.git
 cd docstrange
 ```
 
 2. Install in development mode:
+
 ```bash
 pip install -e ".[dev]"
 ```
 
 3. Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
 ```json
 {
   "mcpServers": {
@@ -627,19 +726,23 @@ pip install -e ".[dev]"
 
 4. Restart Claude Desktop
 
-For detailed setup and usage, see [mcp_server_module/README.md](mcp_server_module/README.md)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-- **🌐 Online Demo**: [docstrange.nanonets.com](https://docstrange.nanonets.com/) - Test features instantly
-- **Email**: support@nanonets.com  
-- **Issues**: [GitHub Issues](https://github.com/NanoNets/docstrange/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/NanoNets/docstrange/discussions)
+For detailed setup and usage, see [mcp_server_module/README.md](https://github.com/NanoNets/docstrange/blob/main/mcp_server_module/README.md)
 
 ---
 
-**Star this repo** if you find it helpful! Your support helps us improve the library.
+
+## **The Nanonets Ecosystem**
+
+`DocStrange` is a powerful open-source library developed and maintained by the team at **Nanonets**. The full [**Nanonets](https://www.notion.so/21fe037e8fcc802ebe44fecfd263a93f?pvs=21) platform** is an AI-driven solution for automating end-to-end document processing for businesses. The platform allows technical and non-technical teams to build complete automated document workflows.
+
+## **Community, Support, & License**
+
+This is an actively developed open-source project, and we welcome your feedback and contributions.
+
+- **Discussions**: For questions, ideas, and to show what you've built, please visit our [**GitHub Discussions**](https://www.google.com/search?q=URL_TO_GITHUB_DIScussions).
+- **Issues**: For bug reports and feature requests, please open an [**Issue**](https://www.google.com/search?q=URL_TO_GITHUB_ISSUES).
+- **Email**: For private inquiries, you can reach us at [**support@nanonets.com**](mailto:support@nanonets.com).
+
+⭐ Star this repo if you find it helpful! Your support helps us improve the library.
+
+**License:** This project is licensed under the **MIT License.** 
