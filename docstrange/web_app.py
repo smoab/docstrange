@@ -126,6 +126,8 @@ def extract_document():
             elif output_format == 'flat-json':
                 content = result.extract_data()
                 content = json.dumps(content, indent=2)
+            elif output_format == 'text':
+                content = result.extract_text()
             else:
                 content = result.extract_markdown()  # Default to markdown
             
