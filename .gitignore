@@ -176,7 +176,6 @@ Thumbs.db
 *.pdf
 *.docx
 *.xlsx
-*.html
 sample_*
 document_*
 
@@ -198,5 +197,6 @@ ENV/
 
 # VSCode
 .vscode/ 
+.playwright-mcp/
 
 examples/
