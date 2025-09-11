@@ -54,11 +54,7 @@ class GPUConversionResult(ConversionResult):
         }
     
     def extract_markdown(self) -> str:
-        """Export as markdown with GPU processing metadata."""
-        # Add GPU processing header if not present
-        if not self.content.startswith('# GPU Processed Document'):
-            header = f"# GPU Processed Document\n\n*Processed using {self.ocr_provider} OCR on GPU*\n\n---\n\n"
-            return header + self.content
+        """Export as markdown without GPU processing metadata."""
         return self.content
     
     def extract_html(self) -> str:
@@ -231,10 +227,8 @@ Example:
         return base_json
     
     def extract_text(self) -> str:
-        """Export as plain text with GPU processing header."""
-        header = f"GPU Processed Document (using {self.ocr_provider} OCR)\n"
-        header += "=" * 50 + "\n\n"
-        return header + self.content
+        """Export as plain text without GPU processing header."""
+        return self.content
     
     def get_processing_stats(self) -> Dict[str, Any]:
         """Get processing statistics and information.
