@@ -49,9 +49,10 @@ class DocumentExtractor:
             gpu: Force local GPU processing (disables cloud mode, requires GPU)
         
         Note:
-            - Cloud mode is the default unless cpu or gpu is specified
-            - Without login or API key, limited calls per day
-            - For 10k docs/month, run 'docstrange login' (recommended) or use an API key from https://app.nanonets.com/#/keys
+            - Local mode (GPU/CPU) is the default for privacy and offline processing
+            - GPU mode is automatically selected if GPU is available and neither cpu nor gpu is explicitly set
+            - Cloud mode is only used when api_key is provided or after 'docstrange login'
+            - For 10k docs/month cloud processing, run 'docstrange login' or use an API key from https://app.nanonets.com/#/keys
         """
         self.preserve_layout = preserve_layout
         self.include_images = include_images
@@ -61,8 +62,17 @@ class DocumentExtractor:
         self.gpu = gpu
         
         # Determine processing mode
-        # Cloud mode is default unless CPU/GPU preference is explicitly set
-        self.cloud_mode = not (self.cpu or self.gpu)
+        # Default to local processing (GPU if available, otherwise CPU)
+        # Cloud mode is only used when api_key is explicitly provided
+        if api_key is not None:
+            # API key provided - use cloud mode
+            self.cloud_mode = not (self.cpu or self.gpu)
+        else:
+            # No API key - default to local mode
+            self.cloud_mode = False
+            # Auto-select GPU if available and not explicitly set to CPU
+            if not self.cpu and not self.gpu and should_use_gpu_processor():
+                self.gpu = True
         
         # Validate CPU/GPU preferences
         if self.cpu and self.gpu:
@@ -82,7 +92,7 @@ class DocumentExtractor:
         else:
             self.ocr_enabled = ocr_enabled
         
-        # Try to get API key from environment if not provided
+        # Try to get API key from environment or cached credentials only for cloud mode
         if self.cloud_mode and not self.api_key:
             self.api_key = os.environ.get('NANONETS_API_KEY')
             
@@ -93,7 +103,8 @@ class DocumentExtractor:
                     cached_token = get_authenticated_token(force_reauth=False)
                     if cached_token:
                         self.api_key = cached_token
-                        logger.info("Using cached authentication credentials")
+                        self.cloud_mode = True  # Enable cloud mode if we have cached credentials
+                        logger.info("Using cached authentication credentials - cloud mode enabled")
                 except ImportError:
                     logger.debug("Authentication service not available")
                 except Exception as e:
@@ -118,8 +129,9 @@ class DocumentExtractor:
                 logger.info("Cloud processing enabled without authentication (limited free calls). Run 'docstrange login' for 10k docs/month free calls or pass api_key.")
                 # logger.warning("For increased limits , provide an API key from https://app.nanonets.com/#/keys" for free)
         else:
-            # Local mode setup
-            logger.info("Local processing mode enabled")
+            # Local mode setup (default)
+            mode_desc = "GPU" if self.gpu else ("CPU-only" if self.cpu else "CPU (GPU not available)")
+            logger.info(f"Local processing mode enabled: {mode_desc}")
             self._setup_local_processors()
     
     def authenticate(self, force_reauth: bool = False) -> bool:
