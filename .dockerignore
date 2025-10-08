@@ -1,0 +1,91 @@
+# Git files
+.git
+.gitignore
+.github
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific test files
+*.txt
+*.pdf
+*.docx
+*.xlsx
+sample_*
+document_*
+
+# Logs
+*.log
+
+# Test outputs
+*.out
+*.tmp
+
+# Examples (not needed in container)
+examples/
+
+# MCP server (not needed in container)
+mcp_server_module/
+
+# Documentation
+README.md
+CLAUDE.md
+LICENSE
+
+# Data directory (will be mounted)
+data/

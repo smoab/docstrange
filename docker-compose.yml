@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  docstrange:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docstrange-web
+    ports:
+      - "8000:8000"
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - HF_HOME=/app/.cache/huggingface
+    volumes:
+      # Mount for model cache persistence
+      - huggingface_cache:/root/.cache/huggingface
+      # Optional: mount for persistent uploads/outputs
+      - ./data:/app/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+volumes:
+  huggingface_cache:
+    driver: local
