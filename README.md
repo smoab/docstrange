@@ -318,6 +318,83 @@ Need cloud processing? Use the official DocStrange Cloud service: 🔗 **[docstr
 
 ---
 
+## 🐳 Docker Deployment with CUDA GPU
+
+DocStrange can be deployed using Docker with full CUDA GPU support for accelerated local processing. This is ideal for production deployments, containerized environments, or when you need consistent, reproducible setups.
+
+### Prerequisites
+
+- Docker Engine 19.03 or later
+- [NVIDIA Docker runtime](https://github.com/NVIDIA/nvidia-docker) (nvidia-docker2)
+- NVIDIA GPU with CUDA 11.8+ support
+- NVIDIA Driver 450.80.02 or later
+
+### Quick Start with Docker
+
+**Using Docker Compose (Recommended):**
+
+```bash
+# Clone the repository
+git clone https://github.com/nanonets/docstrange.git
+cd docstrange
+
+# Start the container with GPU support
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the container
+docker-compose down
+```
+
+**Using Docker CLI:**
+
+```bash
+# Build the image
+docker build -t docstrange-web:latest .
+
+# Run with GPU support
+docker run -d \
+  --name docstrange-web \
+  --gpus all \
+  -p 8000:8000 \
+  -v huggingface_cache:/root/.cache/huggingface \
+  docstrange-web:latest
+```
+
+### Access the Application
+
+Once running, access the web interface at:
+- **Web UI:** http://localhost:8000
+- **Health Check:** http://localhost:8000/api/health
+- **System Info:** http://localhost:8000/api/system-info
+
+### Features
+
+- 🚀 **GPU Acceleration**: Full CUDA support for faster processing
+- 🔒 **Isolated Environment**: Containerized deployment
+- 💾 **Persistent Cache**: Model cache persists between restarts
+- 🔄 **Easy Updates**: Simple container rebuild for updates
+- 📊 **Production Ready**: Includes health checks and proper error handling
+
+### Configuration
+
+Customize via environment variables:
+
+```bash
+docker run -d \
+  --gpus all \
+  -p 8000:8000 \
+  -e CUDA_VISIBLE_DEVICES=0 \
+  -e HF_HOME=/app/.cache/huggingface \
+  docstrange-web:latest
+```
+
+For detailed Docker setup, configuration options, troubleshooting, and production deployment guidance, see [DOCKER.md](DOCKER.md).
+
+---
+
 ## Usage and Features
 
 You can use DocStrange in three main ways: as a simple Web Interface, as a flexible Python Library, or as a powerful Command Line Interface (CLI). This section provides a summary of the library's key capabilities, followed by detailed guides and examples for each method.
