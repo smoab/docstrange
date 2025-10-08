@@ -34,11 +34,11 @@ DocStrange converts documents to Markdown, JSON, CSV, and HTML quickly and accur
 
 
 ## Processing Modes
-> **☁️ Free Cloud Processing upto 10000 docs per month !**  
-> Extract documents data instantly with the cloud processing - no complex setup needed 
+> **🔒 Local Processing (Default)!**  
+> Privacy-first: GPU or CPU processing on your machine - no data sent anywhere. GPU auto-selected if available.
 
-> **🔒 Local Processing !**  
-> Use `cpu` or `gpu` mode for 100% local processing - no data sent anywhere, everything stays on your machine.
+> **☁️ Optional Cloud Processing (10k docs/month free)!**  
+> Extract documents instantly with cloud API when you provide an API key - no complex setup needed.
 
 
 ## **What's New**
@@ -116,7 +116,7 @@ This is the most common use case. Turn a complex PDF or DOCX file into clean, st
 ```python
 from docstrange import DocumentExtractor
 
-# Initialize extractor (cloud mode by default)
+# Initialize extractor (local GPU/CPU mode by default for privacy)
 extractor = DocumentExtractor()
 
 # Convert any document to clean markdown
@@ -245,9 +245,9 @@ python -c "from docstrange.web_app import run_web_app; run_web_app()"
 
 ### **Processing Modes:**
 
-- **Local CPU**: Works offline, slower but private (default)
-- **Local GPU**: Fastest local processing, requires CUDA support
-- **Cloud processing:** For instant, zero-setup conversion, you can head over to [docstrange.nanonets.com](http://docstrange.nanonets.com/) **—** no setup
+- **Local GPU (default if available)**: Fastest processing with GPU acceleration, private and offline
+- **Local CPU (default fallback)**: Works offline, private processing without GPU
+- **Cloud processing (optional):** Instant, zero-setup conversion with API key. Visit [docstrange.nanonets.com](http://docstrange.nanonets.com/) to get started
 
 ### **Output Formats:**
 
@@ -587,7 +587,8 @@ response = your_llm_client.chat(
 ### **Key Capabilities**
 
 - **🌐 Universal Input**: Process a wide range of formats, including **PDF**, **DOCX**, **PPTX**, **XLSX**, images, and URLs.
-- **🔒 Dual Processing Modes**: Choose between a cloud API for instant processing or **100% private, local processing** on your own CPU or GPU.
+- **🔒 Privacy-First Local Processing**: Default mode processes documents **100% privately** on your own GPU or CPU. No data sent anywhere.
+- **☁️ Optional Cloud API**: Enable cloud processing by providing an API key for instant processing without local setup.
 - **🤖 Intelligent Extraction**: Extract **specific fields** or enforce a nested **JSON schema** to get structured data output.
 - **🖼️ Advanced OCR**: Handle scanned documents and images with an OCR pipeline that includes **multiple engine fallbacks**.
 - **📊 Table & Structure Recognition**: Accurately **extract tables** and preserve document structure, producing clean, **LLM-optimized** output.
@@ -658,18 +659,15 @@ docstrange --logout
 **Document Processing**
 
 ```bash
-# Basic conversion (cloud mode default - limited calls free!)
+# Basic conversion (local GPU/CPU mode by default - privacy-focused!)
 docstrange document.pdf
 
-# Authenticated processing (10k docs/month for free after login)
-docstrange document.pdf
-
-# With API key for 10k docs/month access (alternative to login)
+# Cloud processing with authentication (10k docs/month for free after login)
 docstrange document.pdf --api-key YOUR_API_KEY
 
-# Local processing modes
-docstrange document.pdf --cpu-mode
-docstrange document.pdf --gpu-mode
+# Explicit local processing modes
+docstrange document.pdf --cpu-mode  # Force CPU
+docstrange document.pdf --gpu-mode  # Force GPU (requires CUDA)
 
 # Different output formats
 docstrange document.pdf --output json

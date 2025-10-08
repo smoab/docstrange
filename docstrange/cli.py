@@ -207,10 +207,10 @@ docstrange document.pdf --model nanonets --output csv
   # Convert multiple files
   docstrange file1.pdf file2.docx file3.xlsx --output markdown
 
-  # Extract specific fields using Ollama (CPU mode only) or cloud
+  # Extract specific fields using Ollama (CPU mode only) or local/cloud
   docstrange invoice.pdf --output json --extract-fields invoice_number total_amount vendor_name
 
-  # Extract using JSON schema (Ollama for CPU mode, cloud for default mode)
+  # Extract using JSON schema (Ollama for CPU mode, local/cloud otherwise)
   docstrange document.pdf --output json --json-schema schema.json
 
   # Save output to file
@@ -280,12 +280,12 @@ docstrange document.pdf --model nanonets --output csv
     parser.add_argument(
         "--extract-fields",
         nargs="+",
-        help="Extract specific fields using Ollama (CPU mode) or cloud (default mode) (e.g., --extract-fields invoice_number total_amount)"
+        help="Extract specific fields using Ollama (CPU mode) or local GPU/cloud processing (default) (e.g., --extract-fields invoice_number total_amount)"
     )
     
     parser.add_argument(
         "--json-schema",
-        help="JSON schema file for structured extraction using Ollama (CPU mode) or cloud (default mode)"
+        help="JSON schema file for structured extraction using Ollama (CPU mode) or local GPU/cloud processing (default)"
     )
     
     parser.add_argument(
