@@ -995,7 +995,8 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('output_format', format === 'json' ? 'flat-json' : format);
-                formData.append('processing_mode', 'cloud');
+                // Default to GPU mode (will fallback to CPU if GPU not available)
+                formData.append('processing_mode', 'gpu');
                 
                 // Show loading state
                 extractBtn.textContent = 'Processing...';

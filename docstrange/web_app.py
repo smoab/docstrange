@@ -69,7 +69,8 @@ def create_extractor_with_mode(processing_mode):
     else:  # cpu mode (default)
         return DocumentExtractor(cpu=True)
 
-# Initialize the document extractor
+# Initialize the document extractor with local GPU/CPU processing by default
+# GPU will be automatically selected if available
 extractor = DocumentExtractor()
 
 @app.route('/')
@@ -96,13 +97,21 @@ def extract_document():
         
         # Get parameters
         output_format = request.form.get('output_format', 'markdown')
-        processing_mode = request.form.get('processing_mode', 'cloud')
+        processing_mode = request.form.get('processing_mode', 'gpu')  # Default to GPU
         
         # Create extractor based on processing mode
         try:
             extractor = create_extractor_with_mode(processing_mode)
         except ValueError as e:
-            return jsonify({'error': str(e)}), 400
+            # If GPU is not available, fallback to CPU
+            if processing_mode == 'gpu':
+                try:
+                    extractor = create_extractor_with_mode('cpu')
+                    processing_mode = 'cpu'
+                except ValueError as e2:
+                    return jsonify({'error': str(e2)}), 400
+            else:
+                return jsonify({'error': str(e)}), 400
         
         # Save uploaded file temporarily
         with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file.filename).suffix) as tmp_file:

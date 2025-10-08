@@ -167,14 +167,15 @@ def main():
     print("🚀 Cloud Mode Comprehensive Test")
     print("=" * 50)
     
-    # Initialize extractor in cloud mode (default)
+    # Initialize extractor in cloud mode (requires API key)
     api_key = os.environ.get('NANONETS_API_KEY')
     if api_key:
-        print("🔑 Using API key from environment for increased limits")
+        print("🔑 Using API key from environment for cloud processing")
         extractor = DocumentExtractor(api_key=api_key)
     else:
-        print("⚠️  No API key found - using rate-limited free tier")
-        print("💡 Set NANONETS_API_KEY environment variable for increased limits")
+        print("⚠️  No API key found - cloud mode requires API key")
+        print("💡 Set NANONETS_API_KEY environment variable or pass api_key parameter")
+        print("💡 Since no API key provided, will default to local processing")
         extractor = DocumentExtractor()
     
     print(f"🌐 Cloud mode: {extractor.cloud_mode}")
