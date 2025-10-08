@@ -2,7 +2,19 @@ from docstrange import DocumentExtractor
 
 file_path = "sample_documents/invoice.pdf"
 
+# Default: Local GPU processing (auto-selected if GPU available, otherwise CPU)
+# This is the default for privacy and offline processing
 extractor = DocumentExtractor()
+
+# Alternative modes:
+# Force local GPU processing (requires CUDA)
+# extractor = DocumentExtractor(gpu=True)
+
+# Force local CPU processing
+# extractor = DocumentExtractor(cpu=True)
+
+# Use cloud processing (requires API key or 'docstrange login')
+# extractor = DocumentExtractor(api_key="your_api_key_here")
 
 result = extractor.extract(file_path).extract_data(specified_fields=[
         "total_amount", 

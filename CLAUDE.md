@@ -7,9 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 DocStrange is a Python library for extracting and converting documents (PDFs, Word, Excel, PowerPoint, images, URLs) into multiple formats (Markdown, JSON, CSV, HTML) with intelligent content extraction and advanced OCR capabilities.
 
 The library offers three processing modes:
-- **Cloud Mode (default)**: Instant conversion using cloud API
-- **CPU Mode**: Local processing for privacy
-- **GPU Mode**: Local processing with GPU acceleration
+- **Local Mode (default)**: GPU-accelerated processing if available, otherwise CPU. Privacy-focused and offline-capable.
+- **GPU Mode**: Force local GPU processing with CUDA acceleration (requires compatible GPU)
+- **CPU Mode**: Force local CPU-only processing
+- **Cloud Mode**: Instant conversion using cloud API (requires API key or 'docstrange login')
 
 ## Commands
 
@@ -95,11 +96,11 @@ python -m twine upload dist/*
 ### Processing Flow
 
 1. **Document Input** → DocumentExtractor.extract()
-2. **Mode Selection**: Cloud (default) | CPU | GPU
+2. **Mode Selection**: Local GPU/CPU (default) | Cloud (with api_key)
 3. **Format Detection**: Identify file type and route to processor
 4. **Processing**:
+   - Local: Load document → OCR → Layout detection → Structure extraction (GPU accelerated if available)
    - Cloud: Upload to API → Process → Return results
-   - Local: Load document → OCR → Layout detection → Structure extraction
 5. **Output Generation**: Markdown | JSON | CSV | HTML | Text
 
 ### Key Design Patterns
@@ -111,31 +112,45 @@ python -m twine upload dist/*
 
 ## Processing Modes
 
-### Cloud Mode (Default)
-- No local setup required
-- Rate limits: Limited daily calls (free) or 10k/month (authenticated)
-- Authentication: `docstrange login` or API key
-- Best for: Quick processing without GPU
+### Local Mode (Default)
+- **Default behavior**: GPU processing if CUDA-compatible GPU is available, otherwise CPU
+- Privacy-focused and offline-capable
+- No internet connection required after initial model download
+- Uses local neural models (~500MB first run)
+- Best for: Privacy-sensitive documents, offline processing, batch operations
 
-### CPU Mode
-- Force with `cpu=True` parameter
-- Uses local neural models
-- Requires model downloads (~500MB first run)
-- Best for: Privacy-sensitive documents
-
-### GPU Mode  
+### GPU Mode (Explicit)
 - Force with `gpu=True` parameter
 - Requires CUDA-compatible GPU
-- Faster than CPU for large documents
-- Best for: Batch processing, high-volume workloads
+- Fastest processing for large documents
+- Best for: High-volume workloads when GPU is available
+
+### CPU Mode (Explicit)
+- Force with `cpu=True` parameter
+- Uses local neural models without GPU
+- Best for: Systems without GPU or when GPU is unavailable
+
+### Cloud Mode (Optional)
+- Enable by providing `api_key` parameter or running `docstrange login`
+- No local setup required
+- Rate limits: Limited daily calls (free) or 10k/month (authenticated)
+- Best for: Quick processing without local setup
 
 ## Authentication & Rate Limits
 
-### Free Tier
+### Local Processing (Default)
+- No authentication required
+- No rate limits
+- Full privacy and offline capability
+
+### Cloud Processing (Optional)
+
+#### Free Tier
 - Limited daily API calls
 - No authentication required
+- Provide api_key parameter to enable
 
-### Authenticated Access (10k docs/month)
+#### Authenticated Access (10k docs/month)
 ```bash
 # Browser-based login (recommended)
 docstrange login
@@ -201,6 +216,25 @@ The repository includes an MCP server for Claude Desktop integration (local deve
 
 ## Common Tasks
 
+### Default local processing (GPU if available)
+```python
+# Automatically uses GPU if available, otherwise CPU
+extractor = DocumentExtractor()
+result = extractor.extract("document.pdf")
+```
+
+### Force specific processing mode
+```python
+# Force local GPU processing
+extractor = DocumentExtractor(gpu=True)
+
+# Force local CPU processing
+extractor = DocumentExtractor(cpu=True)
+
+# Use cloud processing
+extractor = DocumentExtractor(api_key="your_api_key")
+```
+
 ### Extract specific fields from documents
 ```python
 result = extractor.extract("invoice.pdf")
@@ -220,6 +254,12 @@ extractor = DocumentExtractor(cpu=True)
 
 # GPU mode (requires CUDA)
 extractor = DocumentExtractor(gpu=True)
+```
+
+### Use cloud processing
+```python
+# With API key
+extractor = DocumentExtractor(api_key="your_api_key")
 ```
 
 ## Error Handling
